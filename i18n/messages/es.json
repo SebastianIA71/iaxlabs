@@ -1,0 +1,148 @@
+{
+  "LanguageDetection": {
+    "title": "Sugerencia de idioma",
+    "description": "IAXCORE opera en múltiples idiomas para apoyar iniciativas internacionales de consultoría e inteligencia artificial. Puedes cambiar el idioma en cualquier momento.",
+    "countdown": "Se cerrará en {countdown} segundos",
+    "switchTo": "Cambiar a"
+  },
+  "Header": {
+    "links": [
+      {
+        "name": "Servicios",
+        "href": "/services"
+      },
+      {
+        "name": "Casos de Éxito",
+        "href": "/case-studies"
+      },
+      {
+        "name": "Insights",
+        "href": "/blog"
+      },
+      {
+        "name": "Contacto",
+        "href": "/contact"
+      }
+    ]
+  },
+  "Footer": {
+    "Copyright": "Copyright © {year} iaxcore. Innovación e IA para Consultoría y Reporting. Todos los derechos reservados.",
+    "PrivacyPolicy": "Política de Privacidad",
+    "TermsOfService": "Términos del Servicio",
+    "Links": {
+      "groups": [
+        {
+          "title": "Compañía",
+          "links": [
+            {
+              "href": "/about",
+              "name": "Sobre IAXCORE",
+              "useA": false
+            },
+            {
+              "href": "/methodology",
+              "name": "Metodología",
+              "useA": false
+            },
+            {
+              "href": "/approach",
+              "name": "Enfoque Estratégico",
+              "useA": false
+            }
+          ]
+        },
+        {
+          "title": "Especialización",
+          "links": [
+            {
+              "href": "/services/ai-strategy",
+              "name": "Estrategia y Gobernanza en IA"
+            },
+            {
+              "href": "/services/automation",
+              "name": "Automatización de Procesos"
+            },
+            {
+              "href": "/services/reporting",
+              "name": "Reporting y Analítica Avanzada"
+            }
+          ]
+        },
+        {
+          "title": "Áreas de Enfoque",
+          "links": [
+            {
+              "href": "/focus/cost-optimization",
+              "name": "Optimización de Costes y Eficiencia"
+            },
+            {
+              "href": "/focus/digital-transformation",
+              "name": "Transformación Digital"
+            }
+          ]
+        }
+      ]
+    },
+    "Newsletter": {
+      "title": "Anticípate con insights estratégicos en IA",
+      "description": "Recibe análisis estructurados sobre innovación, automatización y toma de decisiones basada en inteligencia artificial.",
+      "defaultErrorMessage": "Por favor, introduce un correo electrónico válido",
+      "successMessage": "Suscripción realizada con éxito",
+      "errorMessage": "La suscripción ha fallado",
+      "errorMessage2": "La suscripción ha fallado. Inténtalo de nuevo más tarde",
+      "subscribe": "Suscribirse",
+      "subscribing": "Suscribiendo...",
+      "subscribed": "Suscripción completada. Gracias por tu interés en IAXCORE"
+    }
+  },
+  "Home": {
+    "title": "",
+    "tagLine": "Innovación e IA para Consultoría y Reporting",
+    "description": "IAXCORE impulsa innovación estructurada e inteligencia artificial aplicada para mejorar la toma de decisiones, optimizar costes, racionalizar procesos y generar resultados empresariales medibles.",
+    "hero": {
+      "badge": "IA Estratégica y Automatización",
+      "line1": "Innovación e IA",
+      "line2": "Aplicadas a",
+      "typewriterWords": [
+        "Consultoría",
+        "Optimización",
+        "Racionalización",
+        "Reporting"
+      ],
+      "description": "Un marco estratégico que integra inteligencia artificial, automatización y analítica avanzada para transformar organizaciones mediante análisis comparativo, optimización operativa y resultados medibles."
+    }
+  },
+  "Blog": {
+    "title": "Análisis e Insights",
+    "description": "Perspectivas estratégicas sobre inteligencia artificial, automatización, gobernanza, control de costes y transformación digital."
+  },
+  "About": {
+    "title": "Sobre IAXCORE",
+    "description": "IAXCORE es una iniciativa estratégica centrada en aplicar inteligencia artificial y automatización a entornos de consultoría y reporting, facilitando decisiones estructuradas y eficiencia sostenible."
+  },
+  "TermsOfService": {
+    "title": "Términos del Servicio",
+    "description": "Condiciones que regulan el uso de los servicios y recursos digitales de IAXCORE."
+  },
+  "PrivacyPolicy": {
+    "title": "Política de Privacidad",
+    "description": "Cómo IAXCORE gestiona y protege los datos conforme a estándares regulatorios y de gobernanza."
+  },
+  "Showcase": {
+    "title": "Innovación Aplicada",
+    "description": "Iniciativas estructuradas donde la inteligencia artificial y la automatización han generado impacto organizativo medible.",
+    "visitSite": "Ver caso"
+  },
+  "Submission": {
+    "badge": "Colaborar",
+    "title": "Proponer una Iniciativa Estratégica",
+    "description": "Si tu organización está explorando la adopción estructurada de IA, automatización u optimización de costes, comparte tu propuesta y evalúa posibles colaboraciones.",
+    "productNameLabel": "Nombre de la Organización / Iniciativa",
+    "productNamePlaceholder": "Iniciativa de Transformación con IA",
+    "productUrlLabel": "Sitio web o referencia",
+    "submit": "Enviar propuesta",
+    "submitting": "Enviando...",
+    "successMessage": "Gracias. Tu propuesta ha sido recibida y será evaluada estratégicamente.",
+    "errorMessage": "Ha ocurrido un error. Por favor, inténtalo de nuevo."
+  }
+}

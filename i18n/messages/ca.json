@@ -1,0 +1,148 @@
+{
+  "LanguageDetection": {
+    "title": "Suggeriment d’idioma",
+    "description": "IAXCORE opera en múltiples idiomes per donar suport a iniciatives internacionals de consultoria i intel·ligència artificial. Pots canviar l’idioma en qualsevol moment.",
+    "countdown": "Es tancarà en {countdown} segons",
+    "switchTo": "Canviar a"
+  },
+  "Header": {
+    "links": [
+      {
+        "name": "Serveis",
+        "href": "/services"
+      },
+      {
+        "name": "Casos d’Èxit",
+        "href": "/case-studies"
+      },
+      {
+        "name": "Insights",
+        "href": "/blog"
+      },
+      {
+        "name": "Contacte",
+        "href": "/contact"
+      }
+    ]
+  },
+  "Footer": {
+    "Copyright": "Copyright © {year} iaxcore. Innovació i IA per a Consultoria i Reporting. Tots els drets reservats.",
+    "PrivacyPolicy": "Política de Privacitat",
+    "TermsOfService": "Termes del Servei",
+    "Links": {
+      "groups": [
+        {
+          "title": "Companyia",
+          "links": [
+            {
+              "href": "/about",
+              "name": "Sobre IAXCORE",
+              "useA": false
+            },
+            {
+              "href": "/methodology",
+              "name": "Metodologia",
+              "useA": false
+            },
+            {
+              "href": "/approach",
+              "name": "Enfocament Estratègic",
+              "useA": false
+            }
+          ]
+        },
+        {
+          "title": "Especialització",
+          "links": [
+            {
+              "href": "/services/ai-strategy",
+              "name": "Estratègia i Governança en IA"
+            },
+            {
+              "href": "/services/automation",
+              "name": "Automatització de Processos"
+            },
+            {
+              "href": "/services/reporting",
+              "name": "Reporting i Analítica Avançada"
+            }
+          ]
+        },
+        {
+          "title": "Àrees d’Enfocament",
+          "links": [
+            {
+              "href": "/focus/cost-optimization",
+              "name": "Optimització de Costos i Eficiència"
+            },
+            {
+              "href": "/focus/digital-transformation",
+              "name": "Transformació Digital"
+            }
+          ]
+        }
+      ]
+    },
+    "Newsletter": {
+      "title": "Avança’t amb insights estratègics en IA",
+      "description": "Rep anàlisis estructurades sobre innovació, automatització i presa de decisions basada en intel·ligència artificial.",
+      "defaultErrorMessage": "Introdueix una adreça de correu electrònic vàlida",
+      "successMessage": "Subscripció realitzada amb èxit",
+      "errorMessage": "La subscripció ha fallat",
+      "errorMessage2": "La subscripció ha fallat. Torna-ho a provar més tard",
+      "subscribe": "Subscriure’s",
+      "subscribing": "Subscrivint...",
+      "subscribed": "Subscripció completada. Gràcies pel teu interès en IAXCORE"
+    }
+  },
+  "Home": {
+    "title": "",
+    "tagLine": "Innovació i IA per a Consultoria i Reporting",
+    "description": "IAXCORE impulsa innovació estructurada i intel·ligència artificial aplicada per millorar la presa de decisions, optimitzar costos, racionalitzar processos i generar resultats empresarials mesurables.",
+    "hero": {
+      "badge": "IA Estratègica i Automatització",
+      "line1": "Innovació i IA",
+      "line2": "Aplicades a",
+      "typewriterWords": [
+        "Consultoria",
+        "Optimització",
+        "Racionalització",
+        "Reporting"
+      ],
+      "description": "Un marc estratègic que integra intel·ligència artificial, automatització i analítica avançada per transformar organitzacions mitjançant anàlisi comparativa, optimització operativa i resultats mesurables."
+    }
+  },
+  "Blog": {
+    "title": "Anàlisi i Insights",
+    "description": "Perspectives estratègiques sobre intel·ligència artificial, automatització, governança, control de costos i transformació digital."
+  },
+  "About": {
+    "title": "Sobre IAXCORE",
+    "description": "IAXCORE és una iniciativa estratègica centrada en aplicar intel·ligència artificial i automatització a entorns de consultoria i reporting, facilitant decisions estructurades i eficiència sostenible."
+  },
+  "TermsOfService": {
+    "title": "Termes del Servei",
+    "description": "Condicions que regulen l’ús dels serveis i recursos digitals d’IAXCORE."
+  },
+  "PrivacyPolicy": {
+    "title": "Política de Privacitat",
+    "description": "Com IAXCORE gestiona i protegeix les dades d’acord amb estàndards regulatoris i de governança."
+  },
+  "Showcase": {
+    "title": "Innovació Aplicada",
+    "description": "Iniciatives estructurades on la intel·ligència artificial i l’automatització han generat impacte organitzatiu mesurable.",
+    "visitSite": "Veure cas"
+  },
+  "Submission": {
+    "badge": "Col·laborar",
+    "title": "Proposar una Iniciativa Estratègica",
+    "description": "Si la teva organització està explorant l’adopció estructurada d’IA, automatització o optimització de costos, comparteix la teva proposta i avalua possibles col·laboracions.",
+    "productNameLabel": "Nom de l’Organització / Iniciativa",
+    "productNamePlaceholder": "Iniciativa de Transformació amb IA",
+    "productUrlLabel": "Lloc web o referència",
+    "submit": "Enviar proposta",
+    "submitting": "Enviant...",
+    "successMessage": "Gràcies. La teva proposta ha estat rebuda i serà avaluada estratègicament.",
+    "errorMessage": "S’ha produït un error. Torna-ho a intentar."
+  }
+}
