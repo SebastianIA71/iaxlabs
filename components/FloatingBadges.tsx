@@ -37,10 +37,10 @@ function Badge({ label, color }: { label: string; color: string }) {
   return (
     <div
       className={`
-        px-4 py-2
+        w-14 h-14
+        flex items-center justify-center
         rounded-full
-        text-sm
-        font-medium
+        text-xs font-medium
         shadow-lg
         backdrop-blur-md
         ${colorMap[color]}

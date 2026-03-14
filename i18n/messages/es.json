@@ -1,148 +1,140 @@
 {
   "LanguageDetection": {
-    "title": "Sugerencia de idioma",
-    "description": "IAXCORE opera en múltiples idiomas para apoyar iniciativas internacionales de consultoría e inteligencia artificial. Puedes cambiar el idioma en cualquier momento.",
+    "title": "Idioma sugerido",
+    "description": "Este laboratorio forma parte del ecosistema IAFONT, donde exploramos inteligencia artificial, física, matemáticas e informática aplicada. Puedes cambiar el idioma cuando quieras.",
     "countdown": "Se cerrará en {countdown} segundos",
     "switchTo": "Cambiar a"
   },
+
   "Header": {
     "links": [
       {
-        "name": "Servicios",
-        "href": "/services"
+        "name": "Laboratorios",
+        "href": "/labs"
       },
       {
-        "name": "Casos de Éxito",
-        "href": "/case-studies"
+        "name": "Experimentos",
+        "href": "/experiments"
       },
       {
-        "name": "Insights",
-        "href": "/blog"
-      },
-      {
-        "name": "Contacto",
-        "href": "/contact"
+        "name": "Sobre el proyecto",
+        "href": "/about"
       }
     ]
   },
+
   "Footer": {
-    "Copyright": "Copyright © {year} iaxcore. Innovación e IA para Consultoría y Reporting. Todos los derechos reservados.",
+    "Copyright": "Copyright © {year} IAXLabs / IAFONT. Laboratorios abiertos sobre inteligencia artificial, física y sistemas complejos.",
     "PrivacyPolicy": "Política de Privacidad",
-    "TermsOfService": "Términos del Servicio",
+    "TermsOfService": "Términos de Uso",
+
     "Links": {
       "groups": [
         {
-          "title": "Compañía",
+          "title": "Proyecto",
           "links": [
             {
               "href": "/about",
-              "name": "Sobre IAXCORE",
-              "useA": false
+              "name": "Sobre IAXLabs"
             },
             {
-              "href": "/methodology",
-              "name": "Metodología",
-              "useA": false
+              "href": "/labs",
+              "name": "Laboratorios"
             },
             {
-              "href": "/approach",
-              "name": "Enfoque Estratégico",
-              "useA": false
+              "href": "/experiments",
+              "name": "Experimentos"
             }
           ]
         },
         {
-          "title": "Especialización",
+          "title": "Áreas de investigación",
           "links": [
             {
-              "href": "/services/ai-strategy",
-              "name": "Estrategia y Gobernanza en IA"
+              "href": "/topics/ai",
+              "name": "Modelos de IA"
             },
             {
-              "href": "/services/automation",
-              "name": "Automatización de Procesos"
+              "href": "/topics/physics",
+              "name": "IA y Física"
             },
             {
-              "href": "/services/reporting",
-              "name": "Reporting y Analítica Avanzada"
-            }
-          ]
-        },
-        {
-          "title": "Áreas de Enfoque",
-          "links": [
-            {
-              "href": "/focus/cost-optimization",
-              "name": "Optimización de Costes y Eficiencia"
-            },
-            {
-              "href": "/focus/digital-transformation",
-              "name": "Transformación Digital"
+              "href": "/topics/maths",
+              "name": "IA y Matemáticas"
             }
           ]
         }
       ]
     },
+
     "Newsletter": {
-      "title": "Anticípate con insights estratégicos en IA",
-      "description": "Recibe análisis estructurados sobre innovación, automatización y toma de decisiones basada en inteligencia artificial.",
-      "defaultErrorMessage": "Por favor, introduce un correo electrónico válido",
-      "successMessage": "Suscripción realizada con éxito",
+      "title": "Explora nuevas ideas en IA",
+      "description": "Recibe artículos y experimentos sobre inteligencia artificial, física computacional, matemáticas y sistemas complejos.",
+      "defaultErrorMessage": "Introduce un correo válido",
+      "successMessage": "Suscripción completada",
       "errorMessage": "La suscripción ha fallado",
-      "errorMessage2": "La suscripción ha fallado. Inténtalo de nuevo más tarde",
+      "errorMessage2": "La suscripción ha fallado. Inténtalo más tarde",
       "subscribe": "Suscribirse",
       "subscribing": "Suscribiendo...",
-      "subscribed": "Suscripción completada. Gracias por tu interés en IAXCORE"
+      "subscribed": "Gracias por unirte a IAFONT"
     }
   },
+
   "Home": {
     "title": "",
-    "tagLine": "Innovación e IA para Consultoría y Reporting",
-    "description": "IAXCORE impulsa innovación estructurada e inteligencia artificial aplicada para mejorar la toma de decisiones, optimizar costes, racionalizar procesos y generar resultados empresariales medibles.",
+    "tagLine": "Laboratorios abiertos sobre inteligencia artificial",
+    "description": "IAxLabs es el espacio experimental de IAfont. Aquí publicamos simulaciones, experimentos interactivos, pruebas con modelos de IA, visualizaciones matemáticas y exploraciones técnicas.",
+
     "hero": {
-      "badge": "IA Estratégica y Automatización",
-      "line1": "Innovación e IA",
-      "line2": "Aplicadas a",
+      "badge": "Laboratorio experimental",
+      "line1": "Explorando la Inteligencia Artificial",
+      "line2": "la inteligencia artificial",
       "typewriterWords": [
-        "Consultoría",
-        "Optimización",
-        "Racionalización",
-        "Reporting"
+        "la física",
+        "las matemáticas",
+        "los modelos LLM",
+        "las simulaciones"
       ],
-      "description": "Un marco estratégico que integra inteligencia artificial, automatización y analítica avanzada para transformar organizaciones mediante análisis comparativo, optimización operativa y resultados medibles."
+      "description": "Un espacio para experimentar con inteligencia artificial desde múltiples disciplinas: física, matemáticas, informática y sistemas complejos."
     }
   },
+
   "Blog": {
-    "title": "Análisis e Insights",
-    "description": "Perspectivas estratégicas sobre inteligencia artificial, automatización, gobernanza, control de costes y transformación digital."
+    "title": "Experimentos y notas",
+    "description": "Apuntes técnicos, pruebas y extensiones de los artículos publicados en IAFONT."
   },
+
   "About": {
-    "title": "Sobre IAXCORE",
-    "description": "IAXCORE es una iniciativa estratégica centrada en aplicar inteligencia artificial y automatización a entornos de consultoría y reporting, facilitando decisiones estructuradas y eficiencia sostenible."
+    "title": "Sobre IAXLabs",
+    "description": "IAXLabs es el laboratorio experimental vinculado a IAFONT. Su objetivo es explorar cómo la inteligencia artificial se conecta con la física, las matemáticas, la informática y otros sistemas complejos mediante simulaciones, visualizaciones y prototipos."
   },
+
   "TermsOfService": {
-    "title": "Términos del Servicio",
-    "description": "Condiciones que regulan el uso de los servicios y recursos digitales de IAXCORE."
+    "title": "Términos de Uso",
+    "description": "Condiciones de uso de los recursos, experimentos y contenidos publicados en IAXLabs."
   },
+
   "PrivacyPolicy": {
     "title": "Política de Privacidad",
-    "description": "Cómo IAXCORE gestiona y protege los datos conforme a estándares regulatorios y de gobernanza."
+    "description": "Información sobre cómo se gestionan los datos en este proyecto."
   },
+
   "Showcase": {
-    "title": "Innovación Aplicada",
-    "description": "Iniciativas estructuradas donde la inteligencia artificial y la automatización han generado impacto organizativo medible.",
-    "visitSite": "Ver caso"
+    "title": "Laboratorios destacados",
+    "description": "Experimentos interactivos y simulaciones que acompañan a los artículos publicados en IAFONT.",
+    "visitSite": "Explorar"
   },
+
   "Submission": {
-    "badge": "Colaborar",
-    "title": "Proponer una Iniciativa Estratégica",
-    "description": "Si tu organización está explorando la adopción estructurada de IA, automatización u optimización de costes, comparte tu propuesta y evalúa posibles colaboraciones.",
-    "productNameLabel": "Nombre de la Organización / Iniciativa",
-    "productNamePlaceholder": "Iniciativa de Transformación con IA",
-    "productUrlLabel": "Sitio web o referencia",
+    "badge": "Propuesta",
+    "title": "Proponer un experimento",
+    "description": "Si tienes una idea de simulación, visualización o experimento relacionado con inteligencia artificial, puedes enviarla para evaluarla.",
+    "productNameLabel": "Nombre del experimento",
+    "productNamePlaceholder": "Simulación de difusión en modelos generativos",
+    "productUrlLabel": "Referencia o enlace",
     "submit": "Enviar propuesta",
     "submitting": "Enviando...",
-    "successMessage": "Gracias. Tu propuesta ha sido recibida y será evaluada estratégicamente.",
-    "errorMessage": "Ha ocurrido un error. Por favor, inténtalo de nuevo."
+    "successMessage": "Tu propuesta ha sido recibida.",
+    "errorMessage": "Ha ocurrido un error. Inténtalo de nuevo."
   }
 }

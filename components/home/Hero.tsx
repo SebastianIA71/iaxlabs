@@ -28,16 +28,15 @@ export default function Hero() {
         </AnimatedBorderButton>
       </div>
 
-      <h1 className="mx-auto max-w-4xl font-display text-5xl font-bold tracking-tight text-slate-900 sm:text-7xl dark:text-gray-200 text-center leading-tight">
+      <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-gray-200 text-left leading-tight">
+
         <span className="block">
           {t("hero.line1")}
         </span>
 
-        <span className="block">
-          {t("hero.line2")}
-        </span>
-
-        <span className="block text-blue-600 min-h-[1em]">
+      <span className="block min-h-[1em]">
+        {"   "}  con ayuda de{" "}
+        <span className="text-blue-600">
           <Typewriter
             words={words}
             typingSpeed={90}
@@ -45,9 +44,10 @@ export default function Hero() {
             pauseTime={1400}
           />
         </span>
-      </h1>
+      </span> 
+     </h1>
 
-      <p className="mx-auto mt-6 max-w-2xl text-2xl tracking-tight text-slate-700 dark:text-slate-500">
+      <p className="mx-auto mt-6 max-w-2xl text-1xl tracking-tight text-slate-700 dark:text-slate-500">
         {t("description")}
       </p>
 

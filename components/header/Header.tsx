@@ -42,6 +42,29 @@ const Header = () => {
             </span>
           </I18nLink>
           <HeaderLinks />
+
+          <a
+            href="https://iafont.substack.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center ml-2 opacity-80 hover:opacity-100 transition"
+          >
+          <Image
+            src="/logo-iafont-dark.svg"
+            className="h-10 w-auto block dark:hidden"
+            width={80}
+            height={24}
+            alt="IAFONT"
+          />
+
+          <Image
+            src="/logo-iafont-light.svg"
+            className="h-10 w-auto hidden dark:block"
+            width={80}
+            height={24}
+            alt="IAFONT"
+          />          
+          </a>
         </div>
 
         <div className="flex items-center gap-x-2 md:gap-x-4 lg:gap-x-6 flex-1 justify-end">
