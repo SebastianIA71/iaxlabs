@@ -21,32 +21,53 @@ export default function Hero() {
 
     <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-2 pt-2 text-center">
 
-      <div className="mb-6 flex justify-center">
+    <div className="mt-10 mb-8 flex justify-center">
+
+      <Link href="#experimentos">
+
         <AnimatedBorderButton>
-          <span className="flex items-center gap-2">
-            🔬 {t("hero.badge")} →
-          </span>
-        </AnimatedBorderButton>
-      </div>
+        <span className="rounded-full bg-indigo-500 px-3 py-1 text-xs font-semibold text-white">
+          IAxLabs
+        </span>
 
-      <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-gray-200 text-left leading-tight">
+        <span className="text-slate-300">
+          🔬 {t("hero.badge")} →
+        </span>    </AnimatedBorderButton>
 
-        <span className="block">
+      </Link>
+
+    </div>
+
+
+
+      <h1 className="mx-auto max-w-4xl mt-20 font-display font-bold tracking-tight text-slate-900 dark:text-gray-200 leading-tight">
+
+        {/* LINE 1 */}
+        <span className="block text-center text-5xl sm:text-7xl mb-2">
           {t("hero.line1")}
         </span>
 
-      <span className="block min-h-[1em]">
-        {"   "}  con ayuda de{" "}
-        <span className="text-blue-600">
-          <Typewriter
-            words={words}
-            typingSpeed={90}
-            deletingSpeed={50}
-            pauseTime={1400}
-          />
+        {/* LINE 2 */}
+        <span className="block text-center text-5xl sm:text-7xl mb-2">
+          {t("hero.line2")}
         </span>
-      </span> 
-     </h1>
+
+        {/* TYPEWRITER */}
+        <div className="flex justify-center">
+          <div className="w-[450px] text-left text-3xl sm:text-6xl whitespace-nowrap">
+            mediante{" "}
+            <span className="text-blue-600">
+              <Typewriter
+                words={words}
+                typingSpeed={90}
+                deletingSpeed={50}
+                pauseTime={1400}
+              />
+            </span>
+          </div>
+        </div>
+
+      </h1>
 
       <p className="mx-auto mt-6 max-w-2xl text-1xl tracking-tight text-slate-700 dark:text-slate-500">
         {t("description")}

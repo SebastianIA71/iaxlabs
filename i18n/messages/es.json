@@ -86,14 +86,16 @@
     "description": "IAxLabs es el espacio experimental de IAfont. Aquí publicamos simulaciones, experimentos interactivos, pruebas con modelos de IA, visualizaciones matemáticas y exploraciones técnicas.",
 
     "hero": {
-      "badge": "Labs by IAfont",
-      "line1": "Explorando la Inteligencia Artificial",
-      "line2": "la inteligencia artificial",
+      "badge": "Ver experimentos reales",
+      "line1": "Explorando",
+      "line2": "Inteligencia Artificial",
       "typewriterWords": [
-        "la física",
-        "las matemáticas",
-        "los modelos LLM",
-        "las simulaciones"
+        "la Física",
+        "las Matemáticas",
+        " Modelos LLM",
+        " Simulaciones",
+        " Estadística",
+        " Agentes"
       ],
       "description": "Un espacio para experimentar con inteligencia artificial desde múltiples disciplinas: física, matemáticas, informática y sistemas complejos."
     }

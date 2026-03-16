@@ -64,16 +64,17 @@ const showcaseItems: ShowcaseItem[] = [
 ];
 
 const hookPhrases = [
-  "Menos hype. Más laboratorio.",
+  "Menos hype por la IA. Más laboratorio.",
   "Pon IA en el proceso. Luego averigua para qué ha servido..",
   "Todo el mundo habla de IA. Aquí la tocamos.",
-  "Esto no es magia. Es estadística con marketing.",
+  "La IA no es magia. Es estadística con marketing.",
   "Entrena un modelo. O al menos tu curiosidad.",
   "Primero el experimento. Luego el PowerPoint.",
   "La IA ha llegado. El cambio no tanto.",
   "No es humo. Es inferencia.",
-  "La IA no piensa. O.",
-  "Prometieron robots. No han visto blade ru ."
+  "La IA no piensa. O eso preferimos creer.",
+  "Prometieron robots. No han visto blade runner.",
+  "Es la matriz de confusión, estúpido!!."
 ];
 
 const randomPhrase =
@@ -86,10 +87,30 @@ export default function Showcase() {
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
 
+<div className="mx-auto max-w-6xl mt-14 mb-12">
+  <div className="flex items-center gap-4 rounded-2xl
+  bg-gradient-to-r from-[#0f172a] via-[#111827] to-[#1e1b4b]
+  px-10 py-10 shadow-lg">
 
-      <p className="text-center text-xl font-semibold mb-8  text-[#E6332A]">
-          {randomPhrase}
-      </p>
+    {/* Logo */}
+    <div className="flex items-center gap-3 shrink-0">
+      <img
+        src="/logo-light.svg"
+        alt="IAXLabs"
+        className="h-8 w-auto"
+      />
+    </div>
+
+    {/* Hook */}
+    <p className="flex-1 text-center text-2xl sm:text-3xl font-bold tracking-tight text-[#E6332A]">
+      {randomPhrase}
+    </p>
+
+  </div>
+
+</div>
+      
+      
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-gray-200 sm:text-4xl">
           {t("title")}

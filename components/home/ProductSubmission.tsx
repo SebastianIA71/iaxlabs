@@ -48,7 +48,9 @@ export default function ProductSubmission() {
   };
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
+    <section 
+      id="experimentos"
+      className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden">
