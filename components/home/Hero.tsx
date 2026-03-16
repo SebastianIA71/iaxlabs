@@ -9,22 +9,23 @@ import Link from "next/link";
 import { SiDiscord } from "react-icons/si";
 
 
-
 export default function Hero() {
   const t = useTranslations("Home");
   const words = t.raw("hero.typewriterWords") as string[];
 
 
   return (
-  <section className="relative">
+  <section className="relative w-full">
 
     <FloatingBadges />
 
-    <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16 pt-16 text-center">
+    <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-2 pt-2 text-center">
 
       <div className="mb-6 flex justify-center">
         <AnimatedBorderButton>
-          ✨ {t("hero.badge")} →
+          <span className="flex items-center gap-2">
+            🔬 {t("hero.badge")} →
+          </span>
         </AnimatedBorderButton>
       </div>
 
@@ -58,15 +59,15 @@ export default function Hero() {
           asChild
         >
           <Link
-            href="https://nexty.dev/"
+            href="https://sebastian531746.substack.com/account?utm_medium=web&utm_source=custom-footer&next=https%3A%2F%2Fsebastian531746.substack.com%2F"
             target="_blank"
             rel="noopener noreferrer"
-            title="Get SaaS Version - NEXTY.DEV"
+            title="Suscríbete a IAfont"
             prefetch={false}
             className="flex items-center gap-2"
           >
             <MousePointerClick className="w-4 h-4 text-indigo-500" />
-            Get SaaS Version
+            Suscríbete a IAfont
           </Link>
         </Button>
 
@@ -82,12 +83,12 @@ export default function Hero() {
             }
             target="_blank"
             rel="noopener noreferrer nofollow"
-            title="Join Discord"
+            title="Propon Experimento"
             prefetch={false}
             className="flex items-center gap-2"
           >
             <SiDiscord className="w-4 h-4 text-indigo-500" />
-            Join Discord
+            Propón Experimento
           </Link>
         </Button>
       </div>

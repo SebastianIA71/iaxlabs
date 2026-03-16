@@ -1,25 +1,25 @@
 export default function FloatingBadges() {
   return (
-    <div className="absolute inset-0 pointer-events-none z-0">
+    <div className="absolute inset-0 pointer-events-none z-10">
 
-      {/* Top Left */}
-      <div className="absolute top-16 -left-44 animate-drift">
-        <Badge label="GTP" color="purple" />
+      {/* Left near title */}
+      <div className="absolute top-[38%] left-[18%] animate-float1">
+        <Badge label="AI" color="purple" />
       </div>
 
-      {/* Bottom Left */}
-      <div className="absolute bottom-24 -left-56 animate-drift-2">
+      {/* Bottom left */}
+      <div className="absolute top-[58%] left-[28%] animate-float2">
         <Badge label="Cloud" color="blue" />
       </div>
 
-      {/* Top Right */}
-      <div className="absolute top-20 -right-80 animate-drift-3">
+      {/* Right near title */}
+      <div className="absolute top-[40%] right-[22%] animate-float3">
         <Badge label="LLMs" color="red" />
       </div>
 
-      {/* Bottom Right */}
-      <div className="absolute bottom-20 -right-60 animate-drift">
-        <Badge label="JSON" color="yellow" />
+      {/* Bottom right */}
+      <div className="absolute top-[60%] right-[30%] animate-float1">
+        <Badge label="Agents" color="yellow" />
       </div>
 
     </div>

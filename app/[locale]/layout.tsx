@@ -80,11 +80,33 @@ export default async function LocaleLayout({
   return (
     <html lang={locale || DEFAULT_LOCALE} className={inter.variable} suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          "min-h-screen bg-background flex flex-col antialiased"
-        )}
-      >
+
+        <body
+          className={cn(
+            "relative min-h-screen flex flex-col antialiased overflow-x-hidden"
+          )}
+        >
+
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+
+          <div
+            className="absolute w-[1200px] h-[1200px] bg-blue-500 opacity-30 blur-[220px] rounded-full"
+            style={{ animation: "auroraMove1 35s ease-in-out infinite alternate" }}
+          />
+
+          <div
+            className="absolute w-[1400px] h-[1400px] bg-purple-500 opacity-30 blur-[240px] rounded-full"
+            style={{ animation: "auroraMove2 40s ease-in-out infinite alternate" }}
+          />
+
+          <div
+            className="absolute w-[1000px] h-[1000px] bg-cyan-400 opacity-25 blur-[200px] rounded-full"
+            style={{ animation: "auroraMove3 32s ease-in-out infinite alternate" }}
+          />
+
+        </div>
+
+
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"
