@@ -54,7 +54,7 @@ export default function Hero() {
 
         {/* TYPEWRITER */}
         <div className="flex justify-center">
-          <div className="w-[450px] text-left text-3xl sm:text-6xl whitespace-nowrap">
+          <div className="w-[610px] text-left text-3xl sm:text-6xl whitespace-nowrap">
             mediante{" "}
             <span className="text-blue-600">
               <Typewriter
