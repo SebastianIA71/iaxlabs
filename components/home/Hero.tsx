@@ -39,6 +39,15 @@ export default function Hero() {
     </div>
 
 
+    {/* 🔥 LOGO GRANDE */}
+    <div className="flex justify-center mt-2 mb-6">
+      <img
+        src="/logo-light.svg"
+        alt="IAXLabs"
+        className="h-20 sm:h-24 md:h-28 w-auto"
+      />
+    </div>
+
 
       <h1 className="mx-auto max-w-4xl mt-20 font-display font-bold tracking-tight text-slate-900 dark:text-gray-200 leading-tight">
 

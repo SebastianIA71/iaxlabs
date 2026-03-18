@@ -4,16 +4,21 @@ import { labs } from "@/data/labs";
 // 🔥 FRASES
 const hookPhrases = [
   "Menos hype por la IA. Más laboratorio.",
-  "Pon IA en el proceso. Luego averigua para qué ha servido.",
-  "Todo el mundo habla de IA. Aquí la tocamos.",
-  "La IA no es magia. Es estadística con marketing.",
-  "Entrena un modelo. O al menos tu curiosidad.",
+  "Pon IA en algo. Luego cuéntanos qué ha pasado.",
+  "Todo el mundo habla de IA. Aquí la probamos.",
+  "La IA no es magia. Pero sorprende igual.",
+  "Entrena un modelo. O al menos la curiosidad.",
   "Primero el experimento. Luego el PowerPoint.",
-  "La IA ha llegado. El cambio no tanto.",
-  "No es humo. Es inferencia.",
-  "La IA no piensa. O eso preferimos creer.",
-  "Prometieron robots. No han visto Blade Runner.",
-  "Es la matriz de confusión, estúpido!!."
+  "La IA ha llegado. El uso está empezando.",
+  "No es humo. Es prueba y error.",
+  "La IA no piensa. Pero tú decides qué hacer con ella.",
+  "Prometieron robots. Empezamos por prototipos.",
+  "La matriz de confusión… y todo empieza a cuadrar.",
+  "Pasa. Prueba. A ver qué ocurre.",
+  "No hace falta saber. Hace falta empezar.",
+  "Curiosidad primero. Optimización después.",
+  "Menos teoría. Más tocar.",
+  "Si no falla, no era interesante."
 ];
 
 // 🎯 RANDOM
@@ -25,20 +30,15 @@ export default function Showcase() {
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
 
       {/* 🔥 BLOQUE FRASE */}
-      <div className="mx-auto max-w-6xl mt-14 mb-12">
-        <div className="flex items-center gap-4 rounded-2xl
-        bg-gradient-to-r from-[#0f172a] via-[#111827] to-[#1e1b4b]
-        px-10 py-10 shadow-lg">
+      <div className="mx-auto max-w-2xl mt-6 mb-8">
+        <div className="flex items-center justify-center rounded-xl
+          bg-gradient-to-r from-[#0f172a] via-[#111827] to-[#1e1b4b]
+          px-5 py-3 shadow-md">
 
-          <img
-            src="/logo-light.svg"
-            alt="IAXLabs"
-            className="h-8 w-auto"
-          />
-
-          <p className="flex-1 text-center text-2xl sm:text-3xl font-bold text-[#E6332A]">
+          <p className="text-center text-lg sm:text-3xl font-medium text-[#E6332A]">
             {randomPhrase}
           </p>
+
         </div>
       </div>
 
