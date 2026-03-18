@@ -1,11 +1,11 @@
 // data/labs.ts
 export const labs = [
   {
-    name: "Brownian → Diffusion",
-    subtitle: "Physics meets AI",
+    name: "De la Termodinámica a la Generación de Imágenes",
+    subtitle: "Cómo el Movimiento Browniano inspiró los Modelos de Difusión, la tecnología detrás de la Inteligencia Artificial Generativa moderna",
     url: "/labs/brownian",
     icons: ["physics", "ai"],
-    image: "/icons/brownian.jpg", 
+    image: "/icons/waterbrow.JPG", 
   },
   {
     name: "Realtime Pipeline",

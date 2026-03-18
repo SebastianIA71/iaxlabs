@@ -14,16 +14,16 @@ export default function LabCard({ lab }: any) {
   return (
     <Link
       href={lab.url}
-      className="flex flex-col items-start text-left 
+      className="flex flex-col justify-between h-full
                  rounded-2xl border bg-white/70 dark:bg-slate-900/60 
-                 p-6 transition"
+                 p-6 transition mx-auto max-w-md text-center"
     >
-      {/* ICONOS + IMAGEN */}
-      <div className="flex items-center gap-3 mb-4">
+      {/* 🔼 CONTENIDO */}
+      <div className="flex flex-col items-center">
 
-        {/* 🖼️ Imagen opcional */}
+        {/* 🖼️ Imagen */}
         {lab.image && (
-          <div className="w-10 h-10 relative shrink-0">
+          <div className="w-12 h-12 relative mb-4">
             <Image
               src={lab.image}
               alt={lab.name}
@@ -33,30 +33,33 @@ export default function LabCard({ lab }: any) {
           </div>
         )}
 
-        {/* 🔴 Iconos */}
+        {/* TITULO */}
+        <h3 className="font-semibold text-lg mb-2">
+          {lab.name}
+        </h3>
+
+        {/* SUBTITULO */}
+        <p className="text-sm text-slate-500">
+          {lab.subtitle}
+        </p>
+
+      </div>
+
+      {/* 🔻 ICONOS ABAJO */}
+      <div className="flex justify-center gap-2 mt-6">
         {lab.icons?.map((key: keyof typeof iconMap, i: number) => {
           const Icon = iconMap[key];
           return (
             <div
               key={i}
-              className="w-8 h-8 flex items-center justify-center 
-                         rounded-md bg-slate-100 dark:bg-slate-800"
+              className="w-10 h-10 flex items-center justify-center 
+                         rounded-lg bg-red-100"
             >
-              <Icon className="w-4 h-4 text-[#E6332A]" />
+              <Icon className="w-5 h-5 text-[#E6332A]" />
             </div>
           );
         })}
       </div>
-
-      {/* TITULO */}
-      <h3 className="font-semibold text-lg mb-1">
-        {lab.name}
-      </h3>
-
-      {/* SUBTITULO */}
-      <p className="text-sm text-slate-500">
-        {lab.subtitle}
-      </p>
     </Link>
   );
 }
