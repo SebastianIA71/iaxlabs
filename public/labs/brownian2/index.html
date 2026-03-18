@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Movimiento Browniano a Modelos de Difusión | Laboratorio GCP</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap');
+body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+.chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 40vh; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 350px; } }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+.gcp-box { background: #1e293b; border: 1px solid #334155; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s; }
+.gcp-box:hover { transform: translateY(-5px); border-color: #06b6d4; }
+</style>
+
+
+<!-- Visualization & Content Choices:
+1. Brownian Motion Simulation -> Goal: Change/Relationships -> Interactive Scatter Plot (Chart.js Canvas) -> Justification: Dynamically shows random walk to teach the physics baseline. NO SVG.
+2. Noise Variance Schedule -> Goal: Change -> Line Chart (Chart.js Canvas) -> Justification: Visualizes the mathematical beta schedule in diffusion models. NO SVG.
+3. GCP Architecture -> Goal: Organize -> HTML/CSS Grid with Unicode arrows -> Justification: Explains cloud components without using prohibited SVG or Mermaid diagrams. NO SVG.
+-->
+
+</head>
+<body class="antialiased overflow-x-hidden">
+
+<nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <span class="font-bold text-xl tracking-wider text-cyan-400">IAxLabs - Mediante la Física 01B</span>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#fisica" class="text-slate-300 hover:text-cyan-400 transition-colors">Física Base</a>
+                <a href="#ia" class="text-slate-300 hover:text-violet-400 transition-colors">Modelos de Difusión</a>
+                <a href="#gcp" class="text-slate-300 hover:text-pink-400 transition-colors">Laboratorio GCP</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<header class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-violet-900/40 via-slate-900 to-slate-900 -z-10"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Del Movimiento Browniano a los <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">Modelos de Difusión</span></h1>
+        <p class="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed">
+            Una inmersión profunda que conecta la termodinámica clásica con la inteligencia artificial generativa moderna, culminando en una arquitectura práctica de laboratorio basada en Google Cloud Platform (GCP).
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-32">
+
+    <section id="fisica" class="scroll-mt-24">
+        <div class="mb-12 text-center md:text-left">
+            <h2 class="text-3xl font-bold text-cyan-400 mb-4">1. El Origen Físico: Caos Cuantificable</h2>
+            <p class="text-slate-300 leading-relaxed max-w-3xl">
+                En 1827, el botánico Robert Brown observó granos de polen suspendidos en agua moviéndose de forma errática. Este fenómeno, más tarde explicado por Albert Einstein, sentó las bases matemáticas para describir sistemas gobernados por la probabilidad y el ruido constante. La ecuación diferencial estocástica (SDE) describe este proceso físico donde las partículas se difunden desde una alta concentración hacia el caos uniforme.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-white">Simulación de Caminata Aleatoria (Random Walk)</h3>
+                    <div class="space-x-2">
+                        <button id="btnStartBrownian" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded text-sm font-semibold transition-colors">&#9654; Iniciar</button>
+                        <button id="btnResetBrownian" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded text-sm font-semibold transition-colors">&#8635; Reiniciar</button>
+                    </div>
+                </div>
+                <div class="chart-container bg-slate-900 rounded-xl border border-slate-800">
+                    <canvas id="brownianChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-400 mt-4 text-center">Visualización interactiva de 50 partículas sometidas a difusión browniana bidimensional a lo largo del tiempo.</p>
+            </div>
+           
+            <div class="space-y-6">
+                <div class="p-6 bg-slate-800 rounded-xl border-l-4 border-cyan-500">
+                    <h4 class="font-bold text-cyan-300 mb-2">Ecuación de Langevin</h4>
+                    <p class="font-mono text-sm bg-slate-900 p-3 rounded text-slate-300 mb-2">dX_t = &mu;(X_t, t)dt + &sigma;(X_t, t)dW_t</p>
+                    <p class="text-sm text-slate-400">Describe el cambio de estado (dX) como una suma de una fuerza determinista (Drift, dt) y una fuerza estocástica (Ruido de Wiener, dW).</p>
+                </div>
+                <div class="p-6 bg-slate-800 rounded-xl border-l-4 border-violet-500">
+                    <h4 class="font-bold text-violet-300 mb-2">Entropía y Destrucción de Información</h4>
+                    <p class="text-sm text-slate-400">A medida que el tiempo avanza, la posición original de las partículas se pierde en el ruido. Esta destrucción natural de información es exactamente lo que la Inteligencia Artificial aprendió a revertir.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ia" class="scroll-mt-24">
+        <div class="mb-12 text-center md:text-left">
+            <h2 class="text-3xl font-bold text-violet-400 mb-4">2. El Puente hacia la IA: Modelos de Difusión</h2>
+            <p class="text-slate-300 leading-relaxed max-w-3xl">
+                Los Modelos Probabilísticos de Difusión de Eliminación de Ruido (DDPMs) toman la ecuación de Langevin y la aplican a los datos (como los píxeles de una imagen). El modelo consta de dos fases: un <strong>Proceso Forward</strong>, que inyecta ruido browniano matemáticamente controlado hasta destruir la imagen, y un <strong>Proceso Reverse</strong>, donde una red neuronal (generalmente una U-Net) aprende a revertir el flujo del tiempo térmico, adivinando y restando el ruido paso a paso.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="order-2 lg:order-1 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-5 border border-slate-700 bg-slate-800/80 rounded-xl">
+                        <div class="text-2xl mb-2">&#8608;</div>
+                        <h4 class="font-bold text-slate-200 mb-1">Proceso Forward (Física)</h4>
+                        <p class="text-xs text-slate-400">Cadena de Markov que añade ruido gaussiano estructurado (q) durante T pasos temporales. No requiere entrenamiento.</p>
+                    </div>
+                    <div class="p-5 border border-violet-500 bg-violet-900/20 rounded-xl">
+                        <div class="text-2xl mb-2 text-violet-400">&#8606;</div>
+                        <h4 class="font-bold text-violet-200 mb-1">Proceso Reverse (IA)</h4>
+                        <p class="text-xs text-violet-300/80">Red Neuronal (p) que estima el gradiente de densidad (score) para "des-difuminar" el ruido y recuperar los datos.</p>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-400 bg-slate-800 p-4 rounded-lg">
+                    El "Cronograma de Ruido" (&beta;) determina cuánta varianza se añade en cada paso. Un cronograma lineal destruye la información rápidamente, mientras que uno tipo coseno es más suave.
+                </p>
+            </div>
+
+            <div class="order-1 lg:order-2 bg-slate-800/50 border border-slate-700 p-6 rounded-2xl">
+                <h3 class="text-xl font-semibold text-white mb-4 text-center">Varianza de Ruido a lo largo de T pasos</h3>
+                <div class="chart-container bg-slate-900 rounded-xl border border-slate-800">
+                    <canvas id="noiseScheduleChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gcp" class="scroll-mt-24">
+        <div class="mb-12 text-center md:text-left">
+            <h2 class="text-3xl font-bold text-pink-500 mb-4">3. Implementación: Laboratorio GCP</h2>
+            <p class="text-slate-300 leading-relaxed max-w-3xl">
+                Para llevar la teoría de la física y las matemáticas a la realidad, requerimos una arquitectura robusta capaz de entrenar una red U-Net sobre millones de imágenes y calcular las funciones de pérdida de difusión estocástica. Google Cloud Platform (GCP) ofrece los componentes de infraestructura necesarios para orquestar este flujo.
+            </p>
+        </div>
+
+        <div class="p-8 bg-slate-900 border border-slate-700 rounded-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 font-bold text-8xl pointer-events-none">GCP</div>
+           
+            <div class="flex flex-col lg:flex-row gap-8 items-stretch justify-center">
+               
+                <div class="gcp-box flex-1 flex flex-col items-center text-center">
+                    <div class="text-4xl text-cyan-400 mb-4">&#9729;</div>
+                    <h4 class="font-bold text-lg text-white mb-2">Cloud Storage</h4>
+                    <p class="text-sm text-slate-400 mb-4">Almacenamiento del Dataset de imágenes limpias. Actúa como el punto de partida (t=0) para nuestro proceso Forward.</p>
+                    <div class="mt-auto w-full bg-slate-800 p-2 rounded text-xs font-mono text-cyan-300">gs://diffusion-lab-data</div>
+                </div>
+
+                <div class="flex items-center justify-center lg:rotate-0 rotate-90 text-2xl text-slate-500 font-bold">&#10230;</div>
+
+                <div class="gcp-box flex-1 flex flex-col items-center text-center border-violet-500/50">
+                    <div class="text-4xl text-violet-400 mb-4">&#9881;</div>
+                    <h4 class="font-bold text-lg text-white mb-2">Vertex AI Training</h4>
+                    <p class="text-sm text-slate-400 mb-4">Clústeres con aceleradores NVIDIA A100. Aquí ejecutamos TensorFlow/PyTorch para entrenar la U-Net en la tarea de predicción de ruido estocástico.</p>
+                    <div class="mt-auto w-full bg-violet-900/30 p-2 rounded text-xs font-mono text-violet-300">Custom Training Job (GPU)</div>
+                </div>
+
+                <div class="flex items-center justify-center lg:rotate-0 rotate-90 text-2xl text-slate-500 font-bold">&#10230;</div>
+
+                <div class="gcp-box flex-1 flex flex-col items-center text-center">
+                    <div class="text-4xl text-pink-500 mb-4">&#10111;</div>
+                    <h4 class="font-bold text-lg text-white mb-2">Vertex AI Endpoints</h4>
+                    <p class="text-sm text-slate-400 mb-4">Despliegue del modelo entrenado. Recibe un tensor de ruido gaussiano puro y ejecuta el ciclo de Inferencia iterativa para generar la imagen final.</p>
+                    <div class="mt-auto w-full bg-slate-800 p-2 rounded text-xs font-mono text-pink-300">Online Prediction Endpoint</div>
+                </div>
+
+            </div>
+
+            <div class="mt-12 p-6 bg-slate-800/80 rounded-xl border border-slate-700">
+                <h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2">Flujo de MLOps Propuesto (Vertex Pipelines)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                    <div class="bg-slate-700 p-3 rounded text-sm text-slate-300">1. Ingesta de Datos</div>
+                    <div class="bg-slate-700 p-3 rounded text-sm text-slate-300">2. Generación de Ruido (SDE)</div>
+                    <div class="bg-violet-900/50 border border-violet-500/30 p-3 rounded text-sm text-violet-200">3. Entrenamiento de U-Net</div>
+                    <div class="bg-pink-900/50 border border-pink-500/30 p-3 rounded text-sm text-pink-200">4. Despliegue del Modelo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="border-t border-slate-800 bg-slate-900 mt-20 py-10 text-center">
+    <p class="text-slate-500 text-sm">Desarrollado para propósitos educativos de arquitectura cloud e inteligencia artificial.</p>
+</footer>
+
+<script>
+const formatLabelWrap = (label) => {
+    if (label.length <= 16) return label;
+    const words = label.split(' ');
+    const lines = [];
+    let currentLine = '';
+    words.forEach(word => {
+        if ((currentLine + word).length > 16) {
+            if (currentLine.length > 0) lines.push(currentLine.trim());
+            currentLine = word + ' ';
+        } else {
+            currentLine += word + ' ';
+        }
+    });
+    if (currentLine.trim().length > 0) lines.push(currentLine.trim());
+    return lines;
+};
+
+const commonTooltipOptions = {
+    callbacks: {
+        title: function(tooltipItems) {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        }
+    }
+};
+
+const numParticles = 50;
+let brownianData = Array.from({length: numParticles}, () => ({x: 0, y: 0}));
+let animationId = null;
+
+const ctxBrownian = document.getElementById('brownianChart').getContext('2d');
+const brownianChart = new Chart(ctxBrownian, {
+    type: 'scatter',
+    data: {
+        datasets: [{
+            label: 'Partículas en Fluido',
+            data: brownianData,
+            backgroundColor: '#06b6d4',
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        scales: {
+            x: { min: -50, max: 50, grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
+            y: { min: -50, max: 50, grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }
+        },
+        plugins: {
+            legend: { display: false },
+            tooltip: commonTooltipOptions
+        }
+    }
+});
+
+function randomGaussian() {
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random();
+    while(v === 0) v = Math.random();
+    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+}
+
+function updateBrownian() {
+    brownianData = brownianData.map(p => ({
+        x: p.x + randomGaussian() * 0.8,
+        y: p.y + randomGaussian() * 0.8
+    }));
+    brownianChart.data.datasets[0].data = brownianData;
+    brownianChart.update();
+    animationId = requestAnimationFrame(updateBrownian);
+}
+
+document.getElementById('btnStartBrownian').addEventListener('click', () => {
+    if (!animationId) updateBrownian();
+});
+
+document.getElementById('btnResetBrownian').addEventListener('click', () => {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+    brownianData = Array.from({length: numParticles}, () => ({x: 0, y: 0}));
+    brownianChart.data.datasets[0].data = brownianData;
+    brownianChart.update();
+});
+
+const tSteps = Array.from({length: 20}, (_, i) => (i * 50).toString());
+const linearBeta = tSteps.map((_, i) => 0.0001 + (i / 20) * 0.02);
+const cosineBeta = tSteps.map((_, i) => {
+    const s = 0.008;
+    const t = i / 20;
+    const f = (t + s) / (1 + s) * (Math.PI / 2);
+    return Math.min(1 - Math.cos(f)**2 / Math.cos(s / (1+s) * Math.PI/2)**2, 0.999);
+});
+
+const formattedLabels = tSteps.map(step => formatLabelWrap(`Paso Temporal T=${step}`));
+
+const ctxNoise = document.getElementById('noiseScheduleChart').getContext('2d');
+new Chart(ctxNoise, {
+    type: 'line',
+    data: {
+        labels: formattedLabels,
+        datasets: [
+            {
+                label: 'Cronograma Lineal',
+                data: linearBeta,
+                borderColor: '#ec4899',
+                backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                borderWidth: 2,
+                tension: 0.1,
+                fill: true
+            },
+            {
+                label: 'Cronograma Coseno',
+                data: cosineBeta,
+                borderColor: '#8b5cf6',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                grid: { color: '#1e293b' },
+                ticks: { color: '#64748b', maxRotation: 45, minRotation: 0 }
+            },
+            y: {
+                grid: { color: '#1e293b' },
+                ticks: { color: '#64748b' },
+                title: { display: true, text: 'Varianza (β)', color: '#94a3b8' }
+            }
+        },
+        plugins: {
+            legend: { labels: { color: '#cbd5e1' } },
+            tooltip: commonTooltipOptions
+        }
+    }
+});
+
+document.querySelectorAll('nav a').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        document.querySelector(targetId).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+</script>
+</body>
+</html>

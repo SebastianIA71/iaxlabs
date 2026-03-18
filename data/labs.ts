@@ -8,6 +8,13 @@ export const labs = [
     image: "/icons/waterbrow.JPG", 
   },
   {
+    name: "Del Movimiento Browniano a los Modelos de Difusión",
+    subtitle: "Una inmersión profunda que conecta la termodinámica clásica con la inteligencia artificial generativa moderna",
+    url: "/labs/brownian2",
+    icons: ["physics", "ai"],
+    image: "/icons/waterbrow.JPG", 
+  },
+  {
     name: "Realtime Pipeline",
     subtitle: "Streaming + BigQuery",
     url: "/labs/subpub",
