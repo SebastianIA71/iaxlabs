@@ -1,7 +1,7 @@
 import LabCard from "@/components/LabCard";
 import TopicPipeline from "@/components/TopicPipeline";
 import { labs } from "@/data/labs";
-import { buildTopics } from "@/data/topics";
+import { buildTopics } from "@/data/topics"; // 
 
 // 🔥 FRASES
 const hookPhrases = [
@@ -31,6 +31,16 @@ export default function Showcase() {
   // 🧠 TOPICS DINÁMICOS
   const topics = buildTopics(labs);
 
+  // ✅ FEATURED FIJO (brownian)
+  const featuredTopic = topics.find(t =>
+    t.title.includes("Browniano")
+  );
+
+  const restTopics = topics.filter(t => t !== featuredTopic);
+
+  // ✅ evitar duplicados en grid
+  const standaloneLabs = labs.filter(l => !l.topic);
+
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
 
@@ -56,15 +66,28 @@ export default function Showcase() {
         </p>
       </div>
 
-      {/* 🧠 PIPELINES */}
-      {topics.length > 0 && (
-        <div className="flex flex-col gap-10 mb-16">
-          {topics.map((topic, i) => (
+      {/* 🧠 FEATURED */}
+      {featuredTopic && (
+        <div className="mb-16">
+          <TopicPipeline
+            title={featuredTopic.title}
+            description={featuredTopic.description}
+            steps={featuredTopic.steps}
+            image={featuredTopic.image}
+          />
+        </div>
+      )}
+
+      {/* 🧠 RESTO */}
+      {restTopics.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+          {restTopics.map((topic, i) => (
             <TopicPipeline
               key={i}
               title={topic.title}
               description={topic.description}
               steps={topic.steps}
+              image={topic.image}
             />
           ))}
         </div>
@@ -75,9 +98,9 @@ export default function Showcase() {
         Otros experimentos
       </div>
 
-      {/* GRID ORIGINAL */}
+      {/* GRID SOLO LABS SUELTOS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {labs.map((lab, i) => (
+        {standaloneLabs.map((lab, i) => (
           <LabCard key={i} lab={lab} />
         ))}
       </div>

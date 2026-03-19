@@ -1,5 +1,7 @@
-// data/labs.ts
 export const labs = [
+  // =========================
+  // 🧠 TOPIC 1: BROWNIAN (NO TOCAR)
+  // =========================
   {
     name: "Brownian Style",
     subtitle: "Investigasión a fondo",
@@ -7,7 +9,6 @@ export const labs = [
     icons: ["physics", "ai"],
     image: "/icons/waterbrow.JPG",
 
-    // 🧠 NUEVO
     type: "article",
     topic: "brownian",
     order: 0,
@@ -16,32 +17,15 @@ export const labs = [
   },
   {
     name: "De la Termodinámica a la Generación de Imágenes",
-    subtitle: "Cómo el Movimiento Browniano inspiró los Modelos de Difusión, la tecnología detrás de la IA generativa",
+    subtitle: "Cómo el Movimiento Browniano inspiró los Modelos de Difusión",
     url: "/labs/brownian",
     icons: ["physics", "ai"],
     image: "/icons/waterbrow.JPG",
 
-    // 🧠 NUEVO
-    type: "lab",
-    topic: "brownian",
-    order: 0,
-    topicTitle: "Movimiento Browniano → Modelos de Difusión",
-    topicDescription: "De la física a la IA generativa",
-  },
-  {
-    name: "Del Movimiento Browniano a los Modelos de Difusión",
-    subtitle: "Una inmersión profunda que conecta la termodinámica con la IA generativa",
-    url: "/labs/brownian2",
-    icons: ["physics", "ai"],
-    image: "/icons/waterbrow.JPG",
-
-    // 🧠 NUEVO
     type: "lab",
     topic: "brownian",
     order: 1,
   },
-
-  // 🔜 preparado para crecer
   {
     name: "Q&A Browniano",
     subtitle: "Conceptos clave y preguntas frecuentes",
@@ -52,8 +36,34 @@ export const labs = [
     topic: "brownian",
     order: 2,
   },
+  {
+    name: "Del Movimiento Browniano a los Modelos de Difusión",
+    subtitle: "Conexión profunda con IA generativa",
+    url: "/labs/brownian2",
+    icons: ["physics", "ai"],
+    image: "/icons/waterbrow.JPG",
 
-  // 🔹 independientes (sin topic)
+    type: "lab",
+    topic: "brownian",
+    order: 3,
+  },
+
+  // =========================
+  // ⚡ TOPIC 2: DATA PIPELINES
+  // =========================
+  {
+    name: "Arquitecturas de datos en tiempo real",
+    subtitle: "Streaming moderno y decisiones en vivo",
+    url: "https://sebastian531746.substack.com/",
+    icons: ["data", "cloud"],
+
+    type: "article",
+    topic: "realtime",
+    order: 0,
+    topicTitle: "Realtime Data → Sistemas Inteligentes",
+    topicDescription: "De eventos a decisiones automáticas",
+    image: "/icons/waterbrow.JPG",
+  },
   {
     name: "Realtime Pipeline",
     subtitle: "Streaming + BigQuery",
@@ -61,6 +71,34 @@ export const labs = [
     icons: ["data", "cloud", "code"],
 
     type: "lab",
+    topic: "realtime",
+    order: 1,
+  },
+  {
+    name: "Procesamiento con Pub/Sub",
+    subtitle: "Eventos en flujo continuo",
+    url: "/labs/pubsub",
+    icons: ["cloud", "data"],
+
+    type: "lab",
+    topic: "realtime",
+    order: 2,
+  },
+
+  // =========================
+  // 🤖 TOPIC 3: PROMPT ENGINEERING
+  // =========================
+  {
+    name: "Cómo hablar con modelos",
+    subtitle: "Prompting como disciplina",
+    url: "https://sebastian531746.substack.com/",
+    icons: ["ai"],
+
+    type: "article",
+    topic: "prompting",
+    order: 0,
+    topicTitle: "Prompting → Control de LLMs",
+    topicDescription: "De texto a comportamiento",
   },
   {
     name: "Prompt Lab",
@@ -69,5 +107,53 @@ export const labs = [
     icons: ["ai"],
 
     type: "lab",
+    topic: "prompting",
+    order: 1,
   },
+  {
+    name: "Prompt chaining",
+    subtitle: "Encadenar razonamiento",
+    url: "/labs/prompt-chain",
+    icons: ["ai"],
+
+    type: "lab",
+    topic: "prompting",
+    order: 2,
+  },
+  // =========================
+  // 🧠 TOPIC 4: IA APLICADA (NEGOCIO)
+  // =========================
+  {
+    name: "IA en procesos reales",
+    subtitle: "Más allá del hype",
+    url: "https://sebastian531746.substack.com/",
+    icons: ["ai", "code"],
+
+    type: "article",
+    topic: "applied-ai",
+    order: 0,
+    topicTitle: "IA → Automatización de procesos",
+    topicDescription: "De modelos a impacto real",
+  },
+  {
+    name: "Agentes conversacionales",
+    subtitle: "IA hablando con clientes",
+    url: "/labs/agents",
+    icons: ["ai"],
+
+    type: "lab",
+    topic: "applied-ai",
+    order: 1,
+  },
+  {
+    name: "Automatización con IA",
+    subtitle: "Flujos inteligentes",
+    url: "/labs/automation",
+    icons: ["ai", "code"],
+
+    type: "lab",
+    topic: "applied-ai",
+    order: 2,
+  },
+
 ];
