@@ -1,7 +1,7 @@
 import LabCard from "@/components/LabCard";
 import TopicPipeline from "@/components/TopicPipeline";
 import { labs } from "@/data/labs";
-import { buildTopics } from "@/data/topics"; // 
+import { buildTopics } from "@/data/topics";
 
 // 🔥 FRASES
 const hookPhrases = [
@@ -28,36 +28,33 @@ const randomPhrase =
 
 export default function Showcase() {
 
-  // 🧠 TOPICS DINÁMICOS
   const topics = buildTopics(labs);
 
-  // ✅ FEATURED FIJO (brownian)
+  // 🔥 FEATURED más robusto
   const featuredTopic = topics.find(t =>
-    t.title.includes("Realtime Data")
+    t.title.toLowerCase().includes("realtime")
   );
 
   const restTopics = topics.filter(t => t !== featuredTopic);
-
-  // ✅ evitar duplicados en grid
   const standaloneLabs = labs.filter(l => !l.topic);
 
   return (
-    <section className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 pt-4 pb-16">
+    <section className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10 pt-6 pb-20">
 
       {/* FRASE */}
-      <div className="mx-auto max-w-2xl mt-6 mb-8">
+      <div className="mx-auto max-w-2xl mt-6 mb-10">
         <div className="flex items-center justify-center rounded-xl
           bg-gradient-to-r from-[#0f172a] via-[#111827] to-[#1e1b4b]
-          px-5 py-3 shadow-md">
+          px-6 py-4 shadow-md">
 
-          <p className="text-center text-lg sm:text-3xl font-medium text-[#E6332A]">
+          <p className="text-center text-xl sm:text-3xl font-medium text-[#E6332A]">
             {randomPhrase}
           </p>
         </div>
       </div>
 
       {/* TITULO */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-14">
         <h2 className="text-3xl font-bold">
           Laboratorios destacados
         </h2>
@@ -68,7 +65,7 @@ export default function Showcase() {
 
       {/* 🧠 FEATURED */}
       {featuredTopic && (
-       <div className="mb-16 max-w-5xl mx-auto">
+        <div className="mb-20 max-w-5xl mx-auto animate-fadeUp">
           <TopicPipeline
             title={featuredTopic.title}
             description={featuredTopic.description}
@@ -80,28 +77,39 @@ export default function Showcase() {
 
       {/* 🧠 RESTO */}
       {restTopics.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
           {restTopics.map((topic, i) => (
-            <TopicPipeline
+            <div
               key={i}
-              title={topic.title}
-              description={topic.description}
-              steps={topic.steps}
-              image={topic.image}
-            />
+              className="animate-fadeUp"
+              style={{ animationDelay: `${i * 0.12}s` }}
+            >
+              <TopicPipeline
+                title={topic.title}
+                description={topic.description}
+                steps={topic.steps}
+                image={topic.image}
+              />
+            </div>
           ))}
         </div>
       )}
 
       {/* 🔽 DIVISOR */}
-      <div className="text-center mb-6 text-sm text-slate-400">
+      <div className="text-center mb-8 text-sm text-slate-400">
         Otros experimentos
       </div>
 
-      {/* GRID SOLO LABS SUELTOS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* GRID SOLO LABS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {standaloneLabs.map((lab, i) => (
-          <LabCard key={i} lab={lab} />
+          <div
+            key={i}
+            className="animate-fadeUp"
+            style={{ animationDelay: `${i * 0.08}s` }}
+          >
+            <LabCard lab={lab} />
+          </div>
         ))}
       </div>
 
