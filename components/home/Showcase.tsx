@@ -1,5 +1,7 @@
 import LabCard from "@/components/LabCard";
+import TopicPipeline from "@/components/TopicPipeline";
 import { labs } from "@/data/labs";
+import { buildTopics } from "@/data/topics";
 
 // 🔥 FRASES
 const hookPhrases = [
@@ -21,15 +23,18 @@ const hookPhrases = [
   "Si no falla, no era interesante."
 ];
 
-// 🎯 RANDOM
 const randomPhrase =
   hookPhrases[Math.floor(Math.random() * hookPhrases.length)];
 
 export default function Showcase() {
+
+  // 🧠 TOPICS DINÁMICOS
+  const topics = buildTopics(labs);
+
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
 
-      {/* 🔥 BLOQUE FRASE */}
+      {/* FRASE */}
       <div className="mx-auto max-w-2xl mt-6 mb-8">
         <div className="flex items-center justify-center rounded-xl
           bg-gradient-to-r from-[#0f172a] via-[#111827] to-[#1e1b4b]
@@ -38,7 +43,6 @@ export default function Showcase() {
           <p className="text-center text-lg sm:text-3xl font-medium text-[#E6332A]">
             {randomPhrase}
           </p>
-
         </div>
       </div>
 
@@ -52,7 +56,26 @@ export default function Showcase() {
         </p>
       </div>
 
-      {/* GRID */}
+      {/* 🧠 PIPELINES */}
+      {topics.length > 0 && (
+        <div className="flex flex-col gap-10 mb-16">
+          {topics.map((topic, i) => (
+            <TopicPipeline
+              key={i}
+              title={topic.title}
+              description={topic.description}
+              steps={topic.steps}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 🔽 DIVISOR */}
+      <div className="text-center mb-6 text-sm text-slate-400">
+        Otros experimentos
+      </div>
+
+      {/* GRID ORIGINAL */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {labs.map((lab, i) => (
           <LabCard key={i} lab={lab} />
