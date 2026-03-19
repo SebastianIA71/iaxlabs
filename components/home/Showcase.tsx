@@ -33,7 +33,7 @@ export default function Showcase() {
 
   // ✅ FEATURED FIJO (brownian)
   const featuredTopic = topics.find(t =>
-    t.title.includes("Browniano")
+    t.title.includes("Realtime Data")
   );
 
   const restTopics = topics.filter(t => t !== featuredTopic);
@@ -42,7 +42,7 @@ export default function Showcase() {
   const standaloneLabs = labs.filter(l => !l.topic);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-16">
+    <section className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 pt-4 pb-16">
 
       {/* FRASE */}
       <div className="mx-auto max-w-2xl mt-6 mb-8">
@@ -68,7 +68,7 @@ export default function Showcase() {
 
       {/* 🧠 FEATURED */}
       {featuredTopic && (
-        <div className="mb-16">
+       <div className="mb-16 max-w-5xl mx-auto">
           <TopicPipeline
             title={featuredTopic.title}
             description={featuredTopic.description}
