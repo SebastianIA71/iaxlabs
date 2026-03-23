@@ -29,7 +29,7 @@ export const labs = [
   {
     name: "Q&A Browniano",
     subtitle: "Conceptos clave y preguntas frecuentes",
-    url: "/labs/brownian-qa",
+    url: "/labs/brownian3",
     icons: ["physics", "ai"],
 
     type: "qa",
@@ -67,7 +67,7 @@ export const labs = [
   {
     name: "Realtime Pipeline",
     subtitle: "Streaming + BigQuery",
-    url: "/labs/subpub",
+    url: "/labs/realtime",
     icons: ["data", "cloud", "code"],
 
     type: "lab",
@@ -77,12 +77,22 @@ export const labs = [
   {
     name: "Procesamiento con Pub/Sub",
     subtitle: "Eventos en flujo continuo",
-    url: "/labs/pubsub",
+    url: "/labs/realtime2",
     icons: ["cloud", "data"],
 
     type: "lab",
     topic: "realtime",
     order: 2,
+  },
+  {
+    name: "Q&A Realtime Data",
+    subtitle: "Conceptos clave y preguntas frecuentes",
+    url: "/labs/realtime3",
+    icons: ["cloud", "data"],
+
+    type: "qa",
+    topic: "realtime",
+    order: 3,
   },
 
   // =========================

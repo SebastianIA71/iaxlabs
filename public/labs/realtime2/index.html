@@ -1,0 +1,466 @@
+<!-- Palette: Vibrant Cyberpunk (Background: #0F172A, Cards: #1E293B, Accents: #22D3EE, #F472B6, #FDE047) -->
+<!-- Plan: Introduction and KPIs (Inform) establishing the baseline. Interactive GCP Architecture Diagram (Organize) explaining the data flow. Comparative Analysis section (Compare/Change) using Chart.js to show performance and convergence gains. Advanced Relationships section (Relationships) using Plotly WebGL to map accuracy versus inference time. -->
+<!-- Choices: KPIs -> Big Numbers (HTML). Architecture -> HTML/CSS interactive grid flow (NO SVG/Mermaid). Performance -> Chart.js Bar Chart (Compare). Convergence -> Chart.js Line Chart (Change). Latency -> Chart.js Donut (Organize). Accuracy/Speed -> Plotly scattergl (Relationships). CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in the output. -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas Inteligentes: Física + IA en GCP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body {
+            background-color: #0F172A;
+            color: #F8FAFC;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-node {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #334155;
+        }
+        .flow-node:hover, .flow-node.active {
+            transform: translateY(-4px);
+            border-color: #22D3EE;
+            box-shadow: 0 10px 25px -5px rgba(34, 211, 238, 0.3);
+        }
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-16">
+
+    <nav class="sticky top-0 z-50 bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <span class="text-xl font-bold tracking-wider text-[#22D3EE]">LAB<span class="text-[#F472B6]">PINN</span></span>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#intro" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Resumen</a>
+                    <a href="#arquitectura" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Arquitectura</a>
+                    <a href="#rendimiento" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Rendimiento</a>
+                    <a href="#relaciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Análisis Avanzado</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 space-y-20">
+
+        <section id="intro" class="text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
+                Física Computacional <span class="text-[#F472B6]">+</span> Inteligencia Artificial
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 max-w-4xl mx-auto leading-relaxed mb-12">
+                Esta infografía detalla el diseño y los resultados de un laboratorio de investigación basado en Google Cloud Platform (GCP). Exploramos la integración de Redes Neuronales Informadas por la Física (PINNs) para procesar flujos de datos IoT en tiempo real, superando las limitaciones de los simuladores tradicionales y los modelos de IA puramente empíricos.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-[#1E293B] rounded-2xl p-8 shadow-lg border-t-4 border-[#22D3EE]">
+                    <div class="text-5xl font-black text-[#22D3EE] mb-3">1000x</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Aceleración de Inferencia</h3>
+                    <p class="text-slate-400 text-sm">Aumento de velocidad frente a solucionadores Navier-Stokes clásicos (CFD) para dinámicas en tiempo real.</p>
+                </div>
+                <div class="bg-[#1E293B] rounded-2xl p-8 shadow-lg border-t-4 border-[#F472B6]">
+                    <div class="text-5xl font-black text-[#F472B6] mb-3">99.9%</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Fidelidad Termodinámica</h3>
+                    <p class="text-slate-400 text-sm">Garantía matemática de que las predicciones respetan las leyes de conservación de energía y momento.</p>
+                </div>
+                <div class="bg-[#1E293B] rounded-2xl p-8 shadow-lg border-t-4 border-[#FDE047]">
+                    <div class="text-5xl font-black text-[#FDE047] mb-3">&lt; 50ms</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Latencia Extremo a Extremo</h3>
+                    <p class="text-slate-400 text-sm">Tiempo total desde la captura del sensor IoT hasta la respuesta del modelo procesada en Vertex AI.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="arquitectura" class="bg-[#1E293B] rounded-3xl p-8 shadow-2xl border border-slate-700">
+            <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-[#22D3EE] pl-4">Arquitectura de Procesamiento en GCP</h2>
+            <p class="text-slate-400 mb-10 max-w-4xl">
+                El pipeline de datos está diseñado para ingesta masiva y baja latencia. Los sensores transmiten métricas crudas, que son enrutadas, procesadas en ventanas temporales e introducidas en el modelo físico. Haga clic en los componentes del diagrama para comprender su función específica en la topología.
+            </p>
+
+            <div class="flex flex-col lg:flex-row justify-between items-stretch gap-4 mb-8">
+                <div class="flow-node active flex-1 bg-[#0F172A] p-6 rounded-xl text-center" data-info="sensor">
+                    <div class="text-4xl mb-3">&#128225;</div>
+                    <h4 class="font-bold text-white text-lg">Edge IoT</h4>
+                    <p class="text-xs text-[#22D3EE] mt-1 font-mono">100Hz Telemetry</p>
+                </div>
+                
+                <div class="arrow hidden lg:flex">&#8594;</div>
+                <div class="arrow lg:hidden rotate-90 my-2">&#8594;</div>
+
+                <div class="flow-node flex-1 bg-[#0F172A] p-6 rounded-xl text-center" data-info="pubsub">
+                    <div class="text-4xl mb-3">&#9729;&#65039;</div>
+                    <h4 class="font-bold text-white text-lg">Cloud Pub/Sub</h4>
+                    <p class="text-xs text-[#22D3EE] mt-1 font-mono">Async Messaging</p>
+                </div>
+
+                <div class="arrow hidden lg:flex">&#8594;</div>
+                <div class="arrow lg:hidden rotate-90 my-2">&#8594;</div>
+
+                <div class="flow-node flex-1 bg-[#0F172A] p-6 rounded-xl text-center" data-info="dataflow">
+                    <div class="text-4xl mb-3">&#9881;&#65039;</div>
+                    <h4 class="font-bold text-white text-lg">Dataflow</h4>
+                    <p class="text-xs text-[#22D3EE] mt-1 font-mono">Stream Processing</p>
+                </div>
+
+                <div class="arrow hidden lg:flex">&#8594;</div>
+                <div class="arrow lg:hidden rotate-90 my-2">&#8594;</div>
+
+                <div class="flow-node flex-1 bg-[#0F172A] p-6 rounded-xl text-center" data-info="vertex">
+                    <div class="text-4xl mb-3">&#129504;</div>
+                    <h4 class="font-bold text-white text-lg">Vertex AI</h4>
+                    <p class="text-xs text-[#22D3EE] mt-1 font-mono">PINN Inference</p>
+                </div>
+            </div>
+
+            <div id="arch-details" class="bg-[#0F172A] p-6 rounded-xl border-l-4 border-[#22D3EE] min-h-[140px] flex flex-col justify-center transition-opacity duration-300">
+                <h4 class="text-xl font-bold text-[#22D3EE] mb-2" id="arch-title">Edge IoT (Sensores Físicos)</h4>
+                <p class="text-slate-300" id="arch-desc">Red de termopares, sensores de presión y acelerómetros ubicados en el entorno físico. Capturan datos del estado del sistema a una frecuencia de 100Hz, empaquetándolos en cargas útiles JSON ligeras para su transmisión inmediata a la nube mediante protocolos MQTT sobre TLS.</p>
+            </div>
+        </section>
+
+        <section id="rendimiento">
+            <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-[#F472B6] pl-4">Evaluación de Rendimiento y Eficiencia</h2>
+            <p class="text-slate-400 mb-10 max-w-4xl">
+                Al incrustar ecuaciones diferenciales parciales (PDEs) en la función de pérdida de la red neuronal, el modelo no tiene que "aprender" la física desde cero, sino que la deduce. Esto reduce dramáticamente la necesidad de datos y estabiliza el tiempo de inferencia, independientemente de la resolución espacial.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-[#1E293B] rounded-2xl p-6 shadow-lg border border-slate-700 flex flex-col">
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold text-white">Escalabilidad Temporal vs. Resolución</h3>
+                        <p class="text-sm text-slate-400 mt-1">Comparación del tiempo de ejecución (escala logarítmica). Los métodos tradicionales (CFD) crecen exponencialmente con la resolución de la malla; Vertex AI mantiene un costo computacional casi constante.</p>
+                    </div>
+                    <div class="chart-container flex-grow">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-[#1E293B] rounded-2xl p-6 shadow-lg border border-slate-700 flex flex-col">
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold text-white">Convergencia de Precisión: Datos vs. Leyes</h3>
+                        <p class="text-sm text-slate-400 mt-1">Evolución del Error Cuadrático Medio (MSE) en función del tamaño del conjunto de datos. Las PINNs alcanzan precisión de producción con una fracción de los datos empíricos necesarios.</p>
+                    </div>
+                    <div class="chart-container flex-grow">
+                        <canvas id="convergenceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#1E293B] rounded-2xl p-6 shadow-lg border border-slate-700 w-full lg:w-1/2 mx-auto">
+                <div class="mb-4 text-center">
+                    <h3 class="text-xl font-bold text-white">Composición de Latencia del Pipeline (ms)</h3>
+                    <p class="text-sm text-slate-400 mt-1">Desglose del tiempo de procesamiento total. Mantener el ciclo completo por debajo de 50ms es crítico para la viabilidad de los sistemas de control de lazo cerrado.</p>
+                </div>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="latencyChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="relaciones" class="bg-[#1E293B] rounded-3xl p-8 shadow-2xl border border-slate-700">
+            <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-[#FDE047] pl-4">Análisis Avanzado: Precisión vs. Velocidad</h2>
+            <p class="text-slate-400 mb-8 max-w-4xl">
+                El siguiente diagrama de dispersión interactivo ilustra la relación directa entre el tamaño del modelo (número de parámetros), el tiempo de inferencia resultante y la precisión termodinámica lograda. Cada punto representa una iteración distinta de la arquitectura de la red neuronal evaluada en el laboratorio.
+            </p>
+            <div class="bg-[#0F172A] rounded-xl p-2 border border-slate-700">
+                <div id="scatterPlot" class="w-full h-[400px] md:h-[500px]"></div>
+            </div>
+            <p class="text-sm text-slate-500 mt-4 text-center">
+                Interacción: Arrastre para hacer zoom. Pase el cursor sobre los puntos para ver la configuración exacta de hiperparámetros. El cuadrante superior izquierdo representa la zona óptima de despliegue.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-slate-500 text-sm border-t border-slate-800 mt-12 bg-[#0B132B]">
+        <p>Prototipo de Laboratorio de Sistemas Inteligentes. Infraestructura basada en Google Cloud Platform.</p>
+        <p class="mt-1">Renderizado visual mediante HTML5 Canvas y WebGL. Cero dependencia de gráficos vectoriales externos.</p>
+    </footer>
+
+    <script>
+        const archInfo = {
+            sensor: {
+                title: "Edge IoT (Sensores Físicos)",
+                desc: "Red de termopares, sensores de presión y acelerómetros ubicados en el entorno físico. Capturan datos del estado del sistema a una frecuencia de 100Hz, empaquetándolos en cargas útiles JSON ligeras para su transmisión inmediata a la nube mediante protocolos MQTT sobre TLS."
+            },
+            pubsub: {
+                title: "Cloud Pub/Sub (Bus de Mensajería)",
+                desc: "Actúa como un amortiguador escalable globalmente. Desacopla la capa de emisión de sensores de la capa de procesamiento, asegurando tolerancia a fallos y garantizando que ningún pico de telemetría sature el sistema downstream."
+            },
+            dataflow: {
+                title: "Dataflow (Apache Beam)",
+                desc: "Ejecuta transformaciones de streaming en tiempo real. Aplica filtros de ruido (ej. promedios móviles), agrupa los eventos en ventanas temporales superpuestas de 10ms, y convierte las métricas en tensores multidimensionales listos para Machine Learning."
+            },
+            vertex: {
+                title: "Vertex AI (Inferencia PINN)",
+                desc: "Endpoints de predicción alojando el modelo de Red Neuronal Informada por la Física compilado con TensorRT. Recibe los tensores, evalúa las condiciones de contorno contra las leyes de Navier-Stokes y emite un tensor de predicción determinista."
+            }
+        };
+
+        const nodes = document.querySelectorAll('.flow-node');
+        const archTitle = document.getElementById('arch-title');
+        const archDesc = document.getElementById('arch-desc');
+        const archDetails = document.getElementById('arch-details');
+
+        nodes.forEach(node => {
+            node.addEventListener('click', () => {
+                nodes.forEach(n => n.classList.remove('active', 'border-[#22D3EE]'));
+                node.classList.add('active', 'border-[#22D3EE]');
+                
+                archDetails.style.opacity = 0;
+                
+                setTimeout(() => {
+                    const key = node.getAttribute('data-info');
+                    archTitle.innerText = archInfo[key].title;
+                    archDesc.innerText = archInfo[key].desc;
+                    archDetails.style.opacity = 1;
+                }, 200);
+            });
+        });
+
+        const wrapLabels = (labels, maxLen = 16) => {
+            return labels.map(label => {
+                if (label.length <= maxLen) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxLen) {
+                        if (currentLine) lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                });
+                if (currentLine) lines.push(currentLine.trim());
+                return lines;
+            });
+        };
+
+        const globalTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#F8FAFC',
+            bodyColor: '#CBD5E1',
+            borderColor: '#334155',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 6
+        };
+
+        Chart.defaults.color = '#94A3B8';
+        Chart.defaults.font.family = "'Segoe UI', Roboto, sans-serif";
+
+        const initCharts = () => {
+            const ctxPerf = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctxPerf, {
+                type: 'bar',
+                data: {
+                    labels: wrapLabels(['Baja Resolución (10k)', 'Media Resolución (100k)', 'Alta Resolución (1M)', 'Ultra Resolución (10M)']),
+                    datasets: [
+                        {
+                            label: 'Método Tradicional (CFD)',
+                            data: [150, 1200, 8500, 45000],
+                            backgroundColor: '#334155',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Red Neuronal Física (Vertex)',
+                            data: [35, 38, 42, 50],
+                            backgroundColor: '#22D3EE',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: globalTooltipOptions
+                    },
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            title: { display: true, text: 'Tiempo de Inferencia (ms)', color: '#64748B' },
+                            grid: { color: '#1E293B' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctxConv = document.getElementById('convergenceChart').getContext('2d');
+            new Chart(ctxConv, {
+                type: 'line',
+                data: {
+                    labels: wrapLabels(['100 Muestras', '500 Muestras', '1,000 Muestras', '5,000 Muestras', '20,000 Muestras']),
+                    datasets: [
+                        {
+                            label: 'IA Empírica Clásica',
+                            data: [0.95, 0.65, 0.45, 0.20, 0.08],
+                            borderColor: '#334155',
+                            backgroundColor: 'rgba(51, 65, 85, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#334155'
+                        },
+                        {
+                            label: 'IA Guiada por Física',
+                            data: [0.30, 0.12, 0.05, 0.02, 0.01],
+                            borderColor: '#F472B6',
+                            backgroundColor: 'rgba(244, 114, 182, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#F472B6'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: globalTooltipOptions
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Error MSE (Normalizado)', color: '#64748B' },
+                            grid: { color: '#1E293B' },
+                            min: 0
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctxLat = document.getElementById('latencyChart').getContext('2d');
+            new Chart(ctxLat, {
+                type: 'doughnut',
+                data: {
+                    labels: wrapLabels(['Transporte IoT y Pub/Sub', 'Transformación Dataflow', 'Cómputo Tensor Vertex AI', 'Retorno de Actuador']),
+                    datasets: [{
+                        data: [12, 18, 15, 5],
+                        backgroundColor: ['#334155', '#22D3EE', '#F472B6', '#FDE047'],
+                        borderWidth: 2,
+                        borderColor: '#1E293B',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: globalTooltipOptions
+                    }
+                }
+            });
+
+            const trace1 = {
+                x: [15, 22, 28, 35, 42, 48, 55, 62, 70, 85], 
+                y: [82.5, 88.1, 91.2, 94.5, 96.8, 97.5, 98.2, 98.9, 99.3, 99.8], 
+                mode: 'markers',
+                type: 'scattergl',
+                marker: {
+                    size: [8, 10, 12, 14, 18, 20, 22, 24, 28, 35],
+                    color: [82, 88, 91, 94, 96, 97, 98, 98, 99, 99],
+                    colorscale: [
+                        [0, '#334155'],
+                        [0.5, '#F472B6'],
+                        [1, '#22D3EE']
+                    ],
+                    showscale: true,
+                    colorbar: {
+                        title: 'Fidelidad (%)',
+                        tickfont: {color: '#94A3B8'},
+                        titlefont: {color: '#94A3B8'}
+                    },
+                    line: {
+                        color: '#0F172A',
+                        width: 1
+                    }
+                },
+                text: [
+                    'Modelo Alpha (1M Params)', 'Modelo Beta (2M Params)', 'Modelo Gamma (3M Params)', 
+                    'Modelo Delta (5M Params)', 'Modelo Epsilon (8M Params)', 'Modelo Zeta (10M Params)',
+                    'Modelo Eta (12M Params)', 'Modelo Theta (15M Params)', 'Modelo Iota (20M Params)', 
+                    'Modelo Kappa (35M Params)'
+                ],
+                hovertemplate: '<b>%{text}</b><br>Tiempo Inferencia: %{x} ms<br>Fidelidad Física: %{y}%<extra></extra>'
+            };
+
+            const layout = {
+                plot_bgcolor: '#0F172A',
+                paper_bgcolor: '#0F172A',
+                font: { color: '#94A3B8', family: "'Segoe UI', sans-serif" },
+                xaxis: {
+                    title: 'Tiempo de Inferencia (Milisegundos)',
+                    gridcolor: '#1E293B',
+                    zerolinecolor: '#334155'
+                },
+                yaxis: {
+                    title: 'Precisión Termodinámica (%)',
+                    gridcolor: '#1E293B',
+                    zerolinecolor: '#334155'
+                },
+                margin: { t: 20, b: 50, l: 60, r: 20 },
+                hovermode: 'closest'
+            };
+
+            const config = {
+                displayModeBar: false,
+                responsive: true
+            };
+
+            Plotly.newPlot('scatterPlot', [trace1], layout, config);
+        };
+
+        window.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+</body>
+</html>

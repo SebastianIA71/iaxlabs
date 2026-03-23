@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificación: Física e IA en Google Cloud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f0f4f8; font-family: 'Inter', sans-serif; }
+        .quiz-card { display: none; }
+        .quiz-card.active { display: block; }
+        .correct { background-color: #d1fae5 !important; border-color: #10b981 !important; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold">Examen de Sistemas Inteligentes</h1>
+            <p class="text-blue-100 mt-2">Física Computacional + Machine Learning en GCP</p>
+            <div class="mt-4 bg-blue-700 rounded-full h-2 w-full overflow-hidden">
+                <div id="progress-bar" class="bg-blue-300 h-full transition-all duration-500" style="width: 3.33%"></div>
+            </div>
+            <p id="question-counter" class="text-sm mt-2 font-mono">Pregunta 1 de 30</p>
+        </div>
+
+        <div id="quiz-container" class="p-6">
+            </div>
+
+        <div class="p-6 border-t border-gray-100 flex justify-between items-center bg-gray-50">
+            <button id="next-btn" onclick="nextQuestion()" class="ml-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-lg font-bold transition">
+                Siguiente Pregunta
+            </button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden max-w-2xl mx-auto mt-10 bg-white p-8 rounded-2xl shadow-xl text-center">
+        <h2 class="text-3xl font-bold text-gray-800">¡Examen Finalizado!</h2>
+        <div class="text-6xl my-6" id="score-emoji">🚀</div>
+        <p class="text-xl">Tu puntuación es: <span id="final-score" class="font-bold text-blue-600">0</span> / 30</p>
+        <button onclick="location.reload()" class="mt-8 bg-gray-800 text-white px-6 py-2 rounded-lg">Reiniciar Intento</button>
+    </div>
+
+    <script>
+        const questions = [
+            // I. FUNDAMENTOS
+            {
+                q: "¿Qué significa el acrónimo PINN?",
+                options: ["Physics-Integrated Neural Network", "Physics-Informed Machine Learning", "Physics-Informed Neural Network", "Parallel Interactive Network Node"],
+                correct: 2
+            },
+            {
+                q: "¿Dónde se inyectan las leyes físicas en una PINN?",
+                options: ["En el dataset de entrada", "En la función de pérdida (Loss Function)", "En la memoria RAM de la GPU", "En el cable de red del sensor"],
+                correct: 1
+            },
+            {
+                q: "¿Qué ventaja principal ofrece una PINN sobre una IA clásica?",
+                options: ["No requiere electricidad", "Garantiza que los resultados respeten las leyes de la física", "Es más lenta pero más bonita", "Solo funciona en Google Cloud"],
+                correct: 1
+            },
+            {
+                q: "En una PINN, ¿qué penaliza la pérdida física (L_physics)?",
+                options: ["El uso excesivo de datos", "Las predicciones que violan las ecuaciones diferenciales", "La latencia de la red", "El coste de Vertex AI"],
+                correct: 1
+            },
+            {
+                q: "¿Qué es un 'Surrogate Model'?",
+                options: ["Un modelo que reemplaza a un humano", "Una aproximación rápida de una simulación física costosa", "Un sensor físico de repuesto", "Un tipo de cableado para IoT"],
+                correct: 1
+            },
+            {
+                q: "¿Cuál es el beneficio de la 'diferenciación automática'?",
+                options: ["Permite calcular derivadas de leyes físicas dentro de la red", "Hace que el código se escriba solo", "Cambia automáticamente entre AWS y GCP", "Limpia los datos de ruido"],
+                correct: 0
+            },
+            {
+                q: "Las PINNs reducen la dependencia de datos en un...",
+                options: ["10%", "25%", "50%", "Hasta un 80% o más"],
+                correct: 3
+            },
+            {
+                q: "¿Qué ecuación describe la dinámica de fluidos común en PINNs?",
+                options: ["Ecuación de Einstein", "Ecuación de Navier-Stokes", "Ley de Ohm", "Ecuación de Schrödinger"],
+                correct: 1
+            },
+            {
+                q: "¿Qué es el 'sesgo inductivo físico'?",
+                options: ["Una preferencia por usar sensores caros", "Restringir el aprendizaje mediante principios científicos", "Un error en la medición de temperatura", "El ruido magnético de la GPU"],
+                correct: 1
+            },
+            {
+                q: "¿Qué permite resolver un 'Problema Inverso' con IA?",
+                options: ["Escribir código de atrás hacia adelante", "Descubrir parámetros físicos ocultos a partir de observaciones", "Reiniciar un servidor caído", "Borrar datos por accidente"],
+                correct: 1
+            },
+            // II. GCP INFRASTRUCTURE
+            {
+                q: "¿Qué servicio de GCP es ideal para recibir datos de sensores a 100Hz?",
+                options: ["Cloud Storage", "Cloud Pub/Sub", "BigQuery", "Compute Engine"],
+                correct: 1
+            },
+            {
+                q: "¿Para qué sirve Cloud Dataflow en este laboratorio?",
+                options: ["Para comprar hardware", "Para preprocesar flujos de datos en tiempo real (ventanas)", "Para hospedar la base de datos SQL", "Para diseñar el logo de la empresa"],
+                correct: 1
+            },
+            {
+                q: "¿Dónde se despliega el modelo PINN para inferencia online?",
+                options: ["Cloud Functions", "Vertex AI Endpoints", "Firebase", "Google Maps API"],
+                correct: 1
+            },
+            {
+                q: "¿Qué hardware de GCP acelera el cálculo de tensores físicos?",
+                options: ["Discos duros SSD", "TPUs y GPUs NVIDIA", "Procesadores Intel Pentium", "Tarjetas de sonido"],
+                correct: 1
+            },
+            {
+                q: "¿Qué herramienta permite analizar petabytes de datos físicos históricos con SQL?",
+                options: ["BigQuery", "Dataproc", "Cloud Run", "Vertex Pipelines"],
+                correct: 0
+            },
+            {
+                q: "¿Qué es el GCP HPC Toolkit?",
+                options: ["Un kit para arreglar ordenadores", "Herramientas para orquestar computación de alto rendimiento", "Un juego de cables para IoT", "Un curso de Python básico"],
+                correct: 1
+            },
+            {
+                q: "¿Cuál es la latencia ideal 'extremo a extremo' para control mecánico?",
+                options: ["< 50 milisegundos", "5 segundos", "1 minuto", "24 horas"],
+                correct: 0
+            },
+            {
+                q: "En Dataflow, ¿qué es 'Windowing'?",
+                options: ["Instalar Windows en la nube", "Agrupar datos por intervalos de tiempo para su análisis", "Limpiar las ventanas del laboratorio", "Una marca de sensores"],
+                correct: 1
+            },
+            {
+                q: "¿Cómo se asegura la comunicación entre el sensor y Pub/Sub?",
+                options: ["Mediante una carta", "Protocolo MQTT con cifrado TLS", "Señal de radio abierta", "Cualquier cable de cobre"],
+                correct: 1
+            },
+            {
+                q: "¿Qué es un 'Digital Twin' en la nube?",
+                options: ["Un hermano gemelo del programador", "Una réplica virtual de un sistema físico que usa IA y datos", "Dos servidores idénticos", "Una copia de seguridad de un archivo"],
+                correct: 1
+            },
+            // III. ANÁLISIS Y CASOS
+            {
+                q: "¿Qué ocurre si el modelo PINN predice algo físicamente imposible?",
+                options: ["El servidor se apaga", "La función de pérdida aumenta y el modelo se autocorrige", "Se ignora el error", "Se avisa a la policía científica"],
+                correct: 1
+            },
+            {
+                q: "¿Por qué usar IA física en Data Centers?",
+                options: ["Para que los servidores hablen", "Para optimizar el enfriamiento y ahorrar energía", "Para que el internet sea más azul", "Para eliminar a los técnicos"],
+                correct: 1
+            },
+            {
+                q: "¿Qué es un 'Real-time Intelligent System'?",
+                options: ["Un sistema que piensa ayer", "Un sistema que procesa datos y actúa al instante", "Un reloj inteligente", "Google Search"],
+                correct: 1
+            },
+            {
+                q: "En aerodinámica, las PINNs ayudan a reducir...",
+                options: ["El peso de los aviones", "El tiempo de túnel de viento computacional", "El número de pasajeros", "El coste del ticket"],
+                correct: 1
+            },
+            {
+                q: "Si la red eléctrica falla, la IA física ayuda a...",
+                options: ["Encender velas", "Predecir y aislar la falla en milisegundos", "Llamar a la compañía", "Apagar todo el país"],
+                correct: 1
+            },
+            {
+                q: "¿Qué framework de Python es popular para PINNs?",
+                options: ["Excel", "DeepXDE", "Photoshop", "WordPress"],
+                correct: 1
+            },
+            {
+                q: "¿Cómo se valida la 'consistencia física'?",
+                options: ["Preguntando a un experto", "Midiendo el residuo de la ecuación diferencial", "Si el modelo es rápido", "Si el gráfico es bonito"],
+                correct: 1
+            },
+            {
+                q: "¿Qué es 'Human-in-the-loop'?",
+                options: ["Un humano atrapado en un cable", "Intervención humana en decisiones críticas de la IA", "Un tipo de procesador", "Correr en círculos"],
+                correct: 1
+            },
+            {
+                q: "¿Qué permite Cloud Run en este contexto?",
+                options: ["Correr por el pasillo", "Hospedar dashboards interactivos en contenedores", "Cargar baterías de sensores", "Minar criptomonedas"],
+                correct: 1
+            },
+            {
+                q: "¿Cuál es el objetivo final del Lab?",
+                options: ["Gastar dinero en la nube", "Crear sistemas autónomos que entiendan la física", "Aprender a escribir HTML", "Sustituir a los ingenieros de hardware"],
+                correct: 1
+            }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+
+        function initQuiz() {
+            const container = document.getElementById('quiz-container');
+            questions.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = `quiz-card ${idx === 0 ? 'active' : ''}`;
+                card.id = `q-${idx}`;
+                
+                card.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-6 text-gray-800">${idx + 1}. ${item.q}</h3>
+                    <div class="space-y-3">
+                        ${item.options.map((opt, oIdx) => `
+                            <button onclick="checkAnswer(${idx}, ${oIdx})" 
+                                    class="w-full text-left p-4 border-2 border-gray-100 rounded-xl hover:bg-blue-50 hover:border-blue-200 transition">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAnswer(qIdx, oIdx) {
+            const card = document.getElementById(`q-${qIdx}`);
+            const buttons = card.querySelectorAll('button');
+            
+            // Deshabilitar otros botones
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (oIdx === questions[qIdx].correct) {
+                buttons[oIdx].classList.add('correct');
+                score++;
+            } else {
+                buttons[oIdx].classList.add('incorrect');
+                buttons[questions[qIdx].correct].classList.add('correct');
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIdx < questions.length - 1) {
+                document.getElementById(`q-${currentIdx}`).classList.remove('active');
+                currentIdx++;
+                document.getElementById(`q-${currentIdx}`).classList.add('active');
+                
+                // Update UI
+                const progress = ((currentIdx + 1) / questions.length) * 100;
+                document.getElementById('progress-bar').style.width = `${progress}%`;
+                document.getElementById('question-counter').innerText = `Pregunta ${currentIdx + 1} de 30`;
+                
+                if (currentIdx === questions.length - 1) {
+                    document.getElementById('next-btn').innerText = "Ver Resultados";
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.querySelector('.max-w-3xl').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+            
+            if (score > 25) {
+                document.getElementById('score-emoji').innerText = "🏆";
+            } else if (score > 15) {
+                document.getElementById('score-emoji').innerText = "🥈";
+            } else {
+                document.getElementById('score-emoji').innerText = "📚";
+            }
+        }
+
+        initQuiz();
+    </script>
+</body>
+</html>

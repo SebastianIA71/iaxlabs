@@ -32,7 +32,7 @@ export default function Showcase() {
 
   // 🔥 FEATURED más robusto
   const featuredTopic = topics.find(t =>
-    t.title.toLowerCase().includes("automatización") 
+    t.title.toLowerCase().includes("realtime") 
   );
 
   const restTopics = topics.filter(t => t !== featuredTopic);

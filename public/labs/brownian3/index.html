@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen: Física Estocástica y Modelos de Difusión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; scroll-behavior: smooth; }
+        h1, h2 { font-family: 'Space Grotesk', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .quiz-option { transition: all 0.2s; cursor: pointer; border: 1px solid #334155; position: relative; overflow: hidden; }
+        .quiz-option:hover { background-color: #1e293b; border-color: #3b82f6; }
+        .correct { background-color: #064e3b !important; border-color: #10b981 !important; color: #d1fae5; }
+        .incorrect { background-color: #7f1d1d !important; border-color: #ef4444 !important; color: #fee2e2; }
+        .disabled { pointer-events: none; opacity: 0.8; }
+        .progress-bar { transition: width 0.4s ease-in-out; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="fixed w-full z-50 glass border-b border-slate-800">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <span class="font-bold text-xl text-cyan-400">IAxLabs <span class="text-white">- Cuestionario 01C</span></span>
+            <div id="progress-text" class="text-sm font-mono text-slate-400">Pregunta 1 de 15</div>
+        </div>
+        <div class="w-full bg-slate-800 h-1">
+            <div id="progress-bar" class="progress-bar bg-cyan-500 h-1" style="width: 0%"></div>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-6 pt-32 pb-20">
+        
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-4">Evaluación Técnica Avanzada</h1>
+            <p class="text-slate-400">Física de Partículas, Modelos de Difusión e Infraestructura de IA.</p>
+        </header>
+
+        <div id="quiz-content" class="space-y-8">
+            </div>
+
+        <div id="results-card" class="hidden mt-12 glass p-10 rounded-3xl text-center border-2 border-cyan-500/30">
+            <h2 class="text-3xl font-bold mb-2">Resultado Final</h2>
+            <div id="final-score" class="text-6xl font-bold text-cyan-400 my-6">0 / 15</div>
+            <p id="performance-msg" class="text-slate-400 mb-8 text-lg"></p>
+            <button onclick="location.reload()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg shadow-cyan-900/20">
+                Reintentar Examen
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        const questions = [
+            {
+                q: "¿Qué propiedad matemática permite que el Proceso Forward sea eficiente sin calcular cada paso intermedio?",
+                options: ["La propiedad de Kernel Gaussiano (suma de varianzas).", "El Teorema de Bayes.", "La Desigualdad de Jensen.", "La Transformada de Fourier."],
+                correct: 0,
+                hint: "Se puede pasar de x0 a xt directamente si conocemos la varianza acumulada."
+            },
+            {
+                q: "En los Modelos de Difusión, ¿qué es el 'Evidence Lower Bound' (ELBO)?",
+                options: ["La velocidad de muestreo.", "Una función de pérdida para optimizar la log-verosimilitud.", "El límite de ruido que una imagen puede soportar.", "La resolución máxima de salida."],
+                correct: 1,
+                hint: "Concepto heredado de los Variational Autoencoders (VAEs)."
+            },
+            {
+                q: "¿Qué red neuronal es el estándar para el proceso de Denoising debido a su capacidad de mantener resoluciones espaciales?",
+                options: ["ResNet-50", "U-Net con bloques de atención", "Transformer puro", "MLP-Mixer"],
+                correct: 1,
+                hint: "Tiene una estructura simétrica de contracción y expansión."
+            },
+            {
+                q: "¿Qué representa matemáticamente el término σ en la ecuación de Langevin?",
+                options: ["La velocidad constante.", "El coeficiente de difusión o intensidad del ruido.", "La dirección del movimiento.", "La masa de la partícula."],
+                correct: 1,
+                hint: "Determina qué tan 'violentos' son los choques aleatorios."
+            },
+            {
+                q: "¿Cuál es la principal diferencia entre un DDPM y un GAN?",
+                options: ["Los GAN son más lentos.", "Los GAN usan dos redes (generador/discriminador), la difusión usa una red de refinamiento.", "La difusión no requiere datos de entrenamiento.", "Los GAN siempre tienen mayor calidad."],
+                correct: 1,
+                hint: "Piensa en el entrenamiento adversarial vs el aprendizaje de score."
+            },
+            {
+                q: "¿Qué sucede con la entropía del sistema durante el Proceso Forward?",
+                options: ["Disminuye gradualmente.", "Se mantiene constante.", "Aumenta hasta alcanzar el máximo caos (ruido blanco).", "Depende del tamaño de la imagen."],
+                correct: 2,
+                hint: "La información se pierde irrevocablemente."
+            },
+            {
+                q: "El concepto de 'Score-based Modeling' se basa en estimar el gradiente de...",
+                options: ["La función de coste.", "El logaritmo de la densidad de probabilidad de los datos.", "Los pesos de la red neuronal.", "La resolución de la imagen."],
+                correct: 1,
+                hint: "Indica hacia dónde moverse para encontrar 'más datos' y 'menos ruido'."
+            },
+            {
+                q: "¿Qué es el 'Classifier-Free Guidance'?",
+                options: ["Un método para acelerar el hardware.", "Una técnica para controlar la generación sin usar una red clasificadora extra.", "Un tipo de almacenamiento en GCP.", "Un error en el proceso de entrenamiento."],
+                correct: 1,
+                hint: "Permite que el modelo siga mejor el 'prompt' del usuario."
+            },
+            {
+                q: "¿Cuál es el propósito del 'Reparameterization Trick'?",
+                options: ["Cambiar el tamaño de la imagen.", "Permitir que el muestreo de una distribución sea diferenciable.", "Aumentar la saturación de los colores.", "Reducir el uso de memoria RAM."],
+                correct: 1,
+                hint: "Esencial para que el gradiente fluya a través de variables aleatorias."
+            },
+            {
+                q: "En física, ¿quién demostró que el movimiento browniano confirmaba la existencia de los átomos?",
+                options: ["Isaac Newton", "Albert Einstein", "James Clerk Maxwell", "Niels Bohr"],
+                correct: 1,
+                hint: "Lo hizo en su 'Annus Mirabilis' de 1905."
+            },
+            {
+                q: "¿Qué término describe el paso de una distribución compleja a una distribución normal simple?",
+                options: ["Normalización", "Difusión", "Convolución", "Atención"],
+                correct: 1,
+                hint: "Es el nombre mismo de la técnica que estamos estudiando."
+            },
+            {
+                q: "¿Qué ventaja tiene Vertex AI Pipelines en este flujo?",
+                options: ["Mejora la resolución de las fotos.", "Automatiza y orquestra el ciclo de vida del experimento de IA.", "Elimina la necesidad de usar Python.", "Reduce el ruido de las imágenes automáticamente."],
+                correct: 1,
+                hint: "MLOps: automatización de flujos de trabajo."
+            },
+            {
+                q: "¿Qué componente de hardware es crítico para la fase de entrenamiento debido a las operaciones matriciales masivas?",
+                options: ["Disco SSD NVMe", "Aceleradores de IA (GPU/TPU)", "Memoria RAM DDR4", "Procesadores ARM"],
+                correct: 1,
+                hint: "Sin esto, el entrenamiento tardaría años."
+            },
+            {
+                q: "¿A qué se refiere el término 'T' en el contexto de pasos temporales de difusión?",
+                options: ["Temperatura del procesador.", "Número total de iteraciones de ruido (usualmente 1000).", "Tiempo de respuesta de la API.", "Tamaño del dataset."],
+                correct: 1,
+                hint: "Es el eje del tiempo estocástico."
+            },
+            {
+                q: "¿Cuál es la principal limitación actual de los modelos de difusión básicos frente a los GAN?",
+                options: ["Baja calidad de imagen.", "Inestabilidad en el entrenamiento.", "Velocidad de inferencia lenta (requiere muchos pasos).", "Necesidad de pocas imágenes."],
+                correct: 2,
+                hint: "Generar una imagen requiere pasar por la red muchas veces (muestreo iterativo)."
+            }
+        ];
+
+        let score = 0;
+        let answeredCount = 0;
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-content');
+            questions.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.className = 'glass p-8 rounded-2xl space-y-4';
+                card.id = `q-card-${i}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-4">
+                        <h3 class="text-xl font-bold leading-tight">${i+1}. ${q.q}</h3>
+                        <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-1 rounded uppercase tracking-tighter shrink-0">Pista: ${q.hint}</span>
+                    </div>
+                    <div class="grid gap-3">
+                        ${q.options.map((opt, oi) => `
+                            <button onclick="handleSelect(${i}, ${oi}, this)" class="quiz-option p-4 rounded-xl text-left text-slate-300 hover:text-white">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.handleSelect = (qIdx, oIdx, btn) => {
+            const isCorrect = oIdx === questions[qIdx].correct;
+            const parent = btn.parentElement;
+            const card = document.getElementById(`q-card-${qIdx}`);
+
+            // Deshabilitar otras opciones
+            Array.from(parent.children).forEach(b => b.classList.add('disabled'));
+            
+            if (isCorrect) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('incorrect');
+                parent.children[questions[qIdx].correct].classList.add('correct');
+            }
+
+            answeredCount++;
+            updateProgress();
+
+            if (answeredCount === questions.length) {
+                showFinalResults();
+            }
+        };
+
+        function updateProgress() {
+            const percent = (answeredCount / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-text').innerText = `Pregunta ${Math.min(answeredCount + 1, 15)} de 15`;
+        }
+
+        function showFinalResults() {
+            document.getElementById('quiz-content').classList.add('hidden');
+            const resCard = document.getElementById('results-card');
+            resCard.classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            
+            let msg = "";
+            if(score === 15) msg = "¡Nivel Experto! Dominas la física y la arquitectura de difusión perfectamente.";
+            else if(score > 10) msg = "¡Excelente trabajo! Tienes una base sólida en modelos estocásticos.";
+            else if(score > 7) msg = "Buen intento. Te recomendamos repasar los conceptos de score-based modeling.";
+            else msg = "Sigue estudiando. La relación entre Langevin y U-Net es la clave.";
+            
+            document.getElementById('performance-msg').innerText = msg;
+            resCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
