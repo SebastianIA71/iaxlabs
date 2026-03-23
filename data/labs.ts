@@ -7,7 +7,7 @@ export const labs = [
     subtitle: "Investigasión a fondo",
     url: "https://sebastian531746.substack.com/",
     icons: ["physics", "ai"],
-    image: "/icons/waterbrow.JPG",
+    image: "/icons/0101brow-fis.JPG",
 
     type: "article",
     topic: "brownian",
@@ -34,7 +34,7 @@ export const labs = [
 
     type: "qa",
     topic: "brownian",
-    order: 2,
+    order: 3,
   },
   {
     name: "Del Movimiento Browniano a los Modelos de Difusión",
@@ -45,7 +45,7 @@ export const labs = [
 
     type: "lab",
     topic: "brownian",
-    order: 3,
+    order: 2,
   },
 
   // =========================
@@ -62,7 +62,7 @@ export const labs = [
     order: 0,
     topicTitle: "Realtime Data → Sistemas Inteligentes",
     topicDescription: "De eventos a decisiones automáticas",
-    image: "/icons/waterbrow.JPG",
+    image: "/icons/0102pip-inf.JPG",
   },
   {
     name: "Realtime Pipeline",
@@ -99,7 +99,7 @@ export const labs = [
     order: 0,
     topicTitle: "Prompting → Control de LLMs",
     topicDescription: "De texto a comportamiento",
-  },
+    },
   {
     name: "Prompt Lab",
     subtitle: "LLM optimization",
@@ -134,6 +134,7 @@ export const labs = [
     order: 0,
     topicTitle: "IA → Automatización de procesos",
     topicDescription: "De modelos a impacto real",
+    image: "/icons/0101aut-inf.JPG",    
   },
   {
     name: "Agentes conversacionales",

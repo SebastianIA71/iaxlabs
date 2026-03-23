@@ -13,7 +13,7 @@
         "href": "/labs"
       },
       {
-        "name": "Experimentos",
+        "name": "Tutoriales",
         "href": "/experiments"
       },
       {
@@ -122,15 +122,18 @@
   },
 
   "Showcase": {
-    "title": "Laboratorios destacados",
-    "description": "Experimentos interactivos y simulaciones que acompañan a los artículos publicados en IAFONT.",
+    "title": "IAxLabs Destacados",
+    "description": "Experimentos interactivos, tutoriales y simulaciones que acompañan a los artículos publicados en IAfont.com",
     "visitSite": "Explorar"
   },
 
   "Submission": {
     "badge": "Propuesta",
-    "title": "Proponer un experimento",
-    "description": "Si tienes una idea de simulación, visualización o experimento relacionado con inteligencia artificial, puedes enviarla para evaluarla.",
+    "title": "Proponer un laboratorio",
+    "description": "Si tienes una idea de simulación, tutorial, 
+    
+    
+    visualización o experimento relacionado con inteligencia artificial, puedes enviarla para evaluarla.",
     "productNameLabel": "Nombre del experimento",
     "productNamePlaceholder": "Simulación de difusión en modelos generativos",
     "productUrlLabel": "Referencia o enlace",

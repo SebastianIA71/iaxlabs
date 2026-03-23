@@ -32,7 +32,7 @@ export default function Showcase() {
 
   // 🔥 FEATURED más robusto
   const featuredTopic = topics.find(t =>
-    t.title.toLowerCase().includes("realtime")
+    t.title.toLowerCase().includes("automatización") 
   );
 
   const restTopics = topics.filter(t => t !== featuredTopic);
@@ -42,12 +42,12 @@ export default function Showcase() {
     <section className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10 pt-6 pb-20">
 
       {/* FRASE */}
-      <div className="mx-auto max-w-2xl mt-6 mb-10">
-        <div className="flex items-center justify-center rounded-xl
+      <div className="w-full mt-6 mb-10 px-4">
+        <div className="w-full rounded-xl
           bg-gradient-to-r from-[#0f172a] via-[#111827] to-[#1e1b4b]
           px-6 py-4 shadow-md">
 
-          <p className="text-center text-xl sm:text-3xl font-medium text-[#E6332A]">
+          <p className="text-center text-xl sm:text-3xl font-bold text-[#E6332A]">
             {randomPhrase}
           </p>
         </div>
@@ -56,10 +56,10 @@ export default function Showcase() {
       {/* TITULO */}
       <div className="text-center mb-14">
         <h2 className="text-3xl font-bold">
-          Laboratorios destacados
+          Publicaciones destacadas
         </h2>
         <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">
-          Experimentos que conectan IA, datos y sistemas reales.
+          Experimentos interactivos, tutoriales y simulaciones que acompañan a los artículos publicados en IAfont.com
         </p>
       </div>
 
