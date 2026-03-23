@@ -130,10 +130,7 @@
   "Submission": {
     "badge": "Propuesta",
     "title": "Proponer un laboratorio",
-    "description": "Si tienes una idea de simulación, tutorial, 
-    
-    
-    visualización o experimento relacionado con inteligencia artificial, puedes enviarla para evaluarla.",
+    "description": "Si tienes una idea de simulación, tutorial, visualización o experimento relacionado con inteligencia artificial, puedes enviarla para evaluarla.",
     "productNameLabel": "Nombre del experimento",
     "productNamePlaceholder": "Simulación de difusión en modelos generativos",
     "productUrlLabel": "Referencia o enlace",
