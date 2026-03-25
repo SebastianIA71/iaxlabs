@@ -52,18 +52,14 @@ export default function LabCard({ lab }: any) {
 
       {/* 🔻 ICONOS ABAJO */}
       <div className="flex justify-center gap-2 mt-6">
-        {lab.icons?.map((key, i) => {
-        const Icon = iconMap[key as keyof typeof iconMap];
-          return (
-            <div
-              key={i}
-              className="w-10 h-10 flex items-center justify-center 
-                         rounded-lg bg-red-100"
-            >
-              <Icon className="w-5 h-5 text-[#E6332A]" />
-            </div>
-          );
-        })}
+{lab.icons?.map((key: string, i: number) => {
+  const Icon = iconMap[key as keyof typeof iconMap];
+  return (
+    <div key={i}>
+      <Icon className="w-5 h-5 text-[#E6332A]" />
+    </div>
+  );
+})}
       </div>
     </Link>
   );
