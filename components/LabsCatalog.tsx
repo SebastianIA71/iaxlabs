@@ -15,7 +15,7 @@ const iconMap = {
 export default function LabsCatalog() {
   const orderedLabs = labs
     .filter((l) => l.slug)
-    .sort((a, b) => a.slug.localeCompare(b.slug));
+    .sort((a, b) => a.slug!.localeCompare(b.slug!));
 
   return (
     <section className="w-full max-w-4xl mx-auto px-6 py-16">
