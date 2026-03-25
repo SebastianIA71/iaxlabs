@@ -1,14 +1,13 @@
 export const labs = [
   // =========================
-  // 🧠 TOPIC 1: BROWNIAN (NO TOCAR)
+  // 🧠 TOPIC 1: BROWNIAN
   // =========================
   {
     name: "Brownian Style",
     subtitle: "Investigasión a fondo",
     url: "https://sebastian531746.substack.com/",
     icons: ["physics", "ai"],
-    image: "/icons/0101brow-fis.JPG",
-
+    image: "/experiments/0001-PH-01-brownian/icon.JPG",
     type: "article",
     topic: "brownian",
     order: 0,
@@ -18,10 +17,9 @@ export const labs = [
   {
     name: "De la Termodinámica a la Generación de Imágenes",
     subtitle: "Cómo el Movimiento Browniano inspiró los Modelos de Difusión",
-    url: "/labs/brownian",
+    slug: "0001-PH-01-brownian",
     icons: ["physics", "ai"],
     image: "/icons/waterbrow.JPG",
-
     type: "lab",
     topic: "brownian",
     order: 1,
@@ -29,9 +27,8 @@ export const labs = [
   {
     name: "Q&A Browniano",
     subtitle: "Conceptos clave y preguntas frecuentes",
-    url: "/labs/brownian3",
+    slug: "0001-PH-03-brownian",
     icons: ["physics", "ai"],
-
     type: "qa",
     topic: "brownian",
     order: 3,
@@ -39,10 +36,9 @@ export const labs = [
   {
     name: "Del Movimiento Browniano a los Modelos de Difusión",
     subtitle: "Conexión profunda con IA generativa",
-    url: "/labs/brownian2",
+    slug: "0001-PH-02-brownian",
     icons: ["physics", "ai"],
     image: "/icons/waterbrow.JPG",
-
     type: "lab",
     topic: "brownian",
     order: 2,
@@ -56,20 +52,18 @@ export const labs = [
     subtitle: "Streaming moderno y decisiones en vivo",
     url: "https://sebastian531746.substack.com/",
     icons: ["data", "cloud"],
-
     type: "article",
     topic: "realtime",
     order: 0,
     topicTitle: "Realtime Data → Sistemas Inteligentes",
     topicDescription: "De eventos a decisiones automáticas",
-    image: "/icons/0102pip-inf.JPG",
+    image: "/experiments/0002-DA-01-realtime/icon.JPG",
   },
   {
     name: "Realtime Pipeline",
     subtitle: "Streaming + BigQuery",
-    url: "/labs/realtime",
+    slug: "0002-DA-01-realtime",
     icons: ["data", "cloud", "code"],
-
     type: "lab",
     topic: "realtime",
     order: 1,
@@ -77,9 +71,8 @@ export const labs = [
   {
     name: "Procesamiento con Pub/Sub",
     subtitle: "Eventos en flujo continuo",
-    url: "/labs/realtime2",
+    slug: "0002-DA-02-realtime",
     icons: ["cloud", "data"],
-
     type: "lab",
     topic: "realtime",
     order: 2,
@@ -87,9 +80,8 @@ export const labs = [
   {
     name: "Q&A Realtime Data",
     subtitle: "Conceptos clave y preguntas frecuentes",
-    url: "/labs/realtime3",
+    slug: "0002-DA-03-realtime",
     icons: ["cloud", "data"],
-
     type: "qa",
     topic: "realtime",
     order: 3,
@@ -103,19 +95,17 @@ export const labs = [
     subtitle: "Prompting como disciplina",
     url: "https://sebastian531746.substack.com/",
     icons: ["ai"],
-
     type: "article",
     topic: "prompting",
     order: 0,
     topicTitle: "Prompting → Control de LLMs",
     topicDescription: "De texto a comportamiento",
-    },
+  },
   {
     name: "Prompt Lab",
     subtitle: "LLM optimization",
-    url: "/labs/prompts",
+    slug: "0003-AI-01-prompting",
     icons: ["ai"],
-
     type: "lab",
     topic: "prompting",
     order: 1,
@@ -123,35 +113,33 @@ export const labs = [
   {
     name: "Prompt chaining",
     subtitle: "Encadenar razonamiento",
-    url: "/labs/prompt-chain",
+    slug: "0003-AI-02-prompting",
     icons: ["ai"],
-
     type: "lab",
     topic: "prompting",
     order: 2,
   },
+
   // =========================
-  // 🧠 TOPIC 4: IA APLICADA (NEGOCIO)
+  // 🧠 TOPIC 4: IA APLICADA
   // =========================
   {
     name: "IA en procesos reales",
     subtitle: "Más allá del hype",
     url: "https://sebastian531746.substack.com/",
     icons: ["ai", "code"],
-
     type: "article",
     topic: "applied-ai",
     order: 0,
     topicTitle: "IA → Automatización de procesos",
     topicDescription: "De modelos a impacto real",
-    image: "/icons/0101aut-inf.JPG",    
+    image: "/experiments/0003-CS-01-automatiz/icon.JPG",
   },
   {
     name: "Agentes conversacionales",
     subtitle: "IA hablando con clientes",
-    url: "/labs/agents",
+    slug: "0004-AI-01-applied",
     icons: ["ai"],
-
     type: "lab",
     topic: "applied-ai",
     order: 1,
@@ -159,12 +147,10 @@ export const labs = [
   {
     name: "Automatización con IA",
     subtitle: "Flujos inteligentes",
-    url: "/labs/automation",
+    slug: "0004-AI-02-applied",
     icons: ["ai", "code"],
-
     type: "lab",
     topic: "applied-ai",
     order: 2,
   },
-
 ];

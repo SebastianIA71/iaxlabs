@@ -5,10 +5,11 @@ import Link from "next/link";
 
 type Step = {
   title: string;
-  href: string;
+  subtitle?: string; // ✅ añadir esto
+  slug?: string;
+  url?: string;
   type: "article" | "lab" | "qa";
   order?: number;
-  status?: "done" | "current" | "next";
 };
 
 type TopicPipelineProps = {
@@ -23,6 +24,10 @@ const iconMap = {
   lab: FlaskConical,
   qa: HelpCircle,
 };
+
+const truncate70 = (text: string, max = 70) =>
+  text.length > max ? text.slice(0, max) + "…" : text;
+
 
 export default function TopicPipeline({
   title,
@@ -81,7 +86,7 @@ export default function TopicPipeline({
 
               {/* Contenido */}
               <Link
-                href={step.href}
+                href={step.slug ? `/labs/${step.slug}` : step.url || "#"}
                 className="flex-1 p-3 rounded-lg border 
                 hover:bg-slate-100 dark:hover:bg-slate-800 
                 hover:border-[#E6332A]/40
@@ -90,7 +95,7 @@ export default function TopicPipeline({
                 <div className="flex items-center justify-between">
 
                   <span className="text-sm font-medium">
-                    {step.title}
+                    {truncate70(`${step.title} — ${step.subtitle || ""}`)}
                   </span>
 
                   <span className="text-[10px] text-slate-400 uppercase">

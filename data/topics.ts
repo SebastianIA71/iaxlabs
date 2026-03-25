@@ -16,7 +16,9 @@ export function buildTopics(labs: any[]) {
 
     map[lab.topic].steps.push({
       title: lab.name,
-      href: lab.url,
+      subtitle: lab.subtitle, // ✅ clave
+      slug: lab.slug,
+      url: lab.url,
       type: lab.type,
       order: lab.order ?? 999,
     });

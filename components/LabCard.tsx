@@ -10,10 +10,15 @@ const iconMap = {
   code: Code,
 };
 
+const truncateCombined = (title: string, subtitle: string, max = 70) => {
+  const full = `${title} ${subtitle}`;
+  return full.length > max ? full.slice(0, max) + "…" : full;
+};
+
 export default function LabCard({ lab }: any) {
   return (
     <Link
-      href={lab.url}
+      href={lab.slug ? `/labs/${lab.slug}` : lab.url}
       className="flex flex-col justify-between h-full
                  rounded-2xl border bg-white/70 dark:bg-slate-900/60 
                  p-6 transition mx-auto max-w-md text-center"
