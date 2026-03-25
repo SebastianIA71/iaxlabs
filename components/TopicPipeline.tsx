@@ -17,7 +17,7 @@ type TopicPipelineProps = {
   description?: string;
   steps: Step[];
   image?: string;
-  featured?: boolean;
+  featured?: boolean; // 👈 clave
 };
 
 const iconMap = {
@@ -94,24 +94,25 @@ export default function TopicPipeline({
                 hover:border-[#E6332A]/40
                 transition-all"
               >
-
                 <div className="flex items-start justify-between gap-2 w-full">
 
                   {/* TEXTO */}
                   <div className="flex-1">
 
-                    {featured && step.subtitle ? (
-                      <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-slate-900 dark:text-slate-200">
-                          {truncate70(step.title)}
-                        </span>
+                      {featured ? (
+                        <span className="text-sm">
+                          <span className="font-semibold text-slate-900 dark:text-slate-200">
+                            {truncate70(step.title)}
+                          </span>
 
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {truncate70(step.subtitle)}
+                          {step.subtitle && (
+                            <span className="text-slate-500 dark:text-slate-400">
+                              {" — "}{truncate70(step.subtitle)}
+                            </span>
+                          )}
                         </span>
-                      </div>
-                    ) : (
-                      <span className="text-sm font-medium text-slate-900 dark:text-slate-200">
+                      ) : (
+                      <span className="text-sm font-normal text-slate-900 dark:text-slate-200">
                         {truncate70(step.title)}
                       </span>
                     )}
@@ -124,7 +125,6 @@ export default function TopicPipeline({
                   </span>
 
                 </div>
-
               </Link>
 
             </div>

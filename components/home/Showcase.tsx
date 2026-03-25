@@ -70,12 +70,13 @@ export default function Showcase() {
       {/* 🧠 FEATURED */}
       {featuredTopic && (
         <div className="mb-20 max-w-5xl mx-auto animate-fadeUp">
-          <TopicPipeline
-            title={featuredTopic.title}
-            description={featuredTopic.description}
-            steps={featuredTopic.steps}
-            image={featuredTopic.image}
-          />
+        <TopicPipeline
+          title={featuredTopic.title}
+          description={featuredTopic.description}
+          steps={featuredTopic.steps}
+          image={featuredTopic.image}
+          featured={true} // 👈 esto activa el modo
+        />
         </div>
       )}
 
