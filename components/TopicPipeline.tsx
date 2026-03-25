@@ -5,7 +5,7 @@ import Link from "next/link";
 
 type Step = {
   title: string;
-  subtitle?: string; // ✅ añadir esto
+  subtitle?: string;
   slug?: string;
   url?: string;
   type: "article" | "lab" | "qa";
@@ -17,6 +17,7 @@ type TopicPipelineProps = {
   description?: string;
   steps: Step[];
   image?: string;
+  featured?: boolean;
 };
 
 const iconMap = {
@@ -28,12 +29,12 @@ const iconMap = {
 const truncate70 = (text: string, max = 70) =>
   text.length > max ? text.slice(0, max) + "…" : text;
 
-
 export default function TopicPipeline({
   title,
   description,
   steps,
-  image, // ✅ usarlo
+  image,
+  featured = false,
 }: TopicPipelineProps) {
 
   const sortedSteps = [...steps].sort(
@@ -43,27 +44,28 @@ export default function TopicPipeline({
   return (
     <div className="w-full h-full rounded-2xl border bg-white/70 dark:bg-slate-900/60 p-6 flex flex-col">
 
-<div className="mb-6 flex flex-col items-center">
+      {/* HEADER */}
+      <div className="mb-6 flex flex-col items-center">
 
-  {image && (
-    <img
-      src={image}
-      alt={title}
-      className="w-12 h-12 rounded-md object-cover mb-2"
-    />
-  )}
+        {image && (
+          <img
+            src={image}
+            alt={title}
+            className="w-12 h-12 rounded-md object-cover mb-2"
+          />
+        )}
 
-  <h3 className="text-lg font-semibold text-center">
-    {title}
-  </h3>
+        <h3 className="text-lg font-semibold text-center">
+          {title}
+        </h3>
 
-  {description && (
-    <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-      {description}
-    </p>
-  )}
+        {description && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+            {description}
+          </p>
+        )}
 
-</div>
+      </div>
 
       {/* PIPELINE */}
       <div className="relative flex flex-col gap-6 flex-1">
@@ -92,22 +94,43 @@ export default function TopicPipeline({
                 hover:border-[#E6332A]/40
                 transition-all"
               >
-                <div className="flex items-center justify-between">
 
-                  <span className="text-sm font-medium">
-                    {truncate70(`${step.title} — ${step.subtitle || ""}`)}
-                  </span>
+                <div className="flex items-start justify-between gap-2 w-full">
 
-                  <span className="text-[10px] text-slate-400 uppercase">
+                  {/* TEXTO */}
+                  <div className="flex-1">
+
+                    {featured && step.subtitle ? (
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold text-slate-900 dark:text-slate-200">
+                          {truncate70(step.title)}
+                        </span>
+
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {truncate70(step.subtitle)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-sm font-medium text-slate-900 dark:text-slate-200">
+                        {truncate70(step.title)}
+                      </span>
+                    )}
+
+                  </div>
+
+                  {/* TYPE */}
+                  <span className="text-[10px] text-slate-400 uppercase mt-1 shrink-0">
                     {step.type}
                   </span>
 
                 </div>
+
               </Link>
 
             </div>
           );
         })}
+
       </div>
     </div>
   );

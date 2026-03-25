@@ -5,7 +5,7 @@ export default function AboutPage() {
       {/* HERO */}
       <div className="mb-16">
         <h1 className="text-4xl font-bold mb-4">
-          Sobre IAXLabs
+          Sobre IAxLabs
         </h1>
 
         <p className="text-lg text-slate-600 dark:text-slate-300">
@@ -25,8 +25,97 @@ export default function AboutPage() {
           Herramientas, demos espectaculares y discursos optimistas que rara vez aterrizan en procesos reales.
         </p>
 
+        <p className="italic">
+          (Pero quedan muy bien en LinkedIn.)
+        </p>
+
         <p>
           Este proyecto busca justo lo contrario: entender qué funciona, qué no, y en qué condiciones.
+        </p>
+      </div>
+
+      {/* BLOQUE ANTI-HYPE */}
+      <div className="space-y-6 mb-16 text-slate-700 dark:text-slate-300 leading-relaxed">
+        <p>
+          “Esto es una locura.”  
+          “Esto lo cambia todo.”  
+          “Este LLM se carga a n8n.”  
+          “Ya no hace falta programar.”  
+          “El prompt es el nuevo código.”
+        </p>
+
+        <p className="italic">
+          (Tranquilo, mañana habrá otro que también lo cambie todo.)
+        </p>
+
+        <p>
+          Este tipo de frases se repiten constantemente.  
+          Cambian los nombres, pero no el patrón.
+        </p>
+
+        <p className="italic">
+          (La narrativa rota cada 3 semanas. El problema sigue igual.)
+        </p>
+
+        <p>
+          Mucho impacto inicial. Poca profundidad.
+        </p>
+
+        <p>
+          Aquí no trabajamos con titulares.  
+          Trabajamos con sistemas.
+        </p>
+
+        <p className="italic">
+          (Más aburrido. Mucho más útil.)
+        </p>
+      </div>
+
+      {/* BLOQUE VISIÓN */}
+      <div className="space-y-6 mb-16 text-slate-700 dark:text-slate-300 leading-relaxed">
+        <h2 className="text-2xl font-semibold">
+          Qué estamos intentando entender realmente
+        </h2>
+
+        <p>
+          La IA no es solo una herramienta más.  
+          Es un cambio de capa.
+        </p>
+
+        <p className="italic">
+          (Y eso no cabe en un tutorial de 10 minutos.)
+        </p>
+
+        <p>
+          Está redefiniendo cómo trabajamos, cómo tomamos decisiones,
+          cómo nos comunicamos y cómo diseñamos sistemas.
+        </p>
+
+        <p>
+          Por eso, este proyecto no se queda en usar herramientas.  
+          Busca entender los fundamentos.
+        </p>
+
+        <p className="italic">
+          (Sí, eso implica pensar un poco más.)
+        </p>
+
+        <p>
+          Física, matemáticas, sistemas, datos.  
+          No como teoría aislada, sino como base para aplicar IA mejor.
+        </p>
+
+        <p className="italic">
+          (Spoiler: la IA no ha sustituido a las matemáticas.)
+        </p>
+
+        <p>
+          Porque lo que viene no es una mejora incremental.  
+          Es un cambio estructural en todas las profesiones.
+        </p>
+
+        <p className="italic">
+          (Incluida la tuya.)
         </p>
       </div>
 
@@ -43,6 +132,10 @@ export default function AboutPage() {
           <li>• Implementaciones sobre cloud (especialmente GCP)</li>
           <li>• Aprendizaje basado en prueba y error</li>
         </ul>
+
+        <p className="italic">
+          (Sí, aquí se rompen cosas.)
+        </p>
       </div>
 
       {/* BLOQUE 3 */}
@@ -55,10 +148,18 @@ export default function AboutPage() {
           La inteligencia artificial no es magia. Es estadística, datos y procesos.
         </p>
 
+        <p className="italic">
+          (Aunque el marketing se esfuerce en lo contrario.)
+        </p>
+
         <p>
-          Sin un objetivo claro, los costes se disparan.
-          Sin integración, las herramientas no aportan valor.
+          Sin un objetivo claro, los costes se disparan.  
+          Sin integración, las herramientas no aportan valor.  
           Sin rediseño de procesos, la adopción fracasa.
+        </p>
+
+        <p className="italic">
+          (Pero al menos tendrás una demo bonita.)
         </p>
 
         <p>
@@ -80,6 +181,10 @@ export default function AboutPage() {
         <p>
           En los últimos años, centrado en inteligencia artificial, automatización y cloud,
           con especial foco en Google Cloud Platform, modelos de IA y sistemas de datos.
+        </p>
+
+        <p className="italic">
+          (Sí, antes de que fuera cool.)
         </p>
 
         <p>
@@ -105,8 +210,12 @@ export default function AboutPage() {
         </ul>
 
         <p>
-          Todo conectado bajo una misma idea:
+          Todo conectado bajo una misma idea:  
           entender la IA desde dentro antes de intentar venderla fuera.
+        </p>
+
+        <p className="italic">
+          (Primero entender. Luego opinar.)
         </p>
       </div>
 
