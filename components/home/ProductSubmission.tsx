@@ -3,11 +3,8 @@
 import { submitProduct } from "@/actions/submission";
 import { Button } from "@/components/ui/button";
 import {
-  AlertCircleIcon,
-  CheckCircleIcon,
-  Loader2,
   Rocket,
-  Send,
+  Send
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -73,65 +70,29 @@ export default function ProductSubmission() {
 
           {/* Right form */}
           <div className="w-full lg:w-[420px]">
-            <form
-              onSubmit={handleSubmit}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 min-h-[220px] flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="productUrl"
-                    className="block text-sm font-medium text-white/90 mb-2"
-                  >
-                    {t("productUrlLabel")}{" "}
-                    <span className="text-red-300">*</span>
-                  </label>
-                  <input
-                    type="url"
-                    id="productUrl"
-                    name="productUrl"
-                    placeholder="https://your-awesome-site.com"
-                    required
-                    className="w-full px-4 py-3 bg-white/20 text-white placeholder-white/50 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-                    disabled={status === "loading"}
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="w-full h-12 bg-white hover:bg-white/90 text-indigo-600 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
-                >
-                  {status === "loading" ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      {t("submitting")}
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Send className="w-4 h-4" />
-                      {t("submit")}
-                    </span>
-                  )}
-                </Button>
+<div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 min-h-[220px] flex flex-col justify-center">
 
-                <div className="flex items-center justify-center min-h-12">
-                  {status === "success" && (
-                    <div className="flex items-start gap-2 text-green-300 text-sm bg-green-500/20 px-4 py-2 rounded-xl w-full">
-                      <CheckCircleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <span className="text-left">{t("successMessage")}</span>
-                    </div>
-                  )}
-                  {status === "error" && (
-                    <div className="flex items-start gap-2 text-red-300 text-sm bg-red-500/20 px-4 py-2 rounded-xl w-full">
-                      <AlertCircleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <span className="text-left break-words w-full">
-                        {errorMessage}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </form>
+  <p className="text-white/80 text-sm mb-6 text-center">
+    {t("ctaDescription")}
+  </p>
+
+  <a
+    href="https://sebastian531746.substack.com/?source=iaxlabs"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Button
+      className="w-full h-12 bg-white hover:bg-white/90 text-indigo-600 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
+    >
+      <span className="flex items-center justify-center gap-2">
+        <Send className="w-4 h-4" />
+        {t("ctaButton")}
+      </span>
+    </Button>
+  </a>
+
+</div>
+
           </div>
         </div>
       </div>

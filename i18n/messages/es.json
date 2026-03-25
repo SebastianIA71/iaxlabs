@@ -86,7 +86,7 @@
     "description": "IAxLabs es el espacio experimental de IAfont. Aquí publicamos simulaciones, experimentos interactivos, pruebas con modelos de IA, visualizaciones matemáticas y exploraciones técnicas.",
 
     "hero": {
-      "badge": "Ver experimentos reales",
+      "badge": "Ver publicaciones destacadas",
       "line1": "Explorando",
       "line2": "Inteligencia Artificial",
       "typewriterWords": [
@@ -130,13 +130,20 @@
   "Submission": {
     "badge": "Propuesta",
     "title": "Proponer un laboratorio",
-    "description": "Si tienes una idea de simulación, tutorial, visualización o experimento relacionado con inteligencia artificial, puedes enviarla para evaluarla.",
+    "description": "¿Tienes una idea que merezca convertirse en laboratorio? Simulaciones, tutoriales o visualizaciones con IA: proponla y la evaluamos para llevarla a laboratorio.",
+    
     "productNameLabel": "Nombre del experimento",
     "productNamePlaceholder": "Simulación de difusión en modelos generativos",
+    
     "productUrlLabel": "Referencia o enlace",
+    
     "submit": "Enviar propuesta",
     "submitting": "Enviando...",
-    "successMessage": "Tu propuesta ha sido recibida.",
-    "errorMessage": "Ha ocurrido un error. Inténtalo de nuevo."
+    
+    "successMessage": "Propuesta recibida. La revisaremos con lupa.",
+    "errorMessage": "Algo no ha ido bien. Inténtalo de nuevo.",
+    
+    "ctaDescription": "Las mejores ideas no se quedan en papel. Se convierten en experimentos.",
+    "ctaButton": "Suscribirme y proponer"
   }
 }

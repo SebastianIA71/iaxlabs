@@ -12,7 +12,7 @@ export function AnimatedBorderButton({
   return (
     <div
       className={cn(
-        "relative inline-flex rounded-full p-[1px] overflow-hidden",
+        "relative inline-flex rounded-full p-[2px] overflow-hidden",
         className
       )}
     >
@@ -20,7 +20,7 @@ export function AnimatedBorderButton({
       <span
         className="
           absolute inset-0
-          bg-[conic-gradient(from_0deg,transparent,rgba(59,130,246,0.8),transparent)]
+          bg-[conic-gradient(from_0deg,transparent,#B79A29,#E6C200,#B79A29,transparent)]
           animate-spin-slow
         "
       />

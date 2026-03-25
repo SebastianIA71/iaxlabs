@@ -39,7 +39,9 @@ export default function Showcase() {
   const standaloneLabs = labs.filter(l => !l.topic);
 
   return (
-    <section className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10 pt-6 pb-20">
+    <section
+        className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10 pt-6 pb-20 scroll-mt-24"
+    >
 
       {/* FRASE */}
       <div className="w-full mt-6 mb-10 px-4">
@@ -54,7 +56,9 @@ export default function Showcase() {
       </div>
 
       {/* TITULO */}
-      <div className="text-center mb-14">
+      <div 
+        id="publicaciones"
+        className="text-center mb-14">
         <h2 className="text-3xl font-bold">
           Publicaciones destacadas
         </h2>
