@@ -47,8 +47,8 @@ export default function LabsCatalog() {
               <div className="w-16 flex justify-center shrink-0">
                 <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-[#E6332A]/10">
                   <div className="flex gap-1">
-                    {lab.icons?.map((key: keyof typeof iconMap, i: number) => {
-                      const Icon = iconMap[key];
+                    {lab.icons?.map((key, i) => {
+                    const Icon = iconMap[key as keyof typeof iconMap];
                       return (
                         <Icon key={i} className="w-5 h-5 text-[#E6332A]" />
                       );

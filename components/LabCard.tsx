@@ -52,8 +52,8 @@ export default function LabCard({ lab }: any) {
 
       {/* 🔻 ICONOS ABAJO */}
       <div className="flex justify-center gap-2 mt-6">
-        {lab.icons?.map((key: keyof typeof iconMap, i: number) => {
-          const Icon = iconMap[key];
+        {lab.icons?.map((key, i) => {
+        const Icon = iconMap[key as keyof typeof iconMap];
           return (
             <div
               key={i}
