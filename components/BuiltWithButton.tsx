@@ -9,7 +9,7 @@ export default function BuiltWithButton() {
   return (
     <Link
       href="https://nexty.dev"
-      title="Built with NEXTY.DEV"
+      title="Gracias a NEXTY.DEV"
       prefetch={false}
       target="_blank"
       rel="noopener noreferrer"

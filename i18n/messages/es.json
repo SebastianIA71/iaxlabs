@@ -65,7 +65,7 @@
 
     "Newsletter": {
       "title": "Explora nuevas ideas en IA",
-      "description": "Recibe artículos y experimentos sobre inteligencia artificial, física computacional, matemáticas y sistemas complejos.",
+      "description": "Recibe artículos y experimentos sobre novedades en inteligencia artificial, física computacional, matemáticas y sistemas complejos.",
       "defaultErrorMessage": "Introduce un correo válido",
       "successMessage": "Suscripción completada",
       "errorMessage": "La suscripción ha fallado",
@@ -78,7 +78,7 @@
 
   "Home": {
     "title": "",
-    "tagLine": "Laboratorios abiertos sobre inteligencia artificial",
+    "tagLine": "IAxLabs - Laboratorios abiertos sobre inteligencia artificial",
     "description": "IAxLabs es el espacio experimental de IAfont. Aquí publicamos simulaciones, experimentos interactivos, pruebas con modelos de IA, visualizaciones matemáticas y exploraciones técnicas.",
 
     "hero": {
