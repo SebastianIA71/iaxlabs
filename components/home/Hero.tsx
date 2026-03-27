@@ -45,20 +45,25 @@ export default function Hero() {
             {t("hero.line2")}
           </span>
 
-          <div className="flex justify-center">
-            <div className="w-full max-w-[610px] text-center text-3xl sm:text-6xl px-2 leading-tight">
-              mediante{" "}
-              <span className="text-blue-600">
-                <Typewriter
-                  words={words}
-                  typingSpeed={90}
-                  deletingSpeed={50}
-                  pauseTime={1400}
-                />
-              </span>
+            <div className="flex justify-center">
+              <div className="w-full md:w-[610px] text-center md:text-left text-3xl sm:text-6xl px-2 md:px-0">
+                
+                <div className="md:whitespace-nowrap">
+                  mediante{" "}
+                  <span className="text-blue-600 inline-block">
+                    <Typewriter
+                      words={words}
+                      typingSpeed={90}
+                      deletingSpeed={50}
+                      pauseTime={1400}
+                    />
+                  </span>
+                </div>
+
+              </div>
             </div>
-          </div>
         </h1>
+
 
         {/* DESCRIPCIÓN */}
         <p className="mx-auto mt-6 max-w-2xl text-1xl tracking-tight text-slate-700 dark:text-slate-500">
