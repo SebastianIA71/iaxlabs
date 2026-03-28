@@ -5,7 +5,7 @@ export const labs = [
   {
     name: "Brownian Style",
     subtitle: "Investigasión a fondo",
-    url: "https://sebastian531746.substack.com/",
+    url: "https://iafont.substack.com/",
     icons: ["physics", "ai"],
     image: "/experiments/0001-PH-01-brownian/icon.JPG",
     type: "article",
@@ -50,7 +50,7 @@ export const labs = [
   {
     name: "Arquitecturas de datos en tiempo real",
     subtitle: "Streaming moderno y decisiones en vivo",
-    url: "https://sebastian531746.substack.com/",
+    url: "https://iafont.substack.com/",
     icons: ["data", "cloud"],
     type: "article",
     topic: "realtime",
@@ -93,7 +93,7 @@ export const labs = [
   {
     name: "Cómo hablar con modelos",
     subtitle: "Prompting como disciplina",
-    url: "https://sebastian531746.substack.com/",
+    url: "https://iafont.substack.com/",
     icons: ["ai"],
     type: "article",
     topic: "prompting",
@@ -126,7 +126,7 @@ export const labs = [
   {
     name: "IA en procesos reales",
     subtitle: "Más allá del hype",
-    url: "https://sebastian531746.substack.com/",
+    url: "https://iafont.substack.com/",
     icons: ["ai", "code"],
     type: "article",
     topic: "applied-ai",

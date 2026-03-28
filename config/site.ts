@@ -1,41 +1,36 @@
 import { SiteConfig } from "@/types/siteConfig";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nextjsstarter.io";
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://iaxlabs.com";
 
-export const SOURCE_CODE_URL = "https://github.com/weijunext/nextjs-starter";
-export const PRO_VERSION = "https://nexty.dev";
-
-const TWITTER_URL = 'https://x.com/weijunext'
-
-const EMAIL_URL = 'sebastian@iafont.com'
-const GITHUB_URL = 'https://github.com/sebastianIA71'
+export const SUBSTACK_URL = "https://iafont.substack.com";
+export const GITHUB_URL = "https://github.com/SebastianIA71";
 
 export const siteConfig: SiteConfig = {
-  name: "Next.js Starter",
-  tagLine: 'Multilingual Next.js 16 Starter',
+  name: "IAxLabs",
+  tagLine: "Laboratorios abiertos sobre inteligencia artificial",
   description:
-    "A multilingual Next.js 16 starter with built-in i18n support. Launch your global-ready web application with a clean, efficient, and SEO-friendly foundation.",
+    "IAxLabs es el espacio experimental de IAfont. Simulaciones, experimentos interactivos, pruebas con modelos de IA, visualizaciones matemáticas y exploraciones técnicas.",
   url: BASE_URL,
   authors: [
     {
-      name: "weijunext",
-      url: "https://weijunext.com",
+      name: "Sebastián",
+      url: SUBSTACK_URL,
     }
   ],
-  creator: '@weijunext',
+  creator: '@iafont',
   socialLinks: {
-    twitter: TWITTER_URL,
+    twitter: "https://x.com/iafont",
     github: GITHUB_URL,
-    email: EMAIL_URL
+    email: "sebastian@iafont.com"
   },
   themeColors: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-  defaultNextTheme: 'system', // next-theme option: system | dark | light
+  defaultNextTheme: "system",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/logo.png",
-    apple: "/logo.png", // apple-touch-icon.png
+    apple: "/logo.png",
   },
-}
+};
