@@ -1,4 +1,3 @@
-import BuiltWithButton from "@/components/BuiltWithButton";
 import { TwitterX } from "@/components/social-icons/icons";
 import { siteConfig } from "@/config/site";
 import { Link as I18nLink } from "@/i18n/routing";
@@ -58,8 +57,7 @@ export default async function Footer() {
                 )}
               </div>
 
-              <BuiltWithButton />
-            </div>
+              </div>
 
             {/* 2️⃣ PROYECTO */}
             <div className="space-y-4 text-center md:text-center">
@@ -97,7 +95,7 @@ export default async function Footer() {
               </p>
 
               <Link
-                href="https://substack.com"
+                href="https://iafont.substack.com"
                 target="_blank"
                 className="text-sm underline hover:text-white inline-block mt-2"
               >
