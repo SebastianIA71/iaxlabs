@@ -77,7 +77,7 @@ export default function ProductSubmission() {
   </p>
 
   <a
-    href="https://sebastian531746.substack.com/?source=iaxlabs"
+    href="https://iafont.substack.com/?source=iaxlabs"
     target="_blank"
     rel="noopener noreferrer"
   >
