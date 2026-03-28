@@ -1,6 +1,5 @@
 "use client";
 
-import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
@@ -25,7 +24,6 @@ export default function MobileMenu() {
 
   return (
     <div className="flex items-center gap-1 md:hidden font-ui">
-      <LocaleSwitcher />
       <ThemeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger className="p-2">
