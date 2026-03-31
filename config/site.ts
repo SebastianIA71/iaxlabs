@@ -2,7 +2,7 @@ import { SiteConfig } from "@/types/siteConfig";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://iaxlabs.com";
 
-export const SUBSTACK_URL = "https://iafont.substack.com";
+export const SUBSTACK_URL = "https://iafont.com";
 export const GITHUB_URL = "https://github.com/SebastianIA71";
 
 export const siteConfig: SiteConfig = {

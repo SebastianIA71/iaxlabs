@@ -3,8 +3,8 @@
 import { submitProduct } from "@/actions/submission";
 import { Button } from "@/components/ui/button";
 import {
-  Rocket,
-  Send
+    Rocket,
+    Send
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -77,7 +77,7 @@ export default function ProductSubmission() {
   </p>
 
   <a
-    href="https://iafont.substack.com/?source=iaxlabs"
+    href="https://iafont.com/?source=iaxlabs"
     target="_blank"
     rel="noopener noreferrer"
   >

@@ -80,7 +80,7 @@ export default function Hero() {
             asChild
           >
             <Link
-              href="https://iafont.substack.com/account?utm_medium=web&utm_source=custom-footer&next=https%3A%2F%2Fiafont.substack.com%2F"
+              href="https://iafont.com/account?utm_medium=web&utm_source=custom-footer&next=https%3A%2F%2Fiafont.com%2F"
               target="_blank"
               rel="noopener noreferrer"
               title="Suscríbete a IAfont"

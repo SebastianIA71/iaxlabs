@@ -95,7 +95,7 @@ export default async function Footer() {
               </p>
 
               <Link
-                href="https://iafont.substack.com"
+                href="https://iafont.com"
                 target="_blank"
                 className="text-sm underline hover:text-white inline-block mt-2"
               >

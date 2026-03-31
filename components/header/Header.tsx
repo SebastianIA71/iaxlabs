@@ -43,7 +43,7 @@ const Header = () => {
           <HeaderLinks />
 
           <a
-            href="https://iafont.substack.com"
+            href="https://iafont.com"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center ml-2 opacity-80 hover:opacity-100 transition"
