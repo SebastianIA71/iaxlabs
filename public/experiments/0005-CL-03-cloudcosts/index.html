@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Migrar n8n a Cloud Run · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:      #f4f3ef;
+    --bg2:     #ffffff;
+    --bg3:     #eeede9;
+    --bg4:     #e6e5e0;
+    --border:  rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text:    #1a1c22;
+    --text2:   #5a5e6e;
+    --text3:   #9a9eae;
+    --red:     #d93b2a;
+    --red-d:   rgba(217,59,42,0.08);
+    --red-b:   rgba(217,59,42,0.18);
+    --amber:   #c97d10;
+    --amber-d: rgba(201,125,16,0.08);
+    --amber-b: rgba(201,125,16,0.2);
+    --green:   #1a9658;
+    --green-d: rgba(26,150,88,0.08);
+    --green-b: rgba(26,150,88,0.2);
+    --blue:    #2563c4;
+    --blue-d:  rgba(37,99,196,0.08);
+    --blue-b:  rgba(37,99,196,0.2);
+    --mono:    'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    min-height: 100vh;
+    padding: 2rem 1.5rem 5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadein  { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes floatin { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes blink   { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  @keyframes checkpop { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.2)} 100%{transform:scale(1);opacity:1} }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border2);
+  }
+  .lab-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .lab-tag span { color: var(--blue); }
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0;
+  }
+  h1 .accent { color: var(--green); }
+  .subtitle { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+
+  /* ── METRICS ROW ── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  @media(max-width:600px) { .metrics-row { grid-template-columns: repeat(2,1fr); } }
+  .metric-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+  .metric-box.highlight { border-color: var(--green-b); background: var(--green-d); }
+  .m-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 5px; }
+  .m-val   { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); line-height: 1; }
+  .m-val.red   { color: var(--red); }
+  .m-val.green { color: var(--green); }
+  .m-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+  /* ── PROGRESS TRACK ── */
+  .progress-outer { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 1.5rem; }
+  .progress-inner { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.6s ease; }
+
+  /* ── LAYOUT ── */
+  .layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
+  @media(max-width:700px) { .layout { grid-template-columns: 1fr; } }
+
+  /* ── PHASE SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 5px; }
+
+  .phase-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: var(--display);
+  }
+  .phase-btn:hover:not(.locked) { background: var(--bg3); }
+  .phase-btn.active  { background: var(--bg2); border-color: var(--blue-b); }
+  .phase-btn.done    { background: var(--green-d); border-color: var(--green-b); }
+  .phase-btn.locked  { opacity: 0.35; cursor: not-allowed; }
+
+  .phase-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .phase-btn.active .phase-icon  { background: var(--blue-d);  border-color: var(--blue-b);  }
+  .phase-btn.done   .phase-icon  { background: var(--green-d); border-color: var(--green-b); font-size: 12px; animation: checkpop 0.4s ease; }
+
+  .phase-label { font-size: 11px; font-weight: 600; color: var(--text2); line-height: 1.3; }
+  .phase-btn.active .phase-label { color: var(--blue); }
+  .phase-btn.done   .phase-label { color: var(--green); }
+
+  /* ── MAIN PANEL ── */
+  .main-panel { min-width: 0; }
+
+  .step-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 12px;
+    animation: fadein 0.3s ease;
+  }
+
+  .step-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 10px; }
+  .step-title  { font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.3; letter-spacing: -0.01em; }
+  .step-tag    { font-family: var(--mono); font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
+  .tag-info  { background: var(--blue-d);  color: var(--blue);  border: 1px solid var(--blue-b); }
+  .tag-warn  { background: var(--amber-d); color: var(--amber); border: 1px solid var(--amber-b); }
+  .tag-ok    { background: var(--green-d); color: var(--green); border: 1px solid var(--green-b); }
+  .tag-crit  { background: var(--red-d);   color: var(--red);   border: 1px solid var(--red-b); }
+
+  .step-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.75;
+    margin-bottom: 10px;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-wrap {
+    background: #08090c;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .code-titlebar {
+    background: #111318;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .code-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .code-title { font-family: var(--mono); font-size: 10px; color: #3a3f50; margin-left: 6px; letter-spacing: 0.06em; }
+  .code-body {
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.8;
+    color: #9aa0b0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .c-green  { color: #22d47a; }
+  .c-amber  { color: #f5a020; }
+  .c-blue   { color: #4488ff; }
+  .c-red    { color: #ff6060; }
+  .c-gray   { color: #3a3f50; }
+  .c-white  { color: #dde1ed; }
+
+  /* ── QUESTION ── */
+  .question-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .question-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 10px;
+    font-family: var(--mono);
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 8px 10px;
+    border-left: 3px solid var(--border2);
+    line-height: 1.6;
+  }
+
+  .opt-btn {
+    width: 100%; text-align: left; padding: 10px 13px; margin-bottom: 6px;
+    border-radius: 8px; border: 1px solid var(--border2); cursor: pointer;
+    font-size: 12px; font-family: var(--display); line-height: 1.5;
+    background: var(--bg3); color: var(--text2); transition: all 0.15s; display: block;
+  }
+  .opt-btn:hover:not(:disabled) { background: var(--bg4); color: var(--text); border-color: rgba(0,0,0,0.2); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.safe   { background: var(--bg3); border-color: var(--border2); color: var(--text2); }
+  .opt-btn.warn   { background: var(--bg3); border-color: var(--border2); color: var(--text2); }
+  .opt-btn.danger { background: var(--bg3); border-color: var(--border2); color: var(--text2); }
+  .opt-btn.safe:hover:not(:disabled)   { background: var(--bg4); color: var(--text); }
+  .opt-btn.warn:hover:not(:disabled)   { background: var(--bg4); color: var(--text); }
+  .opt-btn.danger:hover:not(:disabled) { background: var(--bg4); color: var(--text); }
+  .opt-btn.selected-ok { background: var(--green-d) !important; border-color: var(--green-b) !important; color: #0f6e3e !important; font-weight: 600; }
+  .opt-btn.selected-ko { background: var(--red-d)   !important; border-color: var(--red-b)   !important; color: #a02a1c !important; font-weight: 600; }
+  .opt-btn.reveal      { opacity: 0.5; }
+
+  .explanation {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.7;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-top: 4px;
+    animation: floatin 0.3s ease;
+  }
+  .exp-ok { background: var(--green-d); color: #0f6e3e; border: 1px solid var(--green-b); }
+  .exp-ko { background: var(--red-d);   color: #a02a1c; border: 1px solid var(--red-b);   }
+
+  /* ── TERMINAL (panel lateral) ── */
+  .terminal-wrap {
+    background: #08090c;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(34,212,122,0.12);
+    margin-top: 12px;
+  }
+  .term-titlebar {
+    background: #111318;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .term-dot-red    { background: #ff5f57; }
+  .term-dot-yellow { background: #ffbd2e; }
+  .term-dot-green  { background: #28c840; }
+  .term-title { font-family: var(--mono); font-size: 10px; color: #3a3f50; margin-left: 6px; letter-spacing: 0.06em; }
+  .terminal {
+    background: #08090c;
+    padding: 0.9rem 1rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #22d47a;
+    height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1a1d24 transparent;
+  }
+  .terminal::-webkit-scrollbar { width: 4px; }
+  .terminal::-webkit-scrollbar-thumb { background: #1a1d24; border-radius: 2px; }
+  .t-r { color: #ff5555; } .t-a { color: #f5a020; } .t-b { color: #4488ff; }
+  .t-g { color: #22d47a; } .t-w { color: #9aa0b0; } .t-gray { color: #3a3f50; }
+  .cursor { animation: blink 1s infinite; }
+  .tline  { animation: fadein 0.25s ease; line-height: 1.7; }
+
+  /* ── COST COMPARISON ── */
+  .cost-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .cost-box {
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    border: 1px solid;
+  }
+  .cost-box.before { background: var(--red-d);   border-color: var(--red-b);   }
+  .cost-box.after  { background: var(--green-d); border-color: var(--green-b); }
+  .cost-box-label  { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
+  .cost-box.before .cost-box-label { color: var(--red); }
+  .cost-box.after  .cost-box-label { color: var(--green); }
+  .cost-box-val    { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cost-box.before .cost-box-val { color: var(--red); }
+  .cost-box.after  .cost-box-val { color: var(--green); }
+  .cost-box-sub    { font-size: 11px; margin-top: 3px; }
+  .cost-box.before .cost-box-sub { color: #a02a1c; }
+  .cost-box.after  .cost-box-sub { color: #0f6e3e; }
+
+  /* ── ACTIONS ── */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .btn {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    padding: 9px 16px; border-radius: 6px; border: 1px solid var(--border2);
+    background: var(--bg2); color: var(--text2); cursor: pointer;
+    text-transform: uppercase; transition: all 0.2s;
+  }
+  .btn:hover { background: var(--bg4); color: var(--text); }
+  .btn.primary { border-color: var(--blue-b); color: var(--blue); background: var(--blue-d); }
+  .btn.primary:hover { background: rgba(37,99,196,0.14); }
+
+  /* ── SUCCESS BANNER ── */
+  .success-banner {
+    background: var(--green-d);
+    border: 1px solid var(--green-b);
+    border-radius: 10px;
+    padding: 1.2rem;
+    animation: fadein 0.4s ease;
+  }
+  .success-title { font-size: 1rem; font-weight: 800; color: var(--green); margin-bottom: 6px; }
+  .success-body  { font-size: 12px; color: #0f6e3e; line-height: 1.7; font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="lab-tag"><span>0005-CL-03</span> · cloud costs</div>
+  <h1>Migrar n8n a <span class="accent">Cloud Run</span></h1>
+  <p class="subtitle">6 fases de migración real. Cada decisión tiene consecuencias.<br>Del gasto pasivo al scale-to-zero en menos de una hora.</p>
+</div>
+
+<div class="metrics-row">
+  <div class="metric-box">
+    <div class="m-label">Coste actual</div>
+    <div class="m-val red">€2.09/mes</div>
+    <div class="m-sub">VM siempre encendida</div>
+  </div>
+  <div class="metric-box highlight">
+    <div class="m-label">Coste objetivo</div>
+    <div class="m-val green">€0.10/mes</div>
+    <div class="m-sub">Cloud Run scale-to-zero</div>
+  </div>
+  <div class="metric-box">
+    <div class="m-label">Fase actual</div>
+    <div class="m-val" id="m-step" style="color:var(--blue)">1 / 6</div>
+    <div class="m-sub" id="m-status">Iniciando</div>
+  </div>
+  <div class="metric-box">
+    <div class="m-label">Ahorro anual</div>
+    <div class="m-val green">€23.88</div>
+    <div class="m-sub">si completas la migración</div>
+  </div>
+</div>
+
+<div class="progress-outer">
+  <div class="progress-inner" id="main-progress" style="width:0%"></div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main-panel">
+    <div id="step-panel"></div>
+    <div class="terminal-wrap">
+      <div class="term-titlebar">
+        <div class="code-dot term-dot-red"></div>
+        <div class="code-dot term-dot-yellow"></div>
+        <div class="code-dot term-dot-green"></div>
+        <span class="term-title">bash — n8n-migration</span>
+      </div>
+      <div class="terminal" id="terminal">
+        <div class="tline t-g">> n8n Migration Lab · iniciado</div>
+        <div class="tline t-gray">> VM: us-central1 · n8n latest · SQLite</div>
+        <div class="tline t-a">> Coste actual: €0.0029/hora en idle</div>
+        <div class="tline t-gray">> Listo para iniciar migración<span class="cursor">_</span></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" onclick="resetLab()">↺ Reiniciar lab</button>
+      <button class="btn" onclick="window.open('https://iafont.com','_blank')">Leer el artículo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PHASES = [
+  { label:'1 · Exportar datos',      icon:'📦' },
+  { label:'2 · Base de datos',       icon:'🗄️' },
+  { label:'3 · Secretos y vars',     icon:'🔐' },
+  { label:'4 · Desplegar Cloud Run', icon:'☁️' },
+  { label:'5 · Triggers y crons',    icon:'⏰' },
+  { label:'6 · Verificar y apagar',  icon:'✅' },
+];
+
+const STEPS = [
+  {
+    phase: 0,
+    title: 'Exportar workflows y credenciales',
+    tag: 'Crítico · hazlo primero',
+    tagClass: 'tag-crit',
+    desc: 'Antes de tocar nada necesitas un backup completo. n8n guarda todo en SQLite en disco de la VM — si la eliminas sin exportar, los datos desaparecen para siempre.',
+    codeTitle: 'bash — vm:us-central1',
+    code: [
+      {t:'# Conectar a la VM via SSH', c:'c-gray'},
+      {t:'ssh usuario@ip-de-tu-vm', c:'c-green'},
+      {t:'', c:''},
+      {t:'# Exportar todos los workflows', c:'c-gray'},
+      {t:'n8n export:workflow \\', c:'c-white'},
+      {t:'  --all \\', c:'c-amber'},
+      {t:'  --output=workflows_backup.json', c:'c-blue'},
+      {t:'', c:''},
+      {t:'# Exportar credenciales', c:'c-gray'},
+      {t:'n8n export:credentials \\', c:'c-white'},
+      {t:'  --all \\', c:'c-amber'},
+      {t:'  --output=credentials_backup.json', c:'c-blue'},
+      {t:'', c:''},
+      {t:'# Dump completo de SQLite', c:'c-gray'},
+      {t:'sqlite3 ~/.n8n/database.sqlite .dump \\', c:'c-white'},
+      {t:'  > n8n_full_backup.sql', c:'c-blue'},
+      {t:'', c:''},
+      {t:'# Copiar a tu máquina local', c:'c-gray'},
+      {t:'gcloud compute scp \\', c:'c-white'},
+      {t:'  usuario@vm:~/workflows_backup.json .', c:'c-blue'},
+    ],
+    question: '¿Qué pasa si eliminas la VM sin exportar primero?',
+    questionSub: 'Tienes 12 workflows activos y 8 credenciales configuradas. Quieres ahorrarte el paso de exportar.',
+    opts: [
+      { t: 'Pierdo todos los workflows, credenciales e historial. No hay recuperación posible.', cls: 'safe', ok: true },
+      { t: 'Los datos quedan en GCP aunque elimine la VM, puedo recuperarlos después desde la consola.', cls: 'danger', ok: false },
+      { t: 'n8n tiene backup automático en la nube, no hace falta exportar manualmente.', cls: 'danger', ok: false },
+    ],
+    exp_ok: '✓ Correcto. Si eliminas la VM, el disco desaparece con ella. No hay recuperación. El backup tarda 2 minutos y evita horas de reconfiguración manual de workflows y credenciales.',
+    exp_ko:  '✗ Incorrecto. El disco de una VM se elimina con ella por defecto. GCP no guarda automáticamente el contenido. Exportar siempre es el primer paso antes de cualquier migración.',
+    logs: [
+      {t:'Conectando a VM us-central1...', c:'b'},
+      {t:'SSH OK · n8n 1.x detectado', c:'g'},
+      {t:'Exportando 12 workflows → workflows_backup.json', c:'g'},
+      {t:'Exportando 8 credenciales → credentials_backup.json', c:'g'},
+      {t:'SQLite dump completo → n8n_full_backup.sql (2.3MB)', c:'g'},
+      {t:'Backup completado. Ahora podemos continuar.', c:'g'},
+    ]
+  },
+  {
+    phase: 1,
+    title: 'Elegir la base de datos externa',
+    tag: 'Prerequisito',
+    tagClass: 'tag-info',
+    desc: 'Cloud Run tiene disco efímero — cada cold start arranca con disco limpio. n8n necesita una BD externa que persista entre arranques. Sin esto, perderías todos los datos en cada reinicio.',
+    codeTitle: 'bash — neon.tech setup',
+    code: [
+      {t:'# Opción recomendada: Neon (PostgreSQL serverless gratuito)', c:'c-gray'},
+      {t:'# 1. Crear cuenta en neon.tech', c:'c-gray'},
+      {t:'# 2. Crear database "n8n"', c:'c-gray'},
+      {t:'# 3. Copiar connection string', c:'c-gray'},
+      {t:'', c:''},
+      {t:'# Variables que necesitarás:', c:'c-gray'},
+      {t:'DB_TYPE', c:'c-amber'},
+      {t:'  =postgresdb', c:'c-blue'},
+      {t:'DB_POSTGRESDB_HOST', c:'c-amber'},
+      {t:'  =ep-xxx.eu-central-1.aws.neon.tech', c:'c-blue'},
+      {t:'DB_POSTGRESDB_DATABASE', c:'c-amber'},
+      {t:'  =n8n', c:'c-blue'},
+      {t:'DB_POSTGRESDB_USER', c:'c-amber'},
+      {t:'  =tu-usuario', c:'c-blue'},
+      {t:'DB_POSTGRESDB_PASSWORD', c:'c-amber'},
+      {t:'  =tu-password  ← va a Secret Manager', c:'c-red'},
+      {t:'DB_POSTGRESDB_SSL', c:'c-amber'},
+      {t:'  =true', c:'c-blue'},
+    ],
+    question: '¿Por qué no podemos seguir usando SQLite en Cloud Run?',
+    questionSub: 'SQLite funciona perfectamente en la VM. ¿Por qué no funcionaría en Cloud Run?',
+    opts: [
+      { t: 'Cloud Run tiene disco efímero: cada cold start arranca con disco limpio. SQLite perdería todos los datos.', cls: 'safe', ok: true },
+      { t: 'SQLite es demasiado lento para Cloud Run, necesitamos algo más potente.', cls: 'danger', ok: false },
+      { t: 'Google no permite SQLite en Cloud Run por razones de licencia.', cls: 'danger', ok: false },
+    ],
+    exp_ok: '✓ Exacto. Cuando Cloud Run escala a cero y vuelve a arrancar, el contenedor es nuevo con disco limpio. Todo lo escrito localmente desaparece. La BD debe vivir fuera del contenedor.',
+    exp_ko:  '✗ El problema no es rendimiento ni licencias. Cloud Run tiene almacenamiento efímero en el contenedor. Sin BD externa, n8n perdería todos sus datos en cada cold start.',
+    logs: [
+      {t:'Creando base de datos en Neon (eu-central-1)...', c:'b'},
+      {t:'DB "n8n" creada · PostgreSQL 16', c:'g'},
+      {t:'Probando conexión: OK (23ms latencia)', c:'g'},
+      {t:'SSL verificado · connection string lista', c:'g'},
+      {t:'BD externa configurada. Siguiente: secretos.', c:'g'},
+    ]
+  },
+  {
+    phase: 2,
+    title: 'Gestionar secretos con Secret Manager',
+    tag: 'Crítico · nunca en claro',
+    tagClass: 'tag-crit',
+    desc: 'Nunca pongas passwords ni claves en variables de entorno de texto plano en Cloud Run — quedan visibles en la consola, en los logs y en el historial de deploys. Usa Secret Manager.',
+    codeTitle: 'bash — gcloud secret manager',
+    code: [
+      {t:'# Crear secretos en Secret Manager', c:'c-gray'},
+      {t:'echo "tu-db-password" | \\', c:'c-white'},
+      {t:'  gcloud secrets create n8n-db-password \\', c:'c-white'},
+      {t:'  --data-file=-', c:'c-amber'},
+      {t:'', c:''},
+      {t:'# CRÍTICO: la encryption key protege todas las credenciales', c:'c-red'},
+      {t:'openssl rand -hex 32 | \\', c:'c-white'},
+      {t:'  gcloud secrets create n8n-encryption-key \\', c:'c-white'},
+      {t:'  --data-file=-', c:'c-amber'},
+      {t:'', c:''},
+      {t:'# Dar acceso al service account de Cloud Run', c:'c-gray'},
+      {t:'gcloud secrets add-iam-policy-binding \\', c:'c-white'},
+      {t:'  n8n-encryption-key \\', c:'c-amber'},
+      {t:'  --member="serviceAccount:..." \\', c:'c-blue'},
+      {t:'  --role="roles/secretmanager.secretAccessor"', c:'c-blue'},
+      {t:'', c:''},
+      {t:'# En el deploy se referencian así (no en texto plano):', c:'c-gray'},
+      {t:'--set-secrets "N8N_ENCRYPTION_KEY=n8n-encryption-key:latest"', c:'c-green'},
+    ],
+    question: '¿Qué ocurre si cambias la N8N_ENCRYPTION_KEY después de tener credenciales guardadas?',
+    questionSub: 'Tienes 8 credenciales configuradas (APIs, webhooks, bases de datos). Cambias la ENCRYPTION_KEY por una nueva.',
+    opts: [
+      { t: 'Todas las credenciales quedan corruptas e inutilizables. Hay que reconfigurarlas todas manualmente.', cls: 'safe', ok: true },
+      { t: 'n8n re-encripta automáticamente las credenciales existentes con la nueva clave.', cls: 'danger', ok: false },
+      { t: 'Solo afecta a las credenciales creadas antes del cambio, las nuevas funcionan bien.', cls: 'warn', ok: false },
+    ],
+    exp_ok: '✓ Correcto y esto es crítico. n8n usa la ENCRYPTION_KEY para encriptar todas las credenciales. Si cambias la clave, no puede desencriptar las existentes. Sin errores visibles — los workflows fallarán silenciosamente al ejecutar.',
+    exp_ko:  '✗ n8n no tiene re-encriptación automática. La ENCRYPTION_KEY es una clave maestra: si la cambias, todas las credenciales existentes son datos corruptos. Genera una vez, guarda en Secret Manager, nunca cambies.',
+    logs: [
+      {t:'Generando encryption key (32 bytes hex)...', c:'b'},
+      {t:'Secret "n8n-encryption-key" creado en Secret Manager', c:'g'},
+      {t:'Secret "n8n-db-password" creado en Secret Manager', c:'g'},
+      {t:'IAM binding configurado para Cloud Run SA', c:'g'},
+      {t:'NOTA: Guarda esta key. Nunca la cambies.', c:'a'},
+    ]
+  },
+  {
+    phase: 3,
+    title: 'Desplegar n8n en Cloud Run',
+    tag: 'El deploy',
+    tagClass: 'tag-info',
+    desc: 'Con la BD y los secretos listos, el deploy es directo. Los parámetros más importantes: min-instances 0 para scale-to-zero real, y max-instances 1 porque n8n no es stateless puro.',
+    codeTitle: 'bash — gcloud run deploy',
+    code: [
+      {t:'gcloud run deploy n8n \\', c:'c-white'},
+      {t:'  --image n8nio/n8n:latest \\', c:'c-blue'},
+      {t:'  --region europe-west1 \\', c:'c-amber'},
+      {t:'  --platform managed \\', c:'c-amber'},
+      {t:'  --port 5678 \\', c:'c-amber'},
+      {t:'  --min-instances 0 \\', c:'c-green'},
+      {t:'  # ↑ scale-to-zero: €0.00 sin tráfico', c:'c-gray'},
+      {t:'  --max-instances 1 \\', c:'c-green'},
+      {t:'  # ↑ n8n no es stateless: máximo 1', c:'c-gray'},
+      {t:'  --memory 512Mi \\', c:'c-amber'},
+      {t:'  --cpu 1 \\', c:'c-amber'},
+      {t:'  --timeout 3600 \\', c:'c-amber'},
+      {t:'  --set-env-vars "DB_TYPE=postgresdb,\\', c:'c-white'},
+      {t:'    DB_POSTGRESDB_HOST=ep-xxx.neon.tech,\\', c:'c-blue'},
+      {t:'    N8N_HOST=n8n-xxxx.run.app,\\', c:'c-blue'},
+      {t:'    WEBHOOK_URL=https://n8n-xxxx.run.app/" \\', c:'c-blue'},
+      {t:'  --set-secrets "N8N_ENCRYPTION_KEY=...,\\', c:'c-green'},
+      {t:'    DB_POSTGRESDB_PASSWORD=n8n-db-password:latest"', c:'c-green'},
+    ],
+    question: '¿Por qué ponemos --max-instances 1 en lugar de dejar que escale libremente?',
+    questionSub: 'Cloud Run puede escalar a 100 instancias para manejar picos de tráfico. ¿Por qué lo limitamos a 1?',
+    opts: [
+      { t: 'n8n mantiene estado interno y cola de jobs — múltiples instancias causarían ejecuciones duplicadas y conflictos de BD.', cls: 'safe', ok: true },
+      { t: 'Para ahorrar costes. Siempre conviene limitar a 1 instancia máxima en Cloud Run.', cls: 'danger', ok: false },
+      { t: 'Cloud Run solo permite 1 instancia para contenedores con puerto 5678.', cls: 'danger', ok: false },
+    ],
+    exp_ok: '✓ Exacto. n8n no está diseñado para escala horizontal. Tiene una cola interna de jobs y gestiona locks en la BD. Si dos instancias corren simultáneamente, pueden ejecutar el mismo workflow dos veces.',
+    exp_ko:  '✗ El límite es por arquitectura de n8n, no por ahorro ni por restricción de Cloud Run. n8n mantiene estado en memoria y no soporta múltiples instancias en paralelo sin conflictos.',
+    logs: [
+      {t:'Desplegando n8n en europe-west1...', c:'b'},
+      {t:'Pulling imagen n8nio/n8n:latest', c:'b'},
+      {t:'min-instances=0 · scale-to-zero activado', c:'g'},
+      {t:'max-instances=1 · single instance mode', c:'g'},
+      {t:'Secretos montados desde Secret Manager', c:'g'},
+      {t:'Service URL: https://n8n-xxxx-ew.a.run.app', c:'g'},
+      {t:'DEPLOY OK · Cold start estimado: 4-7s', c:'g'},
+    ]
+  },
+  {
+    phase: 4,
+    title: 'Resolver los workflows con cron/schedule',
+    tag: 'Atención',
+    tagClass: 'tag-warn',
+    desc: 'Con scale-to-zero, si n8n está dormido, sus triggers internos de tipo Schedule no se disparan. Hay que elegir entre Cloud Scheduler externo o mantener una instancia mínima caliente.',
+    codeTitle: 'bash — cloud scheduler',
+    code: [
+      {t:'# OPCIÓN A: Cloud Scheduler como trigger externo', c:'c-gray'},
+      {t:'# Convierte el workflow de Schedule a Webhook en n8n', c:'c-gray'},
+      {t:'# Luego crea un job por cada workflow con cron:', c:'c-gray'},
+      {t:'', c:''},
+      {t:'gcloud scheduler jobs create http sync-diario \\', c:'c-white'},
+      {t:'  --schedule="0 9 * * *" \\', c:'c-amber'},
+      {t:'  --uri="https://n8n-xxxx.run.app/webhook/id" \\', c:'c-blue'},
+      {t:'  --http-method=POST \\', c:'c-amber'},
+      {t:'  --location=europe-west1', c:'c-amber'},
+      {t:'# Coste: €0.10/job/mes · 3 jobs = €0.30/mes', c:'c-green'},
+      {t:'', c:''},
+      {t:'# OPCIÓN B: mantener instancia mínima caliente', c:'c-gray'},
+      {t:'# Cambia en el deploy:', c:'c-gray'},
+      {t:'  --min-instances 1', c:'c-white'},
+      {t:'  # Coste adicional: ~€3-5/mes', c:'c-amber'},
+      {t:'  # Ventaja: cero reconfiguración de workflows', c:'c-green'},
+    ],
+    question: 'Tienes 3 workflows con cron diario. ¿Qué estrategia eliges?',
+    questionSub: 'Opción A: Cloud Scheduler + webhooks. Opción B: min-instances=1. Opción C: no hacer nada.',
+    opts: [
+      { t: 'Opción A · Cloud Scheduler: €0.30/mes extra, scale-to-zero real, requiere reconfigurar los 3 workflows.', cls: 'safe', ok: true },
+      { t: 'Opción B · min-instances=1: €3-5/mes extra, cero reconfiguración, pero pierdes el scale-to-zero.', cls: 'warn', ok: true },
+      { t: 'Opción C · no hacer nada: los crons de n8n funcionan aunque la instancia esté a cero.', cls: 'danger', ok: false },
+    ],
+    exp_ok: '✓ Ambas A y B son válidas según el contexto. A es más barata y correcta técnicamente pero requiere trabajo. B es más simple pero pagas por la instancia mínima. La incorrecta es C: los triggers internos de n8n requieren que n8n esté corriendo.',
+    exp_ko:  '✗ Los triggers Schedule de n8n no se disparan si n8n está dormido (scale-to-zero). Debes elegir: Cloud Scheduler externo (barato, algo de trabajo) o min-instances=1 (simple, algo de coste). No hacer nada = crons que nunca se ejecutan.',
+    logs: [
+      {t:'Detectando workflows con Schedule trigger...', c:'b'},
+      {t:'Encontrados: 3 workflows con cron', c:'a'},
+      {t:'Creando Cloud Scheduler job: sync-diario', c:'b'},
+      {t:'Creando Cloud Scheduler job: report-semanal', c:'b'},
+      {t:'Creando Cloud Scheduler job: cleanup-nocturno', c:'b'},
+      {t:'3 jobs creados · Coste: €0.30/mes', c:'g'},
+      {t:'Workflows convertidos a webhook trigger en n8n', c:'g'},
+    ]
+  },
+  {
+    phase: 5,
+    title: 'Verificar, importar y apagar la VM',
+    tag: 'Fase final',
+    tagClass: 'tag-ok',
+    desc: 'El orden importa: verifica primero con ambos sistemas activos, apaga la VM solo cuando estés seguro, y espera antes de eliminarla. Eliminar primero para "forzarte" es la receta para perder datos en producción.',
+    codeTitle: 'bash — verificación y checkout',
+    code: [
+      {t:'# 1. Importar workflows en el nuevo n8n de Cloud Run', c:'c-gray'},
+      {t:'n8n import:workflow \\', c:'c-white'},
+      {t:'  --input=workflows_backup.json', c:'c-blue'},
+      {t:'', c:''},
+      {t:'# 2. Verificar cold start', c:'c-gray'},
+      {t:'curl -w "\\nTiempo: %{time_total}s\\n" \\', c:'c-white'},
+      {t:'  https://n8n-xxxx.run.app/healthz', c:'c-blue'},
+      {t:'', c:''},
+      {t:'# 3. Probar cada workflow crítico manualmente', c:'c-gray'},
+      {t:'', c:''},
+      {t:'# 4. Solo cuando todo está verificado: APAGAR VM', c:'c-gray'},
+      {t:'gcloud compute instances stop mi-vm \\', c:'c-white'},
+      {t:'  --zone=us-central1-a', c:'c-amber'},
+      {t:'# ← stop, no delete. Esperar 1 semana.', c:'c-red'},
+      {t:'', c:''},
+      {t:'# 5. Después de 1 semana sin incidencias:', c:'c-gray'},
+      {t:'gcloud compute instances delete mi-vm \\', c:'c-white'},
+      {t:'  --zone=us-central1-a', c:'c-green'},
+      {t:'# CHECK-OUT COMPLETADO', c:'c-green'},
+    ],
+    question: '¿Cuál es el orden correcto para la fase final?',
+    questionSub: 'Tienes n8n funcionando en Cloud Run. La VM sigue encendida y facturando. ¿Qué haces?',
+    opts: [
+      { t: 'Verificar Cloud Run → probar workflows → apagar VM (stop) → esperar 1 semana → eliminar VM (delete).', cls: 'safe', ok: true },
+      { t: 'Eliminar la VM directamente para forzarme a usar Cloud Run y no tener vuelta atrás.', cls: 'danger', ok: false },
+      { t: 'Apagar VM → importar workflows → verificar. Más rápido y evito pagar los dos a la vez.', cls: 'warn', ok: false },
+    ],
+    exp_ok: '✓ El orden correcto: verificar primero, luego stop (no delete), luego delete después de unos días. Tener ambos activos temporalmente tiene un coste mínimo y te da red de seguridad real.',
+    exp_ko:  '✗ Nunca elimines el sistema origen antes de verificar el destino. La VM con stop mantiene el disco intacto por si necesitas recuperar algo. Delete es irreversible. El coste de tener ambos activos unos días es insignificante comparado con el riesgo.',
+    logs: [
+      {t:'Importando 12 workflows en Cloud Run n8n...', c:'b'},
+      {t:'Todos los workflows importados correctamente', c:'g'},
+      {t:'Probando cold start: 4.2 segundos ✓', c:'g'},
+      {t:'Verificando credenciales: 8/8 operativas ✓', c:'g'},
+      {t:'Disparando test workflows: 3/3 OK ✓', c:'g'},
+      {t:'VM detenida (not deleted — 1 semana de margen)', c:'a'},
+      {t:'MIGRACIÓN COMPLETADA', c:'g'},
+      {t:'€2.09/mes → €0.10/mes · ahorro: €23.88/año', c:'g'},
+      {t:'CHECK-OUT REALIZADO.', c:'g'},
+    ]
+  }
+];
+
+let currentStep  = 0;
+let completedSteps = [];
+let stepAnswered   = {};
+
+function tlog(msg, cls) {
+  const t = document.getElementById('terminal');
+  const d = document.createElement('div');
+  d.className = 'tline t-' + (cls || 'w');
+  d.textContent = '> ' + msg;
+  t.appendChild(d);
+  t.scrollTop = t.scrollHeight;
+}
+
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = '';
+  PHASES.forEach((p, i) => {
+    const done   = completedSteps.includes(i);
+    const active = i === currentStep;
+    const locked = i > currentStep && !done;
+
+    const btn = document.createElement('button');
+    btn.className = 'phase-btn ' + (done ? 'done' : active ? 'active' : locked ? 'locked' : '');
+    btn.disabled  = locked;
+    btn.onclick   = () => { if (!locked) { currentStep = i; renderAll(); } };
+    btn.innerHTML = `
+      <div class="phase-icon">${done ? '✓' : p.icon}</div>
+      <span class="phase-label">${p.label}</span>
+    `;
+    sb.appendChild(btn);
+  });
+}
+
+function renderStep() {
+  const s    = STEPS[currentStep];
+  const done = stepAnswered[currentStep] !== undefined;
+  const panel = document.getElementById('step-panel');
+
+  const codeLines = s.code.map(l =>
+    l.t ? `<span class="${l.c || ''}">${l.t}</span>` : ''
+  ).join('\n');
+
+  panel.innerHTML = `
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-title">${s.title}</div>
+        <span class="step-tag ${s.tagClass}">${s.tag}</span>
+      </div>
+      <div class="step-desc">${s.desc}</div>
+
+      <div class="code-wrap">
+        <div class="code-titlebar">
+          <div class="code-dot" style="background:#ff5f57"></div>
+          <div class="code-dot" style="background:#ffbd2e"></div>
+          <div class="code-dot" style="background:#28c840"></div>
+          <span class="code-title">${s.codeTitle}</span>
+        </div>
+        <div class="code-body">${codeLines}</div>
+      </div>
+
+      <div class="question-label">¿Y tú qué harías?</div>
+      <div class="question-sub">${s.questionSub}</div>
+      <div id="opts-panel"></div>
+    </div>
+  `;
+
+  renderOpts();
+}
+
+function renderOpts() {
+  const s    = STEPS[currentStep];
+  const done = stepAnswered[currentStep] !== undefined;
+  const answered = done ? stepAnswered[currentStep] : null;
+  const panel = document.getElementById('opts-panel');
+  if (!panel) return;
+  panel.innerHTML = '';
+
+  s.opts.forEach((o, oi) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn ' + o.cls;
+    btn.disabled  = done;
+    btn.textContent = o.t;
+
+    if (done) {
+      if (o.ok) btn.classList.add('selected-ok');
+      else if (oi === answered && !o.ok) btn.classList.add('selected-ko');
+      else btn.classList.add('reveal');
+    }
+
+    btn.onclick = () => pickAnswer(oi, o.ok, s);
+    panel.appendChild(btn);
+  });
+
+  if (done) {
+    const wasOk = s.opts[answered] ? s.opts[answered].ok : false;
+    const exp = document.createElement('div');
+    exp.className = 'explanation ' + (wasOk ? 'exp-ok' : 'exp-ko');
+    exp.textContent = wasOk ? s.exp_ok : s.exp_ko;
+    panel.appendChild(exp);
+
+    if (currentStep < STEPS.length - 1) {
+      const nb = document.createElement('button');
+      nb.className = 'opt-btn safe';
+      nb.style.marginTop = '8px';
+      nb.textContent = 'Siguiente fase →';
+      nb.onclick = () => { currentStep++; renderAll(); };
+      panel.appendChild(nb);
+    } else {
+      renderSuccess(panel);
+    }
+  }
+}
+
+function pickAnswer(oi, isOk, s) {
+  stepAnswered[currentStep] = oi;
+  if (!completedSteps.includes(currentStep)) completedSteps.push(currentStep);
+  s.logs.forEach((l, li) => {
+    setTimeout(() => tlog(l.t, l.c), li * 350);
+  });
+  renderAll();
+}
+
+function renderSuccess(panel) {
+  const box = document.createElement('div');
+  box.className = 'success-banner';
+  box.style.marginTop = '12px';
+  box.innerHTML = `
+    <div class="success-title">🎉 Migración completada · check-out realizado</div>
+    <div class="success-body">VM apagada · Cloud Run activo · Scale-to-zero configurado<br>Coste: €2.09/mes → €0.10/mes · Ahorro anual: €23.88<br><br>La nube ya no cobra mientras duermes. Bienvenido al serverless.</div>
+    <div class="cost-compare">
+      <div class="cost-box before">
+        <div class="cost-box-label">Antes · VM always-on</div>
+        <div class="cost-box-val">€2.09</div>
+        <div class="cost-box-sub">por mes · haga o no haga</div>
+      </div>
+      <div class="cost-box after">
+        <div class="cost-box-label">Ahora · Cloud Run</div>
+        <div class="cost-box-val">€0.10</div>
+        <div class="cost-box-sub">por mes · solo cuando ejecuta</div>
+      </div>
+    </div>
+  `;
+  panel.appendChild(box);
+}
+
+function updateMetrics() {
+  const done = completedSteps.length;
+  document.getElementById('m-step').textContent = (currentStep + 1) + ' / 6';
+  document.getElementById('main-progress').style.width = Math.round((done / 6) * 100) + '%';
+  const statuses = ['Iniciando', 'Exportando', 'Config. BD', 'Secretos', 'Desplegando', 'Crons', 'Verificando'];
+  document.getElementById('m-status').textContent = statuses[Math.min(done, statuses.length - 1)];
+}
+
+function renderAll() {
+  renderSidebar();
+  renderStep();
+  updateMetrics();
+}
+
+function resetLab() {
+  currentStep    = 0;
+  completedSteps = [];
+  stepAnswered   = {};
+  document.getElementById('terminal').innerHTML =
+    '<div class="tline t-g">> n8n Migration Lab · reiniciado</div>' +
+    '<div class="tline t-gray">> VM: us-central1 · n8n latest · SQLite<span class="cursor">_</span></div>';
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q&A Cloud Costs · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:      #f4f3ef;
+    --bg2:     #ffffff;
+    --bg3:     #eeede9;
+    --bg4:     #e6e5e0;
+    --border:  rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text:    #1a1c22;
+    --text2:   #5a5e6e;
+    --text3:   #9a9eae;
+    --red:     #d93b2a;
+    --red-d:   rgba(217,59,42,0.07);
+    --red-b:   rgba(217,59,42,0.18);
+    --amber:   #c97d10;
+    --amber-d: rgba(201,125,16,0.07);
+    --amber-b: rgba(201,125,16,0.2);
+    --green:   #1a9658;
+    --green-d: rgba(26,150,88,0.07);
+    --green-b: rgba(26,150,88,0.2);
+    --blue:    #2563c4;
+    --blue-d:  rgba(37,99,196,0.07);
+    --blue-b:  rgba(37,99,196,0.2);
+    --purple:  #6e3fc0;
+    --purple-d:rgba(110,63,192,0.07);
+    --purple-b:rgba(110,63,192,0.2);
+    --mono:    'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    min-height: 100vh;
+    padding: 2rem 1.5rem 5rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadein  { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes floatin { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pop     { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+  @keyframes shake   { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border2);
+  }
+  .lab-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .lab-tag span { color: var(--purple); }
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0;
+  }
+  h1 .accent { color: var(--purple); }
+  .subtitle { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+
+  /* ── SCOREBOARD ── */
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 8px;
+    margin-bottom: 1.2rem;
+  }
+  @media(max-width:560px) { .scoreboard { grid-template-columns: repeat(2,1fr); } }
+  .score-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem 0.9rem;
+  }
+  .score-box.highlight { border-color: var(--purple-b); background: var(--purple-d); }
+  .s-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 5px; }
+  .s-val   { font-family: var(--mono); font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; color: var(--text); }
+  .s-val.green  { color: var(--green); }
+  .s-val.red    { color: var(--red); }
+  .s-val.purple { color: var(--purple); }
+
+  /* ── PROGRESS ── */
+  .progress-outer { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 0.75rem; }
+  .progress-inner { height: 100%; background: var(--purple); border-radius: 2px; transition: width 0.5s ease; }
+  .progress-label { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 1.5rem; display: flex; justify-content: space-between; }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+  .filter-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--text3);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { background: var(--bg3); color: var(--text2); }
+  .filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  /* ── VERDICT BANNER ── */
+  .verdict {
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.2rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+    animation: fadein 0.4s ease;
+    display: none;
+  }
+  .verdict.show { display: block; }
+  .verdict-title { font-size: 14px; font-weight: 800; font-family: var(--display); margin-bottom: 4px; }
+  .v-gold    { background: rgba(201,125,16,0.1); border: 1px solid var(--amber-b); color: #7a4e08; }
+  .v-silver  { background: var(--blue-d);        border: 1px solid var(--blue-b);  color: #1a3a8a; }
+  .v-ok      { background: var(--green-d);       border: 1px solid var(--green-b); color: #0f5e38; }
+  .v-warn    { background: var(--amber-d);       border: 1px solid var(--amber-b); color: #7a4e08; }
+  .v-bad     { background: var(--red-d);         border: 1px solid var(--red-b);   color: #8a1a10; }
+
+  /* ── QUESTION CARDS ── */
+  .q-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    margin-bottom: 10px;
+    transition: border-color 0.3s;
+    animation: fadein 0.25s ease;
+  }
+  .q-card.answered-ok { border-color: var(--green-b); }
+  .q-card.answered-ko { border-color: var(--red-b); }
+  .q-card.hidden { display: none; }
+
+  .q-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .q-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    background: var(--bg3);
+    border-radius: 5px;
+    padding: 3px 7px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-cat {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .cat-costes  { background: var(--red-d);    color: var(--red);    border: 1px solid var(--red-b); }
+  .cat-arch    { background: var(--green-d);  color: var(--green);  border: 1px solid var(--green-b); }
+  .cat-concept { background: var(--blue-d);   color: var(--blue);   border: 1px solid var(--blue-b); }
+  .cat-ops     { background: var(--amber-d);  color: var(--amber);  border: 1px solid var(--amber-b); }
+  .cat-meta    { background: var(--purple-d); color: var(--purple); border: 1px solid var(--purple-b); }
+
+  .q-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.45;
+    flex: 1;
+  }
+
+  .q-status {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-status.ok   { background: var(--green-d); animation: pop 0.4s ease; }
+  .q-status.ko   { background: var(--red-d);   animation: shake 0.4s ease; }
+  .q-status.pending { background: var(--bg3); color: var(--text3); font-size: 10px; font-family: var(--mono); }
+
+  /* ── OPTIONS ── */
+  .opts-grid { display: flex; flex-direction: column; gap: 6px; }
+
+  .opt-btn {
+    width: 100%; text-align: left; padding: 9px 12px;
+    border-radius: 8px; border: 1px solid var(--border2);
+    cursor: pointer; font-size: 12px; font-family: var(--display);
+    line-height: 1.5; background: var(--bg3); color: var(--text2);
+    transition: all 0.15s; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .opt-btn:hover:not(:disabled) { background: var(--bg4); color: var(--text); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-letter {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    width: 18px; height: 18px; border-radius: 4px;
+    background: var(--bg4); color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+    transition: all 0.15s;
+  }
+  .opt-btn.correct .opt-letter { background: var(--green); color: white; }
+  .opt-btn.wrong   .opt-letter { background: var(--red);   color: white; }
+  .opt-btn.reveal  .opt-letter { background: var(--bg4); color: var(--text3); }
+
+  .opt-btn.correct { background: var(--green-d); border-color: var(--green-b); color: #0f5e38; }
+  .opt-btn.wrong   { background: var(--red-d);   border-color: var(--red-b);   color: #8a1a10; }
+  .opt-btn.reveal  { background: var(--bg3); border-color: var(--border); opacity: 0.5; }
+
+  /* ── EXPLANATION ── */
+  .explanation {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.7;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    animation: floatin 0.3s ease;
+    border-left: 3px solid;
+  }
+  .exp-ok { background: var(--green-d); color: #0f5e38; border-color: var(--green); }
+  .exp-ko { background: var(--red-d);   color: #8a1a10; border-color: var(--red);   }
+
+  /* ── ACTIONS ── */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1.5rem; }
+  .btn {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    padding: 9px 16px; border-radius: 6px; border: 1px solid var(--border2);
+    background: var(--bg2); color: var(--text2); cursor: pointer;
+    text-transform: uppercase; transition: all 0.2s;
+  }
+  .btn:hover { background: var(--bg4); color: var(--text); }
+  .btn.primary { border-color: var(--purple-b); color: var(--purple); background: var(--purple-d); }
+  .btn.primary:hover { background: rgba(110,63,192,0.14); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="lab-tag"><span>0005-CL-04</span> · cloud costs</div>
+  <h1>Q&A · <span class="accent">¿Sabes lo que tienes encendido?</span></h1>
+  <p class="subtitle">10 preguntas reales sobre GCP, costes y arquitectura.<br>Sin marketing. Sin trampa. Con respuesta inmediata para saber qué tienes que repasar.</p>
+</div>
+
+<div class="scoreboard">
+  <div class="score-box highlight">
+    <div class="s-label">Puntuación</div>
+    <div class="s-val purple" id="s-pct">—</div>
+  </div>
+  <div class="score-box">
+    <div class="s-label">Correctas</div>
+    <div class="s-val green" id="s-ok">0</div>
+  </div>
+  <div class="score-box">
+    <div class="s-label">A repasar</div>
+    <div class="s-val red" id="s-ko">0</div>
+  </div>
+  <div class="score-box">
+    <div class="s-label">Respondidas</div>
+    <div class="s-val" id="s-done">0 / 10</div>
+  </div>
+</div>
+
+<div class="progress-outer">
+  <div class="progress-inner" id="score-bar" style="width:0%"></div>
+</div>
+<div class="progress-label">
+  <span id="progress-left">0 de 10 respondidas</span>
+  <span id="progress-right"></span>
+</div>
+
+<div class="verdict" id="verdict"></div>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="filterQA('all',this)">Todas</button>
+  <button class="filter-btn" onclick="filterQA('costes',this)">Costes</button>
+  <button class="filter-btn" onclick="filterQA('arch',this)">Arquitectura</button>
+  <button class="filter-btn" onclick="filterQA('concept',this)">Conceptos</button>
+  <button class="filter-btn" onclick="filterQA('ops',this)">Operaciones</button>
+  <button class="filter-btn" onclick="filterQA('meta',this)">La incómoda</button>
+</div>
+
+<div id="quiz-list"></div>
+
+<div class="actions">
+  <button class="btn primary" onclick="resetQuiz()">↺ Reiniciar test</button>
+  <button class="btn" onclick="window.open('https://iafont.com','_blank')">Leer el artículo</button>
+</div>
+
+<script>
+const LETTERS = ['A','B','C','D'];
+
+const QUESTIONS = [
+  {
+    cat: 'costes', catLabel: 'Costes',
+    q: '¿Por qué Kubernetes Engine Autopilot cobra aunque no haya pods corriendo?',
+    opts: [
+      { t: 'Cobra por el control plane: la gestión del cluster tiene un coste fijo independiente de los pods.', ok: true },
+      { t: 'Es un bug conocido de GCP que Google tiene pendiente de corregir.', ok: false },
+      { t: 'Solo cobra cuando hay más de 5 pods activos simultáneamente.', ok: false },
+      { t: 'Kubernetes siempre escala a cero automáticamente si no hay carga.', ok: false },
+    ],
+    exp_ok: '✓ Exacto. Kubernetes Autopilot cobra por el control plane de forma fija. Google gestiona el cluster aunque esté vacío — esa gestión tiene coste. Por eso K8s solo tiene sentido con workloads suficientemente complejos que justifiquen ese coste base.',
+    exp_ko:  '✗ El control plane de Kubernetes tiene un coste fijo de gestión independiente de los pods. GCP cobra por mantener el cluster vivo aunque no tenga ningún contenedor. Esta es la sorpresa más común para quien empieza con K8s en la nube.',
+  },
+  {
+    cat: 'costes', catLabel: 'Costes',
+    q: '¿Cuál es la diferencia fundamental entre Cloud Run y Compute Engine en facturación?',
+    opts: [
+      { t: 'Cloud Run escala a cero y solo factura cuando hay peticiones activas; Compute Engine factura por hora de existencia de la VM.', ok: true },
+      { t: 'Compute Engine es más barato siempre que tengas tráfico constante.', ok: false },
+      { t: 'Son idénticos en facturación, la diferencia es solo de rendimiento.', ok: false },
+      { t: 'Cloud Run siempre es más caro porque incluye gestión automática.', ok: false },
+    ],
+    exp_ok: '✓ Correcto. Cloud Run = pagas por petición (escala a cero → €0.00 en idle). Compute Engine = pagas por hora de existencia de la VM. Un n8n en Compute Engine factura las 24h aunque no ejecute ningún workflow.',
+    exp_ko:  '✗ La diferencia clave es el modelo de facturación. Cloud Run cobra por petición y escala a cero. Compute Engine cobra por hora de existencia de la VM, esté o no esté trabajando. Esta diferencia puede ser de €0 vs €2-6/mes por el mismo servicio.',
+  },
+  {
+    cat: 'arch', catLabel: 'Arquitectura',
+    q: '¿Qué genera el tráfico "cross-region" de €5.42/mes en una cuenta GCP?',
+    opts: [
+      { t: 'Tener servicios en regiones distintas (ej: europe-west1 y us-central1) que se comunican entre sí.', ok: true },
+      { t: 'Usar BigQuery con datasets en múltiples regiones automáticamente.', ok: false },
+      { t: 'Las copias de seguridad automáticas que GCP hace entre regiones.', ok: false },
+      { t: 'El tráfico de internet normal hacia los usuarios finales.', ok: false },
+    ],
+    exp_ok: '✓ Perfecto. El egress cross-region ocurre cuando servicios en distintas regiones se llaman entre sí. €0.08-0.12/GB entre europe-west1 y us-central1. Si tienes servicios comunicándose entre Europa y US continuamente, ese coste se acumula. Solución: consolida en una región.',
+    exp_ko:  '✗ El coste de networking cross-region viene de servicios en distintas regiones que se comunican. Cada petición que cruza regiones tiene un coste de egress. La solución es simple: consolida todos los servicios en la misma región.',
+  },
+  {
+    cat: 'costes', catLabel: 'Costes',
+    q: '¿Qué ocurre con tus servicios GCP cuando se agotan los créditos gratuitos y tienes tarjeta registrada?',
+    opts: [
+      { t: 'GCP empieza a cobrar directamente a la tarjeta sin interrumpir los servicios.', ok: true },
+      { t: 'GCP apaga todos los servicios automáticamente hasta que recargues créditos.', ok: false },
+      { t: 'GCP manda un aviso y da 30 días de gracia antes de cobrar.', ok: false },
+      { t: 'Los servicios se pausan pero se pueden reactivar gratuitamente en 90 días.', ok: false },
+    ],
+    exp_ok: '✓ Exacto y esto es crucial. GCP no apaga nada. Si tienes tarjeta registrada, el día que se acaban los créditos empieza a facturar directamente. Los servicios siguen corriendo. La factura llega. Por eso hay que optimizar la arquitectura ANTES de que se agoten.',
+    exp_ko:  '✗ Cuidado: GCP no apaga los servicios cuando se acaban los créditos. Si tienes tarjeta registrada, empieza a facturar directamente al día siguiente. Es tu responsabilidad saber cuándo se agotan y optimizar antes de ese momento.',
+  },
+  {
+    cat: 'concept', catLabel: 'Conceptos',
+    q: '¿Cuándo tiene sentido usar Cloud Dataflow en modo streaming en lugar de batch programado?',
+    opts: [
+      { t: 'Cuando necesitas procesar eventos con latencia de segundos y el volumen de datos es constante y elevado.', ok: true },
+      { t: 'Siempre que proceses más de 100 registros al día, streaming es la mejor opción.', ok: false },
+      { t: 'Cuando quieres ahorrar costes, porque streaming es más barato que batch.', ok: false },
+      { t: 'Para cualquier pipeline ETL, independientemente del volumen.', ok: false },
+    ],
+    exp_ok: '✓ Bien. Dataflow streaming tiene sentido cuando: (1) la latencia importa — necesitas procesar en segundos; (2) el volumen es constante y elevado — los workers están ocupados la mayor parte del tiempo. Si tienes picos esporádicos o bajo volumen, batch + Cloud Scheduler es 95% más barato.',
+    exp_ko:  '✗ Dataflow streaming mantiene workers activos 24/7. Si tus datos no llegan de forma continua y voluminosa, esos workers están parados cobrando igual. Batch programado = lanzas el job cuando hay datos, termina, y no pagas más.',
+  },
+  {
+    cat: 'arch', catLabel: 'Arquitectura',
+    q: '¿Qué servicio de GCP no genera coste cuando no está procesando peticiones?',
+    opts: [
+      { t: 'Cloud Run con configuración de instancias mínimas a 0.', ok: true },
+      { t: 'Cloud SQL (base de datos gestionada).', ok: false },
+      { t: 'Compute Engine con una VM e2-micro.', ok: false },
+      { t: 'Kubernetes Engine Autopilot con 0 pods.', ok: false },
+    ],
+    exp_ok: '✓ Correcto. Cloud Run con min-instances=0 escala completamente a cero. Sin peticiones = €0.00. Cloud SQL cobra por la instancia de BD, Compute Engine por hora de VM, y K8s por el control plane del cluster — todos cobran por existir, no por hacer.',
+    exp_ko:  '✗ Solo Cloud Run (con min-instances=0) escala a cero de verdad. Cloud SQL cobra por la instancia aunque no haya queries. Compute Engine cobra por hora de VM. Kubernetes cobra por el cluster aunque esté vacío. Scale-to-zero real = solo pagas cuando ejecutas.',
+  },
+  {
+    cat: 'ops', catLabel: 'Operaciones',
+    q: '¿Cómo auditas qué tienes encendido en GCP ahora mismo en menos de 10 minutos?',
+    opts: [
+      { t: 'Billing → Reports (por servicio, últimos 30 días) + revisar VM Instances, Clusters, Dataflow Jobs y External IPs en estado activo.', ok: true },
+      { t: 'Solo hace falta revisar la factura del mes anterior para ver qué está activo.', ok: false },
+      { t: 'GCP manda un email automático con todos los servicios activos cada semana.', ok: false },
+      { t: 'No es posible tener una visión completa sin herramientas de terceros.', ok: false },
+    ],
+    exp_ok: '✓ Exacto. El proceso: Billing → Reports → agrupar por Servicio. Luego verificar manualmente: Compute Engine VM Instances (Running), GKE Clusters, Dataflow Jobs (Running), Cloud SQL instances, y VPC → External IPs reservadas. Todo nativo en la consola.',
+    exp_ko:  '✗ La consola de GCP tiene todo lo necesario. Billing Reports muestra el gasto por servicio. Luego revisas directamente cada servicio para ver qué está en estado Running. Las IPs reservadas sin VM también cobran y son fáciles de olvidar.',
+  },
+  {
+    cat: 'concept', catLabel: 'Conceptos',
+    q: '¿Qué es el "gasto pasivo" en la nube?',
+    opts: [
+      { t: 'Servicios que cobran aunque no estén procesando trabajo útil: una VM encendida sin tráfico, un cluster vacío, un pipeline sin datos.', ok: true },
+      { t: 'Facturas de meses anteriores que no se han pagado todavía.', ok: false },
+      { t: 'El coste de almacenamiento en Cloud Storage, que siempre es pasivo.', ok: false },
+      { t: 'Los cargos por transferencia de datos que se generan sin acción del usuario.', ok: false },
+    ],
+    exp_ok: '✓ Exacto. El gasto pasivo en cloud es el coste de recursos que existen pero no trabajan. No está correlacionado con valor generado. Es el equivalente cloud de pagar empleados que no tienen trabajo asignado.',
+    exp_ko:  '✗ El gasto pasivo es el coste de infraestructura que factura por existir, no por hacer. VM sin peticiones, K8s sin pods, Dataflow sin datos. La trampa del free tier es que los créditos ocultan este gasto hasta que se agotan.',
+  },
+  {
+    cat: 'ops', catLabel: 'Operaciones',
+    q: '¿Cuál es la primera acción cuando detectas que los créditos GCP están al 25%?',
+    opts: [
+      { t: 'Auditoría completa de servicios activos y optimizar arquitectura antes de que llegue la factura real.', ok: true },
+      { t: 'Solicitar inmediatamente más créditos a Google antes de que se agoten.', ok: false },
+      { t: 'No hacer nada, el 25% restante suele durar varios meses más.', ok: false },
+      { t: 'Crear una nueva cuenta Google para obtener créditos nuevos.', ok: false },
+    ],
+    exp_ok: '✓ Exacto. Al 25% todavía tienes tiempo para actuar bien. Usa ese margen para: (1) listar todos los servicios activos, (2) calcular su coste real sin créditos, (3) migrar lo que puedas a scale-to-zero. Cuando se agoten, tu factura real debería ser de pocos euros.',
+    exp_ko:  '✗ Buscar más créditos pospone el problema sin resolverlo. La arquitectura cara seguirá siendo cara cuando los nuevos créditos se agoten. Al 25% tienes tiempo suficiente para hacer la migración bien. Úsalo.',
+  },
+  {
+    cat: 'meta', catLabel: 'La incómoda',
+    q: '¿Por qué la nube hace tan fácil encender servicios y tan difícil entender lo que cuestan?',
+    opts: [
+      { t: 'El modelo de negocio de los cloud providers se basa en el consumo. La fricción para encender es mínima por diseño; la visibilidad de costes es opaca también por diseño.', ok: true },
+      { t: 'Es un problema técnico sin resolver. Google está trabajando en hacerlo más transparente.', ok: false },
+      { t: 'Los costes son complejos porque los servicios son complejos. Es inevitable.', ok: false },
+      { t: 'Solo es difícil al principio. Con experiencia la facturación se vuelve intuitiva.', ok: false },
+    ],
+    exp_ok: '✓ Exacto. El free tier y los créditos son inversión en adquisición: te enganchan a la plataforma. La fricción para encender (un click) vs la fricción para entender el coste (dashboards complejos, retardo de 24-48h) es una asimetría de diseño deliberada. No es un bug, es el modelo.',
+    exp_ko:  '✗ La opacidad de costes en cloud no es accidental ni técnicamente inevitable. Los cloud providers tienen todos los incentivos para hacer fácil el encendido y difícil el apagado. Entender esto es el primer paso para gestionarlo bien.',
+  },
+];
+
+let answered = 0;
+let correct  = 0;
+let answeredMap = {};
+
+function shuffle(arr) {
+  return arr.map(x => ({ x, r: Math.random() })).sort((a,b) => a.r - b.r).map(x => x.x);
+}
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-list');
+  container.innerHTML = '';
+
+  QUESTIONS.forEach((q, qi) => {
+    const shuffled = shuffle(q.opts.map((o,i) => ({...o, orig: i})));
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'qcard-' + qi;
+    card.dataset.cat = q.cat;
+
+    const ans = answeredMap[qi];
+    const isDone = ans !== undefined;
+    const wasOk  = isDone && q.opts[ans] && q.opts[ans].ok;
+
+    if (isDone) card.classList.add(wasOk ? 'answered-ok' : 'answered-ko');
+
+    const statusIcon = isDone ? (wasOk ? '✓' : '✗') : (qi+1);
+    const statusClass = isDone ? (wasOk ? 'ok' : 'ko') : 'pending';
+
+    card.innerHTML = `
+      <div class="q-top">
+        <div class="q-num">${qi + 1}</div>
+        <span class="q-cat cat-${q.cat}">${q.catLabel}</span>
+        <div class="q-text">${q.q}</div>
+        <div class="q-status ${statusClass}">${statusIcon}</div>
+      </div>
+      <div class="opts-grid" id="opts-${qi}"></div>
+      <div id="exp-${qi}"></div>
+    `;
+    container.appendChild(card);
+
+    const optsDiv = document.getElementById('opts-' + qi);
+
+    shuffled.forEach((o, si) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.disabled  = isDone;
+
+      if (isDone) {
+        if (o.ok)              btn.classList.add('correct');
+        else if (o.orig === ans && !o.ok) btn.classList.add('wrong');
+        else                   btn.classList.add('reveal');
+      }
+
+      btn.innerHTML = `<span class="opt-letter">${LETTERS[si]}</span><span>${o.t}</span>`;
+      btn.onclick = () => pickAnswer(qi, o.orig, o.ok, q, shuffled);
+      optsDiv.appendChild(btn);
+    });
+
+    if (isDone) {
+      const expDiv = document.getElementById('exp-' + qi);
+      expDiv.innerHTML = `<div class="explanation ${wasOk ? 'exp-ok' : 'exp-ko'}">${wasOk ? q.exp_ok : q.exp_ko}</div>`;
+    }
+  });
+}
+
+function pickAnswer(qi, origIdx, isOk, q, shuffled) {
+  if (answeredMap[qi] !== undefined) return;
+  answeredMap[qi] = origIdx;
+
+  if (isOk) correct++;
+  answered++;
+
+  const card    = document.getElementById('qcard-' + qi);
+  const optsDiv = document.getElementById('opts-' + qi);
+  const expDiv  = document.getElementById('exp-' + qi);
+  const status  = card.querySelector('.q-status');
+
+  card.classList.add(isOk ? 'answered-ok' : 'answered-ko');
+  status.textContent = isOk ? '✓' : '✗';
+  status.className   = 'q-status ' + (isOk ? 'ok' : 'ko');
+
+  optsDiv.querySelectorAll('.opt-btn').forEach((btn, si) => {
+    btn.disabled = true;
+    const o = shuffled[si];
+    if (o.ok)                    btn.classList.add('correct');
+    else if (o.orig === origIdx && !o.ok) btn.classList.add('wrong');
+    else                         btn.classList.add('reveal');
+  });
+
+  expDiv.innerHTML = `<div class="explanation ${isOk ? 'exp-ok' : 'exp-ko'} " style="animation:floatin 0.3s ease">${isOk ? q.exp_ok : q.exp_ko}</div>`;
+
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('s-done').textContent = answered + ' / ' + QUESTIONS.length;
+  document.getElementById('s-ok').textContent   = correct;
+  document.getElementById('s-ko').textContent   = answered - correct;
+  document.getElementById('progress-left').textContent = answered + ' de ' + QUESTIONS.length + ' respondidas';
+
+  if (answered > 0) {
+    const pct = Math.round((correct / answered) * 100);
+    document.getElementById('s-pct').textContent = pct + '%';
+    const bar = document.getElementById('score-bar');
+    bar.style.width      = pct + '%';
+    bar.style.background = pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+    document.getElementById('progress-right').textContent = pct + '% de acierto';
+  }
+
+  if (answered === QUESTIONS.length) showVerdict();
+}
+
+function showVerdict() {
+  const pct  = Math.round((correct / QUESTIONS.length) * 100);
+  const div  = document.getElementById('verdict');
+  div.classList.add('show');
+
+  let cls, title, body;
+  if (pct >= 90) {
+    cls = 'v-gold'; title = '🏆 Experto en cloud costs';
+    body = `${correct}/10 correctas. Puedes hacer el check-out sin ayuda. Tu arquitectura serverless está en buenas manos.`;
+  } else if (pct >= 70) {
+    cls = 'v-silver'; title = '👍 Buen nivel · algunos puntos a repasar';
+    body = `${correct}/10 correctas. Tienes la base sólida. Repasa los conceptos de facturación donde fallaste.`;
+  } else if (pct >= 50) {
+    cls = 'v-ok'; title = '📚 Nivel medio · hay margen de mejora';
+    body = `${correct}/10 correctas. Relee el artículo con atención, especialmente la sección de servicios y costes.`;
+  } else if (pct >= 30) {
+    cls = 'v-warn'; title = '⚠️ Nivel básico · riesgo de gasto pasivo';
+    body = `${correct}/10 correctas. Con este nivel, una cuenta GCP sin créditos puede darte sorpresas desagradables.`;
+  } else {
+    cls = 'v-bad'; title = '🔥 Alerta · Kubernetes encendido sin supervisión';
+    body = `${correct}/10 correctas. Tu startup quemaría runway en 3 meses. Empieza por el artículo y vuelve al lab 2.`;
+  }
+
+  div.className = `verdict show ${cls}`;
+  div.innerHTML = `<div class="verdict-title">${title}</div>${body}`;
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function filterQA(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.q-card').forEach(card => {
+    card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat);
+  });
+}
+
+function resetQuiz() {
+  answered = 0; correct = 0; answeredMap = {};
+  document.getElementById('s-done').textContent  = '0 / 10';
+  document.getElementById('s-ok').textContent    = '0';
+  document.getElementById('s-ko').textContent    = '0';
+  document.getElementById('s-pct').textContent   = '—';
+  document.getElementById('score-bar').style.width = '0%';
+  document.getElementById('progress-left').textContent  = '0 de 10 respondidas';
+  document.getElementById('progress-right').textContent = '';
+  document.getElementById('verdict').className = 'verdict';
+  document.getElementById('verdict').innerHTML  = '';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn').classList.add('active');
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

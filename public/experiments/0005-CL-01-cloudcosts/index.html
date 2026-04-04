@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>El ticker del gasto pasivo · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:         #f4f3ef;
+    --bg2:        #ffffff;
+    --bg3:        #eeede9;
+    --bg4:        #e6e5e0;
+    --border:     rgba(0,0,0,0.08);
+    --border2:    rgba(0,0,0,0.14);
+    --text:       #1a1c22;
+    --text2:      #5a5e6e;
+    --text3:      #9a9eae;
+    --red:        #d93b2a;
+    --red-dim:    rgba(217,59,42,0.08);
+    --red-b:      rgba(217,59,42,0.2);
+    --green:      #1a9658;
+    --green-dim:  rgba(26,150,88,0.08);
+    --green-b:    rgba(26,150,88,0.2);
+    --amber:      #c97d10;
+    --amber-dim:  rgba(201,125,16,0.08);
+    --amber-b:    rgba(201,125,16,0.2);
+    --mono:       'Space Mono', monospace;
+    --sans:       'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 2rem 1.5rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  @keyframes fadein { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes glow   { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 3px rgba(217,59,42,0.12)} }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border2);
+  }
+  .lab-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .lab-tag span { color: var(--red); }
+  h1 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .subtitle { font-size: 0.9rem; color: var(--text2); line-height: 1.6; }
+
+  /* ── SESSION PANEL (arriba) ── */
+  .session-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .session-panel.hot { border-color: var(--red-b); }
+  .ticker-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1s infinite;
+    flex-shrink: 0;
+  }
+  .pulse-dot.green { background: var(--green); animation-duration: 2s; }
+  .pulse-dot.off   { background: var(--text3); animation: none; }
+
+  .session-total {
+    font-family: var(--mono);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin: 0.4rem 0 0.5rem;
+    transition: color 0.5s;
+  }
+  .session-total.hot { color: var(--red); }
+  .session-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 1rem;
+  }
+  .session-progress {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .session-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--red);
+    transition: width 0.5s ease, background 0.5s;
+  }
+  .session-msg {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+  .session-msg.ok     { color: var(--green); }
+  .session-msg.warn   { color: var(--amber); }
+  .session-msg.danger { color: var(--red); }
+
+  /* ── METRICS GRID ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  @media(max-width:600px) { .metrics-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .metric-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+  .metric-box.hot { border-color: var(--red-b); }
+  .m-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .m-val {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .metric-box.hot .m-val { color: var(--red); }
+  .m-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding: 0.7rem 1rem;
+    background: var(--bg2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  /* ── SERVICE GRID ── */
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  @media(max-width:600px) { .services-grid { grid-template-columns: 1fr; } }
+
+  .svc-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: border-color 0.3s;
+  }
+  .svc-card.burning { border-color: var(--red-b);   animation: glow 3s infinite; }
+  .svc-card.cold    { border-color: var(--green-b);  opacity: 0.75; }
+  .svc-card.zero    { opacity: 0.4; }
+
+  .svc-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .svc-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .svc-info { flex: 1; min-width: 0; }
+  .svc-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .svc-sub { font-size: 11px; color: var(--text2); line-height: 1.4; }
+
+  .svc-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .svc-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+
+  /* Toggle */
+  .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; cursor: pointer; }
+  .toggle input { display: none; }
+  .toggle-track {
+    position: absolute; inset: 0;
+    border-radius: 11px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .toggle input:checked ~ .toggle-track { background: var(--red-dim); border-color: var(--red); }
+  .toggle-thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--text3);
+    transition: left 0.25s, background 0.25s;
+  }
+  .toggle input:checked ~ .toggle-thumb { left: 21px; background: var(--red); }
+  .toggle.green input:checked ~ .toggle-track { background: var(--green-dim); border-color: var(--green); }
+  .toggle.green input:checked ~ .toggle-thumb { background: var(--green); }
+
+  .svc-ticker {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text3);
+    min-width: 72px;
+    text-align: right;
+    transition: color 0.3s;
+  }
+  .svc-ticker.hot  { color: var(--red); }
+  .svc-ticker.cold { color: var(--green); }
+
+  .svc-bar { height: 2px; background: var(--bg3); border-radius: 1px; margin-top: 8px; overflow: hidden; }
+  .svc-bar-fill { height: 100%; border-radius: 1px; transition: width 1s linear; }
+
+  .svc-why { font-size: 10px; color: var(--text3); line-height: 1.5; margin-top: 6px; font-style: italic; }
+
+  /* Badge */
+  .badge {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+    padding: 2px 7px; border-radius: 3px; font-weight: 700;
+    text-transform: uppercase; flex-shrink: 0;
+  }
+  .badge.always { background: var(--red-dim);   color: var(--red);   border: 1px solid var(--red-b); }
+  .badge.zero   { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-b); }
+  .badge.free   { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-b); }
+
+  /* Actions */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+    padding: 9px 16px; border-radius: 6px; border: 1px solid var(--border2);
+    background: var(--bg2); color: var(--text2); cursor: pointer;
+    transition: all 0.2s; text-transform: uppercase;
+  }
+  .btn:hover { background: var(--bg3); color: var(--text); }
+  .btn.red   { border-color: var(--red-b);   color: var(--red); }
+  .btn.red:hover   { background: var(--red-dim); }
+  .btn.green { border-color: var(--green-b); color: var(--green); }
+  .btn.green:hover { background: var(--green-dim); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="lab-tag"><span>0005-CL-01</span> · cloud costs</div>
+  <h1>El ticker del gasto pasivo</h1>
+  <p class="subtitle">Enciende y apaga servicios. El contador no para. Nunca.<br>Descubre cuánto cuesta tener la nube encendida sin hacer nada.</p>
+</div>
+
+<!-- ACUMULADO ARRIBA -->
+<div class="session-panel" id="session-panel">
+  <div class="ticker-label">
+    <span class="pulse-dot" id="session-dot"></span>
+    Acumulado en esta sesión
+  </div>
+  <div class="session-total" id="session-total">€0.000000</div>
+  <div class="session-sub">desde que abriste esta página · como si fuera tu hotel</div>
+  <div class="session-progress">
+    <div class="session-progress-fill" id="session-bar" style="width:0%"></div>
+  </div>
+  <div class="session-msg" id="session-msg">El check-out no es automático. Tú tienes que hacerlo.</div>
+</div>
+
+<!-- MÉTRICAS -->
+<div class="metrics-grid">
+  <div class="metric-box hot">
+    <div class="m-label">Por segundo</div>
+    <div class="m-val" id="m-sec">€0.000000</div>
+    <div class="m-sub">ahora mismo</div>
+  </div>
+  <div class="metric-box">
+    <div class="m-label">Por hora</div>
+    <div class="m-val" id="m-hour">€0.0000</div>
+  </div>
+  <div class="metric-box">
+    <div class="m-label">Este mes</div>
+    <div class="m-val" id="m-month">€0.00</div>
+  </div>
+  <div class="metric-box hot">
+    <div class="m-label">Al año sin tocar nada</div>
+    <div class="m-val" id="m-year">€0.00</div>
+    <div class="m-sub">si no cambias nada</div>
+  </div>
+</div>
+
+<!-- LEYENDA -->
+<div class="legend">
+  <div class="legend-item"><span class="pulse-dot"></span>Cobrando ahora (always-on)</div>
+  <div class="legend-item"><span class="pulse-dot green"></span>Scale-to-zero (gratis en idle)</div>
+  <div class="legend-item"><span class="pulse-dot off"></span>Apagado</div>
+</div>
+
+<!-- SERVICIOS -->
+<div class="services-grid" id="svc-grid"></div>
+
+<!-- ACCIONES -->
+<div class="actions">
+  <button class="btn red"   onclick="apagaTodo()">Hacer check-out · apagar todo</button>
+  <button class="btn"       onclick="enciendeTodo()">Encender todo</button>
+  <button class="btn green" onclick="soloServerless()">Solo serverless</button>
+</div>
+
+<script>
+const SVCS = [
+  { id:'k8s', icon:'⚙️', iconBg:'#f0eef8', name:'Kubernetes Autopilot',    sub:'Cluster activo · cobra aunque esté vacío',       monthly:8.59, on:true,  scaleZero:false, badge:'always', why:'El control plane cobra aunque no haya ningún pod corriendo.' },
+  { id:'df',  icon:'🔄', iconBg:'#eef3fb', name:'Cloud Dataflow',           sub:'Pipeline streaming · workers en espera',          monthly:5.85, on:true,  scaleZero:false, badge:'always', why:'Workers activos esperando datos que no llegan. Pagando por mirar la pared.' },
+  { id:'net', icon:'🌐', iconBg:'#fbf0ee', name:'Networking cross-region',  sub:'EU ↔ US · €0.10/GB cruzando el Atlántico',       monthly:5.42, on:true,  scaleZero:false, badge:'always', why:'Servicios en europe-west1 llamando a us-central1. Cada petición cruza el océano.' },
+  { id:'ce',  icon:'🖥️', iconBg:'#fbeeed', name:'Compute Engine · n8n',    sub:'VM encendida 24/7 · sin workflows activos',       monthly:2.09, on:true,  scaleZero:false, badge:'always', why:'Una VM siempre encendida factura por hora de existencia, no por uso real.' },
+  { id:'mon', icon:'📊', iconBg:'#fdf4e8', name:'Cloud Monitoring',         sub:'Métricas del cluster · derivado de K8s',          monthly:2.05, on:true,  scaleZero:false, badge:'always', why:'Tener K8s activo activa Monitoring automáticamente. Coste invisible.' },
+  { id:'vx',  icon:'🤖', iconBg:'#eeedfb', name:'Vertex AI · Gemini API',   sub:'Solo cobra por llamadas · €0 en idle',            monthly:0.05, on:false, scaleZero:true,  badge:'zero',   why:'Cobra por token procesado, no por existir. Sin llamadas = sin factura.' },
+  { id:'cr',  icon:'☁️', iconBg:'#eef8f3', name:'Cloud Run',                sub:'Scale-to-zero · €0.00 sin tráfico',              monthly:0.10, on:false, scaleZero:true,  badge:'zero',   why:'La alternativa correcta a la VM. Sin peticiones = sin factura real.' },
+  { id:'bq',  icon:'📦', iconBg:'#f0f7ee', name:'BigQuery',                 sub:'Free tier · 1TB queries + 10GB storage',         monthly:0.00, on:false, scaleZero:true,  badge:'free',   why:'Free tier generoso. No hagas nada raro aquí.' },
+];
+
+const state = {};
+const accum = {};
+SVCS.forEach(s => { state[s.id] = s.on; accum[s.id] = 0; });
+const SPM = 30 * 24 * 3600;
+let sessionTotal = 0;
+
+function perSec(id) {
+  const s = SVCS.find(x => x.id === id);
+  return state[id] ? s.monthly / SPM : 0;
+}
+function totalMonthly() {
+  return SVCS.filter(s => state[s.id]).reduce((a, s) => a + s.monthly, 0);
+}
+
+function renderGrid() {
+  const grid = document.getElementById('svc-grid');
+  grid.innerHTML = '';
+  SVCS.forEach(s => {
+    const on = state[s.id];
+    const cardClass = on && !s.scaleZero ? 'burning' : on && s.scaleZero ? 'cold' : 'zero';
+    const tickerColor = on && !s.scaleZero ? 'hot' : on && s.scaleZero ? 'cold' : '';
+    const dotColor   = on && !s.scaleZero ? '' : on && s.scaleZero ? 'green' : 'off';
+    const statusText = on ? (s.scaleZero ? 'scale-to-zero' : 'cobrando') : 'apagado';
+    const barColor   = s.scaleZero ? '#1a9658' : '#d93b2a';
+
+    const card = document.createElement('div');
+    card.className = 'svc-card ' + cardClass;
+    card.id = 'card-' + s.id;
+    card.innerHTML = `
+      <div class="svc-top">
+        <div class="svc-icon" style="background:${s.iconBg}">${s.icon}</div>
+        <div class="svc-info">
+          <div class="svc-name">${s.name}</div>
+          <div class="svc-sub">${s.sub}</div>
+        </div>
+      </div>
+      <div class="svc-bottom">
+        <div class="svc-status">
+          <span class="pulse-dot ${dotColor}"></span>
+          ${statusText}
+        </div>
+        <span class="badge ${s.badge}">${s.badge==='always'?'always-on':s.badge==='zero'?'scale-0':'free'}</span>
+        <label class="toggle ${s.scaleZero?'green':''}">
+          <input type="checkbox" ${on?'checked':''} onchange="toggle('${s.id}')">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+        <span class="svc-ticker ${tickerColor}" id="tick-${s.id}">€${accum[s.id].toFixed(4)}</span>
+      </div>
+      <div class="svc-bar">
+        <div class="svc-bar-fill" id="bar-${s.id}" style="width:${on?100:0}%;background:${barColor};"></div>
+      </div>
+      <div class="svc-why">${s.why}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function updateMetrics() {
+  let totalPS = 0;
+  SVCS.forEach(s => { totalPS += perSec(s.id); });
+  const tm = totalMonthly();
+
+  document.getElementById('m-sec').textContent   = '€' + totalPS.toFixed(6);
+  document.getElementById('m-hour').textContent  = '€' + (totalPS * 3600).toFixed(4);
+  document.getElementById('m-month').textContent = '€' + tm.toFixed(2);
+  document.getElementById('m-year').textContent  = '€' + (tm * 12).toFixed(2);
+
+  const pct = Math.min(100, (tm / 31) * 100);
+  const bar = document.getElementById('session-bar');
+  bar.style.width      = pct + '%';
+  bar.style.background = tm > 20 ? '#d93b2a' : tm > 5 ? '#c97d10' : '#1a9658';
+
+  const panel = document.getElementById('session-panel');
+  panel.className = 'session-panel' + (tm > 0 ? ' hot' : '');
+
+  const msg = document.getElementById('session-msg');
+  const dot = document.getElementById('session-dot');
+  if (tm === 0) {
+    msg.textContent = '✓ Check-out realizado. €0.00/mes. Así se hace.';
+    msg.className   = 'session-msg ok';
+    dot.className   = 'pulse-dot green';
+  } else if (tm > 20) {
+    msg.textContent = `€${tm.toFixed(2)}/mes · €${(tm*12).toFixed(2)}/año · el check-out no es automático.`;
+    msg.className   = 'session-msg danger';
+    dot.className   = 'pulse-dot';
+  } else {
+    msg.textContent = `€${tm.toFixed(2)}/mes activo · apaga lo que no necesitas.`;
+    msg.className   = 'session-msg warn';
+    dot.className   = 'pulse-dot';
+  }
+}
+
+function toggle(id) {
+  state[id] = !state[id];
+  renderGrid();
+  updateMetrics();
+}
+function apagaTodo()      { SVCS.forEach(s => { state[s.id] = false; }); renderGrid(); updateMetrics(); }
+function enciendeTodo()   { SVCS.forEach(s => { state[s.id] = true;  }); renderGrid(); updateMetrics(); }
+function soloServerless() { SVCS.forEach(s => { state[s.id] = s.scaleZero; }); renderGrid(); updateMetrics(); }
+
+setInterval(() => {
+  let totalPS = 0;
+  SVCS.forEach(s => {
+    const ps = perSec(s.id);
+    if (ps > 0) {
+      accum[s.id] += ps;
+      const el = document.getElementById('tick-' + s.id);
+      if (el) el.textContent = '€' + accum[s.id].toFixed(4);
+    }
+    totalPS += ps;
+  });
+  sessionTotal += totalPS;
+
+  const st = document.getElementById('session-total');
+  st.textContent = '€' + sessionTotal.toFixed(6);
+  st.className   = 'session-total' + (totalPS > 0 ? ' hot' : '');
+  document.getElementById('m-sec').textContent = '€' + totalPS.toFixed(6);
+}, 1000);
+
+renderGrid();
+updateMetrics();
+</script>
+</body>
+</html>

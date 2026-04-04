@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CloudBurn Simulator 3000 · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:       #f4f3ef;
+    --bg2:      #ffffff;
+    --bg3:      #eeede9;
+    --bg4:      #e6e5e0;
+    --border:   rgba(0,0,0,0.08);
+    --border2:  rgba(0,0,0,0.14);
+    --text:     #1a1c22;
+    --text2:    #5a5e6e;
+    --text3:    #9a9eae;
+    --red:      #d93b2a;
+    --red-d:    rgba(217,59,42,0.08);
+    --red-b:    rgba(217,59,42,0.18);
+    --amber:    #c97d10;
+    --amber-d:  rgba(201,125,16,0.08);
+    --amber-b:  rgba(201,125,16,0.2);
+    --green:    #1a9658;
+    --green-d:  rgba(26,150,88,0.08);
+    --green-b:  rgba(26,150,88,0.2);
+    --blue:     #2563c4;
+    --blue-d:   rgba(37,99,196,0.08);
+    --purple:   #6e3fc0;
+    --mono:     'Space Mono', monospace;
+    --display:  'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    min-height: 100vh;
+    padding: 2rem 1.5rem 5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadein  { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes floatin { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes blink   { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes shake   { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-4px)} 60%{transform:translateX(4px)} }
+  @keyframes alarm   { 0%,100%{border-color:rgba(217,59,42,0.12)} 50%{border-color:rgba(217,59,42,0.45)} }
+  @keyframes glitch  {
+    0%,93%,100%{transform:translateX(0) skewX(0)}
+    94%{transform:translateX(-3px) skewX(-1deg)}
+    96%{transform:translateX(3px) skewX(1deg)}
+    98%{transform:translateX(-1px)}
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border2);
+  }
+  .lab-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .lab-tag span { color: var(--amber); }
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0;
+  }
+  h1 .accent { color: var(--red); }
+  .subtitle { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+
+  /* ── NEWS TICKER ── */
+  .news-bar {
+    background: var(--amber-d);
+    border: 1px solid var(--amber-b);
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--amber);
+    letter-spacing: 0.04em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-bottom: 1.5rem;
+  }
+  .news-bar::before { content: '▶ BREAKING  '; color: var(--red); font-weight: 700; }
+
+  .progress-outer { height: 3px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 1.5rem; }
+  .progress-inner { height: 100%; background: var(--amber); border-radius: 2px; transition: width 0.5s ease; }
+
+  /* ── MAIN GRID ── */
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media(max-width:640px) { .main-grid { grid-template-columns: 1fr; } }
+
+  /* ── STATS PANEL ── */
+  .stats-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
+  .stats-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .stat-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 0.8rem; }
+  .stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 5px; }
+  .stat-val { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; color: var(--text); }
+  .stat-val.red   { color: var(--red); }
+  .stat-val.muted { color: var(--text2); }
+
+  .status-block { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; }
+  .status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .status-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
+  .status-badge { font-family: var(--mono); font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .badge-ok   { background: var(--green-d); color: var(--green); border: 1px solid var(--green-b); }
+  .badge-warn { background: var(--amber-d); color: var(--amber); border: 1px solid var(--amber-b); }
+  .badge-dead { background: var(--red-d);   color: var(--red);   border: 1px solid var(--red-b);   animation: shake 0.5s infinite; }
+  .badge-lean { background: var(--blue-d);  color: var(--blue);  border: 1px solid rgba(37,99,196,0.2); }
+
+  .bar-row { margin-bottom: 8px; }
+  .bar-label-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); margin-bottom: 3px; }
+  .bar-label-row span:last-child { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+  .bar-track { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 3px; transition: width 0.7s ease, background 0.7s ease; }
+
+  /* ── TERMINAL — único elemento oscuro ── */
+  .terminal-wrap {
+    background: #08090c;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(34,212,122,0.15);
+  }
+  .term-titlebar {
+    background: #111318;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .term-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .term-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #3a3f50;
+    margin-left: 6px;
+    letter-spacing: 0.06em;
+  }
+  .terminal {
+    background: #08090c;
+    padding: 1rem 1.1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #22d47a;
+    height: 195px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1a1d24 transparent;
+  }
+  .terminal::-webkit-scrollbar { width: 4px; }
+  .terminal::-webkit-scrollbar-thumb { background: #1a1d24; border-radius: 2px; }
+  .t-r { color: #ff4040; } .t-a { color: #f5a020; } .t-b { color: #4488ff; }
+  .t-g { color: #22d47a; } .t-w { color: #9aa0b0; } .t-gray { color: #3a3f50; }
+  .cursor { animation: blink 1s infinite; }
+  .tline  { animation: fadein 0.3s ease; line-height: 1.7; }
+
+  /* ── EVENT PANEL ── */
+  .event-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 14px; transition: border-color 0.4s; }
+  .event-panel.critical { animation: alarm 1.5s infinite; }
+  .event-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .event-month { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
+  .event-progress { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+  .event-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; letter-spacing: -0.01em; }
+  .event-desc {
+    font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 1rem;
+    font-family: var(--mono); background: var(--bg3); border-radius: 6px;
+    padding: 10px 12px; border-left: 3px solid var(--border2);
+  }
+
+  /* ── CHOICES ── */
+  .choice-btn {
+    width: 100%; text-align: left; padding: 10px 14px; margin-bottom: 7px;
+    border-radius: 8px; border: 1px solid var(--border2); cursor: pointer;
+    font-size: 12px; font-family: var(--display); line-height: 1.5;
+    background: var(--bg3); color: var(--text2); transition: all 0.15s; display: block;
+  }
+  .choice-btn:hover:not(:disabled) { background: var(--bg4); color: var(--text); border-color: rgba(0,0,0,0.2); }
+  .choice-btn:disabled { cursor: default; opacity: 0.7; }
+  .choice-btn.danger { border-color: var(--border2); color: var(--text2); background: var(--bg3); }
+  .choice-btn.warn   { border-color: var(--border2); color: var(--text2); background: var(--bg3); }
+  .choice-btn.safe   { border-color: var(--border2); color: var(--text2); background: var(--bg3); }
+  .choice-btn.sneaky { border-color: var(--border2); color: var(--text2); background: var(--bg3); }
+  .choice-btn.danger:hover:not(:disabled) { background: var(--bg4); color: var(--text); }
+  .choice-btn.warn:hover:not(:disabled)   { background: var(--bg4); color: var(--text); }
+  .choice-btn.safe:hover:not(:disabled)   { background: var(--bg4); color: var(--text); }
+  .choice-btn.sneaky:hover:not(:disabled) { background: var(--bg4); color: var(--text); }
+
+  .explanation {
+    font-family: var(--mono); font-size: 11px; line-height: 1.7;
+    padding: 10px 12px; border-radius: 6px; margin-top: 4px; animation: floatin 0.3s ease;
+  }
+  .exp-ok { background: var(--green-d); color: #0f6e3e; border: 1px solid var(--green-b); }
+  .exp-ko { background: var(--red-d);   color: #a02a1c; border: 1px solid var(--red-b);   }
+
+  .gameover-box { background: var(--red-d); border: 1px solid var(--red-b); border-radius: 10px; padding: 1.2rem; font-family: var(--mono); font-size: 12px; color: #a02a1c; line-height: 1.7; animation: floatin 0.4s ease; margin-bottom: 10px; }
+  .gameover-box.win     { background: var(--green-d); border-color: var(--green-b); color: #0f6e3e; }
+  .gameover-box.neutral { background: var(--amber-d); border-color: var(--amber-b); color: #7a4e08; }
+  .gameover-title { font-size: 1rem; font-weight: 800; font-family: var(--display); margin-bottom: 6px; color: var(--text); }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; padding: 9px 16px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text2); cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+  .btn:hover { background: var(--bg4); color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="lab-tag"><span>0005-CL-02</span> · cloud costs</div>
+  <h1>CloudBurn <span class="accent">Simulator</span> 3000</h1>
+  <p class="subtitle">Eres el CTO. Tienes créditos. Tienes K8s. 10 meses de decisiones.<br>Cada elección tiene consecuencias. Algunas tardan en llegar.</p>
+</div>
+
+<div class="news-bar" id="ticker">Startup levanta 2M€ en seed · CEO anuncia "escalabilidad infinita" · CTO despliega Kubernetes "por si acaso" · La nube observa en silencio</div>
+
+<div class="progress-outer"><div class="progress-inner" id="main-progress" style="width:0%"></div></div>
+
+<div class="main-grid">
+  <div class="stats-panel">
+    <div class="stats-mini-grid">
+      <div class="stat-box"><div class="stat-label">Runway</div><div class="stat-val red" id="g-runway">24m</div></div>
+      <div class="stat-box"><div class="stat-label">Burn / mes</div><div class="stat-val red" id="g-burn">€847</div></div>
+      <div class="stat-box"><div class="stat-label">Mes actual</div><div class="stat-val muted" id="g-month">1</div></div>
+      <div class="stat-box"><div class="stat-label">Usuarios reales</div><div class="stat-val muted" id="g-users">12</div></div>
+    </div>
+    <div class="status-block">
+      <div class="status-header">
+        <span class="status-label">Estado startup</span>
+        <span class="status-badge badge-ok" id="g-status">Sobreviviendo</span>
+      </div>
+      <div class="bar-row"><div class="bar-label-row"><span>Moral del equipo</span><span id="v-morale">75%</span></div><div class="bar-track"><div class="bar-fill" id="b-morale" style="width:75%;background:var(--green)"></div></div></div>
+      <div class="bar-row"><div class="bar-label-row"><span>Créditos GCP</span><span id="v-credits">85%</span></div><div class="bar-track"><div class="bar-fill" id="b-credits" style="width:85%;background:var(--blue)"></div></div></div>
+      <div class="bar-row"><div class="bar-label-row"><span>Confianza inversor</span><span id="v-investor">60%</span></div><div class="bar-track"><div class="bar-fill" id="b-investor" style="width:60%;background:var(--amber)"></div></div></div>
+      <div class="bar-row"><div class="bar-label-row"><span>Deuda técnica</span><span id="v-debt">20%</span></div><div class="bar-track"><div class="bar-fill" id="b-debt" style="width:20%;background:var(--purple)"></div></div></div>
+    </div>
+  </div>
+
+  <div class="terminal-wrap">
+    <div class="term-titlebar">
+      <div class="term-dot" style="background:#ff5f57"></div>
+      <div class="term-dot" style="background:#ffbd2e"></div>
+      <div class="term-dot" style="background:#28c840"></div>
+      <span class="term-title">bash — stardust-psp</span>
+    </div>
+    <div class="terminal" id="terminal">
+      <div class="tline t-g">> CloudBurn Simulator 3000</div>
+      <div class="tline t-gray">> Q1 2026 · Créditos: €2.000</div>
+      <div class="tline t-gray">> Servicios activos: 7</div>
+      <div class="tline t-a">> Kubernetes Autopilot: RUNNING</div>
+      <div class="tline t-a">> 2x VM Compute Engine: RUNNING</div>
+      <div class="tline t-a">> Dataflow pipeline: RUNNING (0 msgs/s)</div>
+      <div class="tline t-r">> BURN RATE: €0.034/min en idle</div>
+      <div class="tline t-r">> €70/usuario/mes · 12 usuarios</div>
+      <div class="tline t-gray">> Esperando decisiones del CTO...<span class="cursor">_</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="event-panel" id="event-panel">
+  <div class="event-meta">
+    <span class="event-month">Mes <span id="e-month">1</span> de 10</span>
+    <span class="event-progress" id="e-progress">▰▱▱▱▱▱▱▱▱▱</span>
+  </div>
+  <div class="event-title" id="e-title">Cargando...</div>
+  <div class="event-desc"  id="e-desc">—</div>
+  <div id="e-choices"></div>
+</div>
+
+<div class="actions">
+  <button class="btn" onclick="resetGame()">↺ Reiniciar</button>
+  <button class="btn" onclick="window.open('https://iafont.com','_blank')">Leer el artículo</button>
+</div>
+
+<script>
+let G = { month:1, burn:847, morale:75, credits:85, investor:60, users:12, debt:20 };
+let cur = 0, answered = false;
+
+const TICKERS = [
+  'Startup levanta 2M€ en seed · CEO anuncia "escalabilidad infinita" · CTO despliega Kubernetes "por si acaso" · La nube observa en silencio',
+  'ÚLTIMA HORA: Dev sénior pregunta "¿por qué tenemos 3 regiones?" · CTO responde "por si acaso" · Dev actualiza LinkedIn',
+  'ALERTA: Dataflow pipeline activo · 0 mensajes procesados en 72h · workers contemplan el vacío existencial',
+  'FLASH: Board meeting esta tarde · CFO pregunta por el "cloud spend" · CTO prepara excusas · inversores inquietos',
+  'URGENTE: Créditos GCP al 50% · Google manda email amable · Demasiado amable · algo se acerca',
+  'BREAKING: n8n sin ejecutar workflows en 9 días · VM sigue encendida · facturando puntualmente igual',
+  'NOTA: Inversor principal pide "eficiencia operacional" · Traducción: para de quemar dinero en K8s vacío',
+  'ALERTA CRÍTICA: Créditos al 20% · La factura real se aproxima · el CTO finge no verlo',
+  'ÚLTIMO AVISO: Billing alert 90% · Google deja de ser amable · Es hora de hablar en serio',
+  'GAME OVER INMINENTE: Créditos agotados · Bienvenido a la factura real · €847/mes · suerte',
+];
+
+const EVENTS = [
+  { title:'El PM entra sin llamar', critical:false,
+    desc:'"Oye, ¿por qué tenemos Kubernetes? Nuestra app tiene 12 usuarios y carga en 200ms." Silencio incómodo. El cluster tiene 0 pods corriendo. El reloj de facturación no para.',
+    choices:[
+      {t:'Apagar K8s esta semana y migrar a Cloud Run',cls:'safe',fx:{burn:-280,morale:+5,investor:+10,credits:+8,debt:-5,log:'K8s apagado. Ahorro: €280/mes. El PM sonríe por primera vez.',tc:'g'}},
+      {t:'"Es para cuando escalemos." (en 12 meses, tal vez)',cls:'warn',fx:{burn:+20,morale:-8,investor:-5,credits:-4,debt:+15,log:'K8s sigue. La deuda técnica crece silenciosamente.',tc:'a'}},
+      {t:'Contratar un consultor de arquitectura K8s (€800)',cls:'danger',fx:{burn:+800,morale:+10,investor:-10,credits:-8,debt:-10,log:'Consultor llega. Dice lo mismo que el PM. €800 menos.',tc:'r'}},
+      {t:'Ignorar al PM y poner música con auriculares',cls:'sneaky',fx:{burn:+5,morale:-15,investor:0,credits:-2,debt:+20,log:'PM dimite. K8s sigue. Ahora nadie pregunta. Peor aún.',tc:'r'}},
+    ],
+    exp_ok:'✓ K8s cobra por el control plane aunque esté vacío. Cloud Run escala a cero y solo factura cuando hay peticiones. Para 12 usuarios, Cloud Run es siempre la respuesta correcta.',
+    exp_ko:'✗ El cluster cobra ~€8.59/mes aunque no tenga ningún pod. Con 12 usuarios no necesitas orquestación empresarial. La deuda técnica tiene intereses.',
+    correct:[0]},
+
+  { title:'La factura de Networking llega', critical:false,
+    desc:'Google te manda €5.42 en tráfico cross-region. Tus servicios se llaman entre europe-west1 y us-central1 como si la latencia fuera gratis y el egress también.',
+    choices:[
+      {t:'Consolidar todo en europe-west1 este sprint',cls:'safe',fx:{burn:-180,morale:+5,investor:+8,credits:+5,debt:-5,log:'Todo en EU. Networking cae a €0.40/mes.',tc:'g'}},
+      {t:'"Son solo 5 euros, no vale la pena"',cls:'warn',fx:{burn:+15,morale:0,investor:-8,credits:-3,debt:+10,log:'CFO ve la factura en la board. "¿5 euros por qué exactamente?"',tc:'a'}},
+      {t:'Culpar al dev que desplegó en us-central1',cls:'danger',fx:{burn:+5,morale:-25,investor:0,credits:-2,debt:+5,log:'Dev dimite. Ahora eres tú quien despliega. En us-central1.',tc:'r'}},
+      {t:'Añadir CDN delante "para optimizar latencia"',cls:'sneaky',fx:{burn:+120,morale:+5,investor:-5,credits:-6,debt:+15,log:'CDN activo. Cross-region sigue. Ahora tienes los dos costes.',tc:'r'}},
+    ],
+    exp_ok:'✓ El egress cross-region es €0.08-0.12/GB. Consolidar en una región elimina casi todo ese coste y mejora la latencia interna.',
+    exp_ko:'✗ €5/mes son €60/año por un problema trivial de resolver. La CDN encima del cross-region añade coste en lugar de eliminar la causa raíz.',
+    correct:[0]},
+
+  { title:'Dataflow lleva 3 semanas sin procesar nada', critical:false,
+    desc:'Tu pipeline de streaming está activo. Los workers tienen nombres. Les has cogido cariño. No hay datos. Los workers esperan. Tú pagas €5.85/mes por ese silencio.',
+    choices:[
+      {t:'Cambiar a batch job programado con Cloud Scheduler',cls:'safe',fx:{burn:-190,morale:+8,investor:+8,credits:+6,debt:-5,log:'Dataflow batch. €5.85 → €0.30/mes.',tc:'g'}},
+      {t:'Añadir más workers "por si llegan datos de golpe"',cls:'danger',fx:{burn:+340,morale:-5,investor:-20,credits:-8,debt:+10,log:'Burn sube a €1.187/mes. Inversor pide call urgente.',tc:'r'}},
+      {t:'"El streaming en tiempo real es el futuro" (sin datos)',cls:'warn',fx:{burn:+30,morale:-5,investor:-8,credits:-4,debt:+20,log:'Pipeline sigue. El futuro es caro sin datos.',tc:'a'}},
+      {t:'Escribir un thread de LinkedIn sobre "event-driven architecture"',cls:'sneaky',fx:{burn:+5,morale:+10,investor:-3,credits:-2,debt:+5,log:'Thread: 47 likes. Pipeline sigue. Créditos bajando.',tc:'a'}},
+    ],
+    exp_ok:'✓ Dataflow streaming mantiene workers activos 24/7. Batch programado es 95% más barato y hace exactamente lo mismo para volúmenes bajos.',
+    exp_ko:'✗ Workers en espera = factura fija sin importar si hay datos. Para un lab, batch scheduled es siempre la respuesta.',
+    correct:[0]},
+
+  { title:'El n8n lleva 9 días sin ejecutar workflows', critical:false,
+    desc:'Tu VM de Compute Engine está caliente. n8n está corriendo. El último workflow se ejecutó hace 9 días. La VM factura igual. Hoy, mañana, el mes que viene.',
+    choices:[
+      {t:'Migrar n8n a Cloud Run con scale-to-zero',cls:'safe',fx:{burn:-65,morale:+10,investor:+5,credits:+4,debt:-5,log:'n8n duerme cuando no trabaja. Cold start: 4s. Coste: €0.10/mes.',tc:'g'}},
+      {t:'Montar un segundo n8n para alta disponibilidad',cls:'danger',fx:{burn:+120,morale:+5,investor:-15,credits:-6,debt:+15,log:'2 n8n sin workflows. Doble vacío existencial. Doble factura.',tc:'r'}},
+      {t:'Crear un workflow que haga ping cada minuto',cls:'sneaky',fx:{burn:+2,morale:-3,investor:0,credits:-1,debt:+5,log:'Workflow hace ping. Nadie sabe por qué existe.',tc:'a'}},
+      {t:'Apagar la VM "solo unos días" sin exportar nada',cls:'warn',fx:{burn:-35,morale:-5,investor:+3,credits:+2,debt:+10,log:'VM apagada. n8n pierde todos los workflows. Oops.',tc:'a'}},
+    ],
+    exp_ok:'✓ Cloud Run con scale-to-zero: €0.00 cuando no hay workflows activos, arranca en 3-8s cuando llega un trigger.',
+    exp_ko:'✗ VM siempre encendida = factura por existir. Apagar sin exportar = perder todo el historial.',
+    correct:[0]},
+
+  { title:'Board meeting. El CFO tiene una hoja de Excel.', critical:true,
+    desc:'La hoja tiene "Cloud Spend" y "Usuarios activos". El ratio es €70/usuario/mes. El CFO levanta la vista lentamente. El silencio dura demasiado.',
+    choices:[
+      {t:'Presentar plan de optimización con métricas y timeline',cls:'safe',fx:{burn:-100,morale:+5,investor:+20,credits:+3,debt:-10,log:'Inversor satisfecho. "Esto es lo que quería ver." Respiras.',tc:'g'}},
+      {t:'"Los usuarios son early adopters, no representativos"',cls:'warn',fx:{burn:0,morale:+5,investor:-15,credits:-2,debt:+10,log:'CFO escribe algo. No es un emoji feliz.',tc:'a'}},
+      {t:'Prometer 1.000 usuarios para Q3 sin plan claro',cls:'danger',fx:{burn:+200,morale:+10,investor:-5,credits:-5,debt:+20,log:'Promesa registrada. Q3 llega. Los usuarios no.',tc:'r'}},
+      {t:'Cambiar el tema a "nuestra tecnología es disruptiva"',cls:'sneaky',fx:{burn:0,morale:-10,investor:-20,credits:0,debt:+15,log:'CFO no olvidó la pregunta. La aparcó con intereses.',tc:'r'}},
+    ],
+    exp_ok:'✓ Los inversores no exigen perfección, exigen que el equipo entienda los problemas y tenga un plan concreto.',
+    exp_ko:'✗ "Disruptivo" no es respuesta a €70/usuario/mes. La distinción entre CTO que entiende costes y CTO que los ignora tiene consecuencias directas.',
+    correct:[0]},
+
+  { title:'Alerta: créditos GCP al 50%', critical:false,
+    desc:'Google manda un email muy amable. Demasiado amable. "Hemos notado que tus créditos están al 50%." Traducción: en pocas semanas empieza la factura real.',
+    choices:[
+      {t:'Auditoría completa + apagar todo lo innecesario',cls:'safe',fx:{burn:-250,morale:+8,investor:+15,credits:+5,debt:-15,log:'Burn proyectado sin créditos: €47/mes. Bien hecho.',tc:'g'}},
+      {t:'Buscar más créditos en otro programa de Google',cls:'warn',fx:{burn:0,morale:+5,investor:0,credits:+20,debt:+10,log:'Créditos encontrados. Parche temporal. Arquitectura igual.',tc:'a'}},
+      {t:'"Seguro que duran más, no me preocupa"',cls:'danger',fx:{burn:+50,morale:0,investor:-10,credits:-15,debt:+15,log:'Los créditos no duran más. La factura real se acerca.',tc:'r'}},
+      {t:'Añadir más servicios para "aprovechar los créditos"',cls:'sneaky',fx:{burn:+200,morale:+5,investor:-8,credits:-20,debt:+25,log:'Burn: €1.047/mes. Créditos aceleran su caída.',tc:'r'}},
+    ],
+    exp_ok:'✓ Al 50% todavía tienes tiempo. Úsalo para auditar y optimizar, no para buscar más créditos que posponen el problema.',
+    exp_ko:'✗ Más créditos posponen el problema. La arquitectura cara no se resuelve con más créditos, se resuelve con menos servicios idle.',
+    correct:[0]},
+
+  { title:'El dev sénior pide hablar en privado', critical:false,
+    desc:'"Llevamos 6 meses. K8s nunca ha tenido más de 2 pods. Dataflow procesa 200 filas al día. Monitoring cobra por métricas de un cluster vacío. Hay que hablar."',
+    choices:[
+      {t:'Escucharle y hacer los cambios que propone esta semana',cls:'safe',fx:{burn:-180,morale:+20,investor:+10,credits:+5,debt:-20,log:'Dev lidera la migración. 2 sprints: arquitectura lean. Ahorro: €200/mes.',tc:'g'}},
+      {t:'"Lo analizamos en el próximo sprint planning"',cls:'warn',fx:{burn:0,morale:-15,investor:-5,credits:-3,debt:+15,log:'Sprint planning llega. El tema no entra. Dev actualiza LinkedIn.',tc:'a'}},
+      {t:'Ascenderle a "Cloud Architect" sin cambiar nada',cls:'sneaky',fx:{burn:+30,morale:+5,investor:-5,credits:-2,debt:+20,log:'Nuevo título. Mismo K8s vacío. La deuda técnica tiene un arquitecto.',tc:'a'}},
+      {t:'"La arquitectura es una decisión estratégica, no técnica"',cls:'danger',fx:{burn:+5,morale:-30,investor:-5,credits:-2,debt:+25,log:'Dev dimite. Se llevó el conocimiento. Tenía razón.',tc:'r'}},
+    ],
+    exp_ok:'✓ El dev que señala problemas reales es el activo más valioso del equipo. Escuchar y actuar es la única respuesta correcta.',
+    exp_ko:'✗ Los developers que detectan problemas de coste son los que necesitas. Ignorarlos tiene coste humano y financiero.',
+    correct:[0]},
+
+  { title:'Cloud Monitoring lleva 8 meses cobrando', critical:false,
+    desc:'Monitoring ha recogido métricas de tu cluster vacío 8 meses. Nunca configuraste una alerta. Nunca miraste un dashboard. €2.05 × 8 = €16.40 por no hacer nada.',
+    choices:[
+      {t:'Apagar K8s + desactivar Monitoring innecesario',cls:'safe',fx:{burn:-285,morale:+5,investor:+8,credits:+8,debt:-10,log:'K8s y Monitoring off. €285/mes menos.',tc:'g'}},
+      {t:'Empezar a usar Monitoring ahora "para rentabilizarlo"',cls:'warn',fx:{burn:+20,morale:+5,investor:-5,credits:-3,debt:+10,log:'Monitoring muestra métricas del cluster vacío. Hermoso.',tc:'a'}},
+      {t:'"Monitoring es crítico para la observabilidad"',cls:'danger',fx:{burn:+50,morale:0,investor:-12,credits:-5,debt:+15,log:'CFO pregunta qué observáis. "El cluster vacío." Silencio.',tc:'r'}},
+      {t:'Configurar alerta cuando el gasto supere €0.01',cls:'sneaky',fx:{burn:+2,morale:+8,investor:+2,credits:-1,debt:+5,log:'Alerta configurada. Se dispara inmediatamente. 720 emails/mes.',tc:'a'}},
+    ],
+    exp_ok:'✓ Monitoring es un coste derivado de K8s. Sin K8s, sin Monitoring innecesario. Resuelve la causa raíz.',
+    exp_ko:'✗ Intentar rentabilizar un coste ya pagado es la falacia del coste hundido. El coste pasado no cambia la decisión óptima futura.',
+    correct:[0]},
+
+  { title:'Créditos al 15%. La factura real se acerca.', critical:true,
+    desc:'Google deja de ser amable. "Action required". Burn proyectado sin créditos: €847/mes. 3-4 semanas antes de la primera factura real.',
+    choices:[
+      {t:'Migración completa a arquitectura serverless esta semana',cls:'safe',fx:{burn:-700,morale:+5,investor:+25,credits:+5,debt:-20,log:'Cloud Run + batch. Burn real: €47/mes. Inversores aliviados.',tc:'g'}},
+      {t:'Solicitar créditos de emergencia a Google',cls:'warn',fx:{burn:0,morale:0,investor:-10,credits:+10,debt:+10,log:'Google concede €200. Parche de 2-3 semanas.',tc:'a'}},
+      {t:'Reducir equipo para compensar el burn de infraestructura',cls:'danger',fx:{burn:-200,morale:-40,investor:-15,credits:-5,debt:+20,log:'Despido para pagar K8s vacío. La noticia llega a Twitter.',tc:'r'}},
+      {t:'No hacer nada y esperar más dinero de los inversores',cls:'sneaky',fx:{burn:+100,morale:-10,investor:-30,credits:-15,debt:+30,log:'Inversores no meten más. Proponen "una conversación difícil".',tc:'r'}},
+    ],
+    exp_ok:'✓ Al 15% todavía tienes margen para actuar bien. La migración completa es agresiva pero es la única que resuelve el problema de fondo.',
+    exp_ko:'✗ Con créditos al 15% ya no hay tiempo para parches. O migras la arquitectura ahora o pagas la factura cara indefinidamente.',
+    correct:[0]},
+
+  { title:'Mes 10. Veredicto final.', critical:false, final:true,
+    desc:'10 meses. Decisiones tomadas. Consecuencias cosechadas.',
+    choices:[] }
+];
+
+function clamp(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
+
+function tlog(msg,cls){
+  const t=document.getElementById('terminal');
+  const d=document.createElement('div');
+  d.className='tline t-'+(cls||'w');
+  d.textContent='> '+msg;
+  t.appendChild(d);
+  t.scrollTop=t.scrollHeight;
+}
+
+function progress(n){ return '▰'.repeat(n)+'▱'.repeat(10-n); }
+
+function updateUI(){
+  G.runway=Math.round(20000/Math.max(G.burn,1));
+  document.getElementById('g-runway').textContent=Math.max(0,G.runway)+'m';
+  document.getElementById('g-burn').textContent='€'+Math.max(0,G.burn).toLocaleString();
+  document.getElementById('g-month').textContent=G.month;
+  document.getElementById('g-users').textContent=G.users;
+
+  const mo=clamp(G.morale,0,100),cr=clamp(G.credits,0,100);
+  const inv=clamp(G.investor,0,100),dbt=clamp(G.debt,0,100);
+
+  document.getElementById('b-morale').style.cssText=`width:${mo}%;background:${mo>50?'var(--green)':mo>25?'var(--amber)':'var(--red)'};`;
+  document.getElementById('b-credits').style.cssText=`width:${cr}%;background:${cr>40?'var(--blue)':cr>20?'var(--amber)':'var(--red)'};`;
+  document.getElementById('b-investor').style.cssText=`width:${inv}%;background:${inv>50?'var(--green)':inv>25?'var(--amber)':'var(--red)'};`;
+  document.getElementById('b-debt').style.cssText=`width:${dbt}%;background:${dbt>60?'var(--red)':dbt>30?'var(--amber)':'var(--purple)'};`;
+
+  document.getElementById('v-morale').textContent=mo+'%';
+  document.getElementById('v-credits').textContent=cr+'%';
+  document.getElementById('v-investor').textContent=inv+'%';
+  document.getElementById('v-debt').textContent=dbt+'%';
+
+  const dead=G.credits<=0||G.runway<=0||G.morale<=0;
+  const good=G.burn<150;
+  const st=document.getElementById('g-status');
+  if(dead)                           {st.textContent='MUERTA';       st.className='status-badge badge-dead';}
+  else if(good)                      {st.textContent='Lean & mean';  st.className='status-badge badge-lean';}
+  else if(G.burn>1000||inv<20)       {st.textContent='En peligro';   st.className='status-badge badge-warn';}
+  else                               {st.textContent='Sobreviviendo';st.className='status-badge badge-ok';}
+
+  document.getElementById('main-progress').style.width=Math.round((cur/10)*100)+'%';
+}
+
+function loadEvent(idx){
+  const ev=EVENTS[idx];
+  if(!ev) return;
+
+  document.getElementById('ticker').textContent=TICKERS[Math.min(idx,TICKERS.length-1)];
+  document.getElementById('e-month').textContent=G.month;
+  document.getElementById('e-progress').textContent=progress(Math.min(idx,10));
+  document.getElementById('e-title').textContent=ev.title;
+  document.getElementById('e-desc').textContent=ev.desc;
+  document.getElementById('event-panel').className='event-panel'+(ev.critical?' critical':'');
+
+  const cd=document.getElementById('e-choices');
+  cd.innerHTML='';
+  answered=false;
+
+  const dead=G.credits<=0||G.runway<=0||G.morale<=0;
+
+  if(ev.final||dead){
+    const win=!dead&&G.burn<150;
+    const neutral=!dead&&!win;
+    const box=document.createElement('div');
+    box.className='gameover-box'+(win?' win':neutral?' neutral':'');
+    const titulo=dead?'💀 Game over · La nube te devoró':win?'🏆 Año 1 completado · arquitectura optimizada':'📊 Año 1 completado · vivo, con cicatrices';
+    const desc=dead
+      ?`Los créditos se acabaron. Factura real: €${G.burn}/mes. Kubernetes sigue corriendo. Nadie sabe apagarlo.`
+      :win?`Burn: €${G.burn}/mes. Arquitectura serverless. Inversores satisfechos. Hiciste el check-out a tiempo.`
+          :`Burn: €${G.burn}/mes. La primera factura sin créditos llegará pronto. Deuda técnica: ${G.debt}%.`;
+    box.innerHTML=`<div class="gameover-title">${titulo}</div>${desc}`;
+    cd.appendChild(box);
+    const rb=document.createElement('button');
+    rb.className='choice-btn safe';
+    rb.style.marginTop='10px';
+    rb.textContent=dead?'↺ Reiniciar con otra cuenta de Gmail':'↺ Jugar de nuevo';
+    rb.onclick=resetGame;
+    cd.appendChild(rb);
+    tlog(dead?'STARTUP: NULL · gasto_pasivo_no_controlado':'FINAL · burn: €'+G.burn,dead?'r':'g');
+    return;
+  }
+
+  ev.choices.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn '+c.cls;
+    btn.textContent=c.t;
+    btn.onclick=()=>applyChoice(c,i,ev);
+    cd.appendChild(btn);
+  });
+}
+
+function applyChoice(c,idx,ev){
+  if(answered) return;
+  answered=true;
+  const fx=c.fx;
+  if(fx.burn)     G.burn=Math.max(0,G.burn+fx.burn);
+  if(fx.morale)   G.morale=clamp(G.morale+fx.morale,0,100);
+  if(fx.credits)  G.credits=clamp(G.credits+fx.credits,0,100);
+  if(fx.investor) G.investor=clamp(G.investor+fx.investor,0,100);
+  if(fx.debt)     G.debt=clamp(G.debt+fx.debt,0,100);
+  if(fx.log)      tlog(fx.log,fx.tc||'w');
+
+  document.querySelectorAll('#e-choices .choice-btn').forEach(b=>{b.disabled=true;});
+
+  const isOk=ev.correct&&ev.correct.includes(idx);
+  const exp=document.createElement('div');
+  exp.className='explanation '+(isOk?'exp-ok':'exp-ko');
+  exp.textContent=isOk?ev.exp_ok:ev.exp_ko;
+  document.getElementById('e-choices').appendChild(exp);
+
+  const nb=document.createElement('button');
+  nb.className='choice-btn safe';
+  nb.style.marginTop='8px';
+  nb.textContent=cur>=EVENTS.length-2?'Ver resultado final →':'Siguiente mes →';
+  nb.onclick=()=>{G.month++;cur++;updateUI();loadEvent(cur);};
+  document.getElementById('e-choices').appendChild(nb);
+  updateUI();
+}
+
+function resetGame(){
+  G={month:1,burn:847,morale:75,credits:85,investor:60,users:12,debt:20};
+  cur=0;answered=false;
+  document.getElementById('terminal').innerHTML=
+    '<div class="tline t-g">> CloudBurn reiniciado</div>'+
+    '<div class="tline t-gray">> nueva startup · mismos peligros disponibles<span class="cursor">_</span></div>';
+  updateUI();loadEvent(0);
+}
+
+updateUI();
+loadEvent(0);
+</script>
+</body>
+</html>
