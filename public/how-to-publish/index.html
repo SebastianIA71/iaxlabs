@@ -279,55 +279,16 @@
       </div>
     </div>
     <div class="step-body">
-      <div class="note" style="margin-bottom:16px;">
-        <strong>Cómo funciona:</strong> <span class="cmd">Showcase.tsx</span> busca el topic featured y lo renderiza con <span class="cmd">featured={true}</span> en <span class="cmd">TopicPipeline</span>, que activa el layout a doble página. El resto van en grid de 2 columnas.
-      </div>
-      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:16px;">Son <strong style="color:#e0e0e0">3 archivos que tocar una sola vez</strong>. Después, para cambiar el featured solo tocas <span class="cmd">labs.ts</span>.</p>
-
-      <p style="font-size:12px;color:#E6332A;font-family:system-ui,sans-serif;font-weight:600;margin-bottom:6px;margin-top:16px;">PASO A — una sola vez: <span class="cmd">/data/topics.ts</span></p>
-      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-bottom:8px;">Añade <span class="cmd">featured</span> en dos sitios del <span class="cmd">buildTopics</span>:</p>
-      <div class="code-block"><pre><span class="cm">// 1. Dentro del forEach, en el steps.push()</span>
-map[lab.topic].steps.push({
-  title: lab.name,
-  subtitle: lab.subtitle,
-  slug: lab.slug,
-  url: lab.url,
-  type: lab.type,
-  order: lab.order ?? <span class="kw">999</span>,
-  <span class="hl">featured</span>: lab.featured ?? <span class="kw">false</span>,  <span class="cm">// ← añadir</span>
-});
-
-<span class="cm">// 2. En el return Object.values(map).map(...)</span>
-<span class="kw">return</span> Object.values(map).map((topic: <span class="kw">any</span>) => ({
-  title: topic.title,
-  description: topic.description,
-  image: topic.image,
-  steps: topic.steps.sort((a: <span class="kw">any</span>, b: <span class="kw">any</span>) => a.order - b.order),
-  <span class="hl">featured</span>: topic.steps.some((s: <span class="kw">any</span>) => s.featured === <span class="kw">true</span>),  <span class="cm">// ← añadir</span>
-}));</pre></div>
-
-      <p style="font-size:12px;color:#E6332A;font-family:system-ui,sans-serif;font-weight:600;margin-bottom:6px;margin-top:24px;">PASO B — una sola vez: <span class="cmd">Showcase.tsx</span></p>
-      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-bottom:8px;">Sustituye el find hardcodeado:</p>
-      <div class="code-block"><pre><span class="cm">// ❌ Antes (hardcodeado)</span>
-<span class="kw">const</span> featuredTopic = topics.find(t =>
-  t.title.toLowerCase().includes(<span class="str">"gcp"</span>)
-);
-
-<span class="cm">// ✅ Después (lee el campo de labs.ts)</span>
-<span class="kw">const</span> featuredTopic = topics.find(t => t.featured === <span class="kw">true</span>);</pre></div>
-
-      <p style="font-size:12px;color:#E6332A;font-family:system-ui,sans-serif;font-weight:600;margin-bottom:6px;margin-top:24px;">PASO C — cada vez que quieras cambiar el featured: <span class="cmd">/data/labs.ts</span></p>
-      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-bottom:8px;">Añade <span class="cmd">featured: true</span> al <span class="cmd">article</span> del topic que quieres destacar. Quita el del anterior.</p>
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:12px;">En <span class="cmd">/data/labs.ts</span>, añade <span class="cmd">featured: true</span> al <span class="cmd">article</span> del topic que quieres destacar. Quita el del anterior si lo había.</p>
       <div class="code-block"><pre>{
   <span class="hl">name</span>: <span class="str">"Título del artículo"</span>,
   <span class="hl">type</span>: <span class="str">"article"</span>,
   <span class="hl">topic</span>: <span class="str">"vectors"</span>,
-  <span class="hl">featured</span>: <span class="kw">true</span>,  <span class="cm">// ← solo esto, nada más</span>
+  <span class="hl">featured</span>: <span class="kw">true</span>,  <span class="cm">// ← solo esto</span>
   <span class="cm">// ... resto de campos igual</span>
 }</pre></div>
-
-      <div class="note" style="margin-top:12px;">
-        Solo un topic featured a la vez. Pasos A y B son <strong>únicos</strong> — una vez hechos, nunca más. El paso C es el único que repites cuando quieras rotar el topic destacado.
+      <div class="note">
+        Solo un topic featured a la vez. Push y listo.
       </div>
     </div>
   </div>
