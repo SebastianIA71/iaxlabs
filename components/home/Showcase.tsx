@@ -31,9 +31,7 @@ export default function Showcase() {
   const topics = buildTopics(labs);
 
   // 🔥 FEATURED más robusto
-  const featuredTopic = topics.find(t =>
-    t.title.toLowerCase().includes("gcp") 
-  );
+  const featuredTopic = topics.find(t => t.featured === true);
 
   const restTopics = topics.filter(t => t !== featuredTopic);
   const standaloneLabs = labs.filter(l => !l.topic);

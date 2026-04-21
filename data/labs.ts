@@ -165,6 +165,7 @@ export const labs = [
     image: "/experiments/0005-CL-01-cloudcosts/icon.JPG",
     type: "article",
     topic: "cloud-costs",
+    featured: true,  
     order: 0,
     topicTitle: "GCP Cloud Costs → Arquitectura Serverless",
     topicDescription: "De la VM siempre encendida al scale-to-zero",

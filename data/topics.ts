@@ -16,11 +16,12 @@ export function buildTopics(labs: any[]) {
 
     map[lab.topic].steps.push({
       title: lab.name,
-      subtitle: lab.subtitle, // ✅ clave
+      subtitle: lab.subtitle,
       slug: lab.slug,
       url: lab.url,
       type: lab.type,
       order: lab.order ?? 999,
+      featured: lab.featured ?? false,  // ← añadir esto
     });
 
     // ✅ seleccionar imagen del menor order
@@ -30,10 +31,11 @@ export function buildTopics(labs: any[]) {
     }
   });
 
-  return Object.values(map).map((topic: any) => ({
-    title: topic.title,
-    description: topic.description,
-    image: topic.image, // 👈 ahora sí correcto
-    steps: topic.steps.sort((a: any, b: any) => a.order - b.order),
-  }));
+    return Object.values(map).map((topic: any) => ({
+      title: topic.title,
+      description: topic.description,
+      image: topic.image,
+      steps: topic.steps.sort((a: any, b: any) => a.order - b.order),
+      featured: topic.steps.some((s: any) => s.featured === true),  // ← añadir esto
+    }));
 }
