@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo publicar en IAxLabs</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'SF Mono', 'Fira Code', monospace; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; padding: 48px 24px; }
+  .container { max-width: 760px; margin: 0 auto; }
+
+  .header { border-bottom: 1px solid #2a2a2a; padding-bottom: 32px; margin-bottom: 48px; }
+  .header h1 { font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.02em; }
+  .header p { font-size: 13px; color: #666; margin-top: 8px; font-family: system-ui, sans-serif; }
+  .badge { display: inline-block; font-size: 11px; background: #E6332A22; color: #E6332A; border: 1px solid #E6332A44; padding: 3px 10px; border-radius: 99px; margin-top: 12px; }
+
+  .step { margin-bottom: 48px; }
+  .step-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #E6332A; flex-shrink: 0; margin-top: 2px; }
+  .step-title { font-size: 16px; font-weight: 600; color: #fff; font-family: system-ui, sans-serif; line-height: 1.3; }
+  .step-sub { font-size: 13px; color: #666; margin-top: 4px; font-family: system-ui, sans-serif; }
+  .step-body { padding-left: 44px; }
+
+  .code-block { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px 20px; margin: 12px 0; overflow-x: auto; }
+  .code-block pre { font-size: 13px; line-height: 1.8; color: #ccc; white-space: pre; }
+  .kw { color: #E6332A; }
+  .str { color: #98c379; }
+  .cm { color: #555; font-style: italic; }
+  .hl { color: #e5c07b; }
+
+  .note { background: #161616; border-left: 3px solid #E6332A; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 13px; color: #999; font-family: system-ui, sans-serif; line-height: 1.6; }
+  .note strong { color: #e0e0e0; }
+
+  .file-tree { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px 20px; margin: 12px 0; font-size: 13px; line-height: 2; }
+  .tree-dir { color: #e5c07b; }
+  .tree-file { color: #98c379; }
+  .tree-new { color: #E6332A; }
+  .indent1 { padding-left: 20px; }
+  .indent2 { padding-left: 40px; }
+
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li { font-size: 14px; color: #ccc; padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-family: system-ui, sans-serif; display: flex; align-items: flex-start; gap: 10px; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: '○'; color: #E6332A; font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+
+  .slug-anatomy { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #2a2a2a; border: 1px solid #2a2a2a; border-radius: 8px; overflow: hidden; margin: 12px 0; }
+  .slug-part { background: #161616; padding: 12px; text-align: center; }
+  .slug-part .val { font-size: 16px; font-weight: 700; color: #E6332A; display: block; margin-bottom: 4px; }
+  .slug-part .label { font-size: 11px; color: #555; font-family: system-ui, sans-serif; }
+
+  .divider { border: none; border-top: 1px solid #1a1a1a; margin: 48px 0; }
+
+  .topic-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .type-card { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; text-align: center; }
+  .type-card .type-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .type-card .type-desc { font-size: 11px; color: #555; font-family: system-ui, sans-serif; }
+
+  .cmd { display: inline-block; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #e5c07b; }
+
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid #1a1a1a; font-size: 12px; color: #444; font-family: system-ui, sans-serif; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Cómo publicar en IAxLabs</h1>
+    <p>Guía operativa — para cuando vuelves después de 3 semanas y no recuerdas nada</p>
+    <span class="badge">uso interno · no indexado</span>
+  </div>
+
+  <!-- PASO 1: Slug -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <p class="step-title">Define el slug del nuevo topic</p>
+        <p class="step-sub">El slug identifica todo el topic y sus labs</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:12px;">El slug sigue siempre el mismo patrón:</p>
+      <div class="slug-anatomy">
+        <div class="slug-part"><span class="val">0006</span><span class="label">número topic</span></div>
+        <div class="slug-part"><span class="val">DB</span><span class="label">categoría (2 letras)</span></div>
+        <div class="slug-part"><span class="val">01</span><span class="label">número lab</span></div>
+        <div class="slug-part"><span class="val">vectors</span><span class="label">nombre corto</span></div>
+      </div>
+      <div class="note">
+        Ejemplo completo: <strong>0006-DB-01-vectors</strong><br>
+        Categorías usadas hasta ahora: <strong>PH</strong> (física), <strong>DA</strong> (datos), <strong>CS</strong> (computer science), <strong>AI</strong> (IA), <strong>CL</strong> (cloud), <strong>DB</strong> (databases)
+      </div>
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-top:12px;">Tipos de entrada en el topic:</p>
+      <div class="topic-types">
+        <div class="type-card"><p class="type-name">article</p><p class="type-desc">sin slug, solo url a Substack</p></div>
+        <div class="type-card"><p class="type-name">lab</p><p class="type-desc">con slug, carga index.html</p></div>
+        <div class="type-card"><p class="type-name">qa</p><p class="type-desc">con slug, igual que lab</p></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PASO 2: Carpetas -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <p class="step-title">Crea las carpetas en <span class="cmd">/public/experiments/</span></p>
+        <p class="step-sub">Una carpeta por cada lab y Q&A del topic</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="file-tree">
+        <div><span class="tree-dir">public/</span></div>
+        <div class="indent1"><span class="tree-dir">experiments/</span></div>
+        <div class="indent2"><span class="tree-new">0006-DB-01-vectors/</span></div>
+        <div class="indent2" style="padding-left:60px"><span class="tree-new">index.html</span> ← el lab</div>
+        <div class="indent2" style="padding-left:60px"><span class="tree-new">icon.JPG</span> ← imagen del topic (solo en el primer lab)</div>
+        <div class="indent2"><span class="tree-new">0006-DB-02-semantic/</span></div>
+        <div class="indent2" style="padding-left:60px"><span class="tree-new">index.html</span></div>
+        <div class="indent2"><span class="tree-new">0006-DB-03-qa/</span></div>
+        <div class="indent2" style="padding-left:60px"><span class="tree-new">index.html</span></div>
+      </div>
+      <div class="note">
+        <strong>El icon.JPG solo va en la carpeta del primer lab</strong> del topic (order: 1). Es la imagen que aparece en la home de IAxLabs. Se genera en Freepik y se guarda como JPG. Dimensiones recomendadas: 800×600px aprox.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PASO 3: index.html -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <p class="step-title">Crea el <span class="cmd">index.html</span> de cada lab</p>
+        <p class="step-sub">Copia uno existente como base y modifica el contenido</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="note">
+        Copia siempre un <strong>index.html existente</strong> del mismo estilo visual que quieres (light/dark, serif/sans). Los labs de cloud costs usan light mode con serif para títulos. Úsalos como referencia para topics nuevos.
+      </div>
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin:12px 0 8px;">Lo que necesitas cambiar en cada index.html:</p>
+      <ul class="checklist">
+        <li>Título de la página (<span class="cmd">&lt;title&gt;</span> y <span class="cmd">&lt;h1&gt;</span>)</li>
+        <li>Subtítulo y descripción del lab</li>
+        <li>El contenido interactivo (simulaciones, ejercicios, Q&A)</li>
+        <li>Los colores del acumulador / sesión si aplica</li>
+      </ul>
+      <div class="note" style="margin-top:16px;">
+        <strong>Convención UI:</strong> Lab 1 → light mode, acumulador arriba. Labs 2+ → Georgia serif para títulos, opciones de respuesta en color neutro (no revelar correcto antes de seleccionar).
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PASO 4: labs.ts -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <p class="step-title">Registra el topic en <span class="cmd">/data/labs.ts</span></p>
+        <p class="step-sub">Sin esto, el topic no aparece en ningún sitio</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:12px;">Añade al final del array en <span class="cmd">labs.ts</span> el bloque completo del nuevo topic:</p>
+      <div class="code-block"><pre><span class="cm">// =========================
+// 🗄️ TOPIC 6: BASES DE DATOS VECTORIALES
+// =========================</span>
+{
+  <span class="hl">name</span>: <span class="str">"Título del artículo en Substack"</span>,
+  <span class="hl">subtitle</span>: <span class="str">"Subtítulo del artículo"</span>,
+  <span class="hl">url</span>: <span class="str">"https://iafont.com/p/slug-del-articulo"</span>, <span class="cm">// URL real del post</span>
+  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">image</span>: <span class="str">"/experiments/0006-DB-01-vectors/icon.JPG"</span>,
+  <span class="hl">type</span>: <span class="str">"article"</span>,
+  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
+  <span class="hl">order</span>: <span class="kw">0</span>,
+  <span class="hl">topicTitle</span>: <span class="str">"BVD → Búsqueda Semántica"</span>,
+  <span class="hl">topicDescription</span>: <span class="str">"De vectores a memoria inteligente"</span>,
+},
+{
+  <span class="hl">name</span>: <span class="str">"Nombre del Lab 1"</span>,
+  <span class="hl">subtitle</span>: <span class="str">"Subtítulo corto"</span>,
+  <span class="hl">slug</span>: <span class="str">"0006-DB-01-vectors"</span>,
+  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">image</span>: <span class="str">"/experiments/0006-DB-01-vectors/icon.JPG"</span>,
+  <span class="hl">type</span>: <span class="str">"lab"</span>,
+  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
+  <span class="hl">order</span>: <span class="kw">1</span>,
+},
+{
+  <span class="hl">name</span>: <span class="str">"Nombre del Lab 2"</span>,
+  <span class="hl">subtitle</span>: <span class="str">"Subtítulo corto"</span>,
+  <span class="hl">slug</span>: <span class="str">"0006-DB-02-semantic"</span>,
+  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">type</span>: <span class="str">"lab"</span>,
+  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
+  <span class="hl">order</span>: <span class="kw">2</span>,
+},
+{
+  <span class="hl">name</span>: <span class="str">"Q&A Bases de Datos Vectoriales"</span>,
+  <span class="hl">subtitle</span>: <span class="str">"Lo que nadie explica bien sobre BVD"</span>,
+  <span class="hl">slug</span>: <span class="str">"0006-DB-03-qa"</span>,
+  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">type</span>: <span class="str">"qa"</span>,
+  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
+  <span class="hl">order</span>: <span class="kw">3</span>,
+},</pre></div>
+      <div class="note">
+        <strong>Importante:</strong> el campo <span class="cmd">url</span> del article se rellena con la URL real del post de Substack. Hasta que el artículo esté publicado, déjalo como <strong>https://iafont.com/</strong> (raíz). El 1 de mayo se actualizan todos.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PASO 5: Deploy -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div>
+        <p class="step-title">Haz push y verifica en Vercel</p>
+        <p class="step-sub">Vercel despliega automáticamente desde main</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="code-block"><pre><span class="cm"># En local, desde la raíz del proyecto</span>
+<span class="kw">git</span> add .
+<span class="kw">git</span> commit -m <span class="str">"feat: add topic 0006 BVD vectors"</span>
+<span class="kw">git</span> push origin main</pre></div>
+      <ul class="checklist">
+        <li>Vercel detecta el push y despliega automáticamente (~1-2 min)</li>
+        <li>Verifica en <strong>iaxlabs.com</strong> que el nuevo topic aparece en la home</li>
+        <li>Verifica que cada lab carga correctamente en <strong>iaxlabs.com/labs/0006-DB-01-vectors</strong></li>
+        <li>Verifica el icon.JPG en la card del topic</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CHECKLIST FINAL -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">✓</div>
+      <div>
+        <p class="step-title">Checklist de publicación completa</p>
+        <p class="step-sub">Antes de dar por publicado un topic</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <ul class="checklist">
+        <li>Artículo publicado en IAfont (Substack)</li>
+        <li>URL real del artículo actualizada en labs.ts</li>
+        <li>Carpetas creadas en /public/experiments/</li>
+        <li>icon.JPG en la carpeta del primer lab</li>
+        <li>Todos los index.html funcionan correctamente</li>
+        <li>Labs verificados en móvil</li>
+        <li>Push a main y deploy verificado en Vercel</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FEATURED -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">★</div>
+      <div>
+        <p class="step-title">Destacar un topic a doble página</p>
+        <p class="step-sub">El topic featured aparece arriba, a ancho completo, antes del grid</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="note" style="margin-bottom:16px;">
+        <strong>Cómo funciona:</strong> <span class="cmd">Showcase.tsx</span> busca el topic featured y lo renderiza con <span class="cmd">featured={true}</span> en <span class="cmd">TopicPipeline</span>, que activa el layout a doble página. El resto van en grid de 2 columnas.
+      </div>
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:16px;">Son <strong style="color:#e0e0e0">3 archivos que tocar una sola vez</strong>. Después, para cambiar el featured solo tocas <span class="cmd">labs.ts</span>.</p>
+
+      <p style="font-size:12px;color:#E6332A;font-family:system-ui,sans-serif;font-weight:600;margin-bottom:6px;margin-top:16px;">PASO A — una sola vez: <span class="cmd">/data/topics.ts</span></p>
+      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-bottom:8px;">Añade <span class="cmd">featured</span> en dos sitios del <span class="cmd">buildTopics</span>:</p>
+      <div class="code-block"><pre><span class="cm">// 1. Dentro del forEach, en el steps.push()</span>
+map[lab.topic].steps.push({
+  title: lab.name,
+  subtitle: lab.subtitle,
+  slug: lab.slug,
+  url: lab.url,
+  type: lab.type,
+  order: lab.order ?? <span class="kw">999</span>,
+  <span class="hl">featured</span>: lab.featured ?? <span class="kw">false</span>,  <span class="cm">// ← añadir</span>
+});
+
+<span class="cm">// 2. En el return Object.values(map).map(...)</span>
+<span class="kw">return</span> Object.values(map).map((topic: <span class="kw">any</span>) => ({
+  title: topic.title,
+  description: topic.description,
+  image: topic.image,
+  steps: topic.steps.sort((a: <span class="kw">any</span>, b: <span class="kw">any</span>) => a.order - b.order),
+  <span class="hl">featured</span>: topic.steps.some((s: <span class="kw">any</span>) => s.featured === <span class="kw">true</span>),  <span class="cm">// ← añadir</span>
+}));</pre></div>
+
+      <p style="font-size:12px;color:#E6332A;font-family:system-ui,sans-serif;font-weight:600;margin-bottom:6px;margin-top:24px;">PASO B — una sola vez: <span class="cmd">Showcase.tsx</span></p>
+      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-bottom:8px;">Sustituye el find hardcodeado:</p>
+      <div class="code-block"><pre><span class="cm">// ❌ Antes (hardcodeado)</span>
+<span class="kw">const</span> featuredTopic = topics.find(t =>
+  t.title.toLowerCase().includes(<span class="str">"gcp"</span>)
+);
+
+<span class="cm">// ✅ Después (lee el campo de labs.ts)</span>
+<span class="kw">const</span> featuredTopic = topics.find(t => t.featured === <span class="kw">true</span>);</pre></div>
+
+      <p style="font-size:12px;color:#E6332A;font-family:system-ui,sans-serif;font-weight:600;margin-bottom:6px;margin-top:24px;">PASO C — cada vez que quieras cambiar el featured: <span class="cmd">/data/labs.ts</span></p>
+      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-bottom:8px;">Añade <span class="cmd">featured: true</span> al <span class="cmd">article</span> del topic que quieres destacar. Quita el del anterior.</p>
+      <div class="code-block"><pre>{
+  <span class="hl">name</span>: <span class="str">"Título del artículo"</span>,
+  <span class="hl">type</span>: <span class="str">"article"</span>,
+  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
+  <span class="hl">featured</span>: <span class="kw">true</span>,  <span class="cm">// ← solo esto, nada más</span>
+  <span class="cm">// ... resto de campos igual</span>
+}</pre></div>
+
+      <div class="note" style="margin-top:12px;">
+        Solo un topic featured a la vez. Pasos A y B son <strong>únicos</strong> — una vez hechos, nunca más. El paso C es el único que repites cuando quieras rotar el topic destacado.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    IAxLabs — guía interna · actualizada abril 2026
+  </div>
+
+</div>
+</body>
+</html>
