@@ -9,29 +9,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg:      #f4f3ef;
-    --bg2:     #ffffff;
-    --bg3:     #eeede9;
-    --bg4:     #e6e5e0;
-    --border:  rgba(0,0,0,0.08);
-    --border2: rgba(0,0,0,0.14);
-    --text:    #1a1c22;
-    --text2:   #5a5e6e;
-    --text3:   #9a9eae;
-    --red:     #d93b2a;
-    --red-d:   rgba(217,59,42,0.08);
-    --red-b:   rgba(217,59,42,0.18);
-    --amber:   #c97d10;
-    --amber-d: rgba(201,125,16,0.08);
-    --amber-b: rgba(201,125,16,0.2);
-    --green:   #1a9658;
-    --green-d: rgba(26,150,88,0.08);
-    --green-b: rgba(26,150,88,0.2);
-    --blue:    #2563c4;
-    --blue-d:  rgba(37,99,196,0.08);
-    --blue-b:  rgba(37,99,196,0.2);
-    --mono:    'Space Mono', monospace;
-    --display: 'Syne', sans-serif;
+    --bg:       #f4f3ef;
+    --bg2:      #ffffff;
+    --bg3:      #eeede9;
+    --bg4:      #e6e5e0;
+    --border:   rgba(0,0,0,0.08);
+    --border2:  rgba(0,0,0,0.14);
+    --text:     #1a1c22;
+    --text2:    #5a5e6e;
+    --text3:    #9a9eae;
+    --red:      #d93b2a;
+    --red-d:    rgba(217,59,42,0.08);
+    --red-b:    rgba(217,59,42,0.18);
+    --amber:    #c97d10;
+    --amber-d:  rgba(201,125,16,0.08);
+    --amber-b:  rgba(201,125,16,0.2);
+    --green:    #1a9658;
+    --green-d:  rgba(26,150,88,0.08);
+    --green-b:  rgba(26,150,88,0.2);
+    --blue:     #2563c4;
+    --blue-d:   rgba(37,99,196,0.08);
+    --blue-b:   rgba(37,99,196,0.2);
+    --mono:     'Space Mono', monospace;
+    --display:  'Syne', sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -140,11 +140,11 @@
     transition: all 0.2s;
   }
   .phase-btn.active .phase-icon  { background: var(--blue-d);  border-color: var(--blue-b);  }
-  .phase-btn.done   .phase-icon  { background: var(--green-d); border-color: var(--green-b); font-size: 12px; animation: checkpop 0.4s ease; }
+  .phase-btn.done    .phase-icon  { background: var(--green-d); border-color: var(--green-b); font-size: 12px; animation: checkpop 0.4s ease; }
 
   .phase-label { font-size: 11px; font-weight: 600; color: var(--text2); line-height: 1.3; }
   .phase-btn.active .phase-label { color: var(--blue); }
-  .phase-btn.done   .phase-label { color: var(--green); }
+  .phase-btn.done    .phase-label { color: var(--green); }
 
   /* ── MAIN PANEL ── */
   .main-panel { min-width: 0; }
@@ -204,7 +204,7 @@
   .c-amber  { color: #f5a020; }
   .c-blue   { color: #4488ff; }
   .c-red    { color: #ff6060; }
-  .c-gray   { color: #3a3f50; }
+  .c-gray   { color: #8892b0; } /* MODIFICACIÓN: Color gris legible */
   .c-white  { color: #dde1ed; }
 
   /* ── QUESTION ── */
@@ -256,7 +256,7 @@
   .exp-ok { background: var(--green-d); color: #0f6e3e; border: 1px solid var(--green-b); }
   .exp-ko { background: var(--red-d);   color: #a02a1c; border: 1px solid var(--red-b);   }
 
-  /* ── TERMINAL (panel lateral) ── */
+  /* ── TERMINAL ── */
   .terminal-wrap {
     background: #08090c;
     border-radius: 10px;
@@ -290,7 +290,7 @@
   .terminal::-webkit-scrollbar { width: 4px; }
   .terminal::-webkit-scrollbar-thumb { background: #1a1d24; border-radius: 2px; }
   .t-r { color: #ff5555; } .t-a { color: #f5a020; } .t-b { color: #4488ff; }
-  .t-g { color: #22d47a; } .t-w { color: #9aa0b0; } .t-gray { color: #3a3f50; }
+  .t-g { color: #22d47a; } .t-w { color: #9aa0b0; } .t-gray { color: #8892b0; } /* MODIFICACIÓN: Gris legible */
   .cursor { animation: blink 1s infinite; }
   .tline  { animation: fadein 0.25s ease; line-height: 1.7; }
 
@@ -330,7 +330,6 @@
   .btn.primary { border-color: var(--blue-b); color: var(--blue); background: var(--blue-d); }
   .btn.primary:hover { background: rgba(37,99,196,0.14); }
 
-  /* ── SUCCESS BANNER ── */
   .success-banner {
     background: var(--green-d);
     border: 1px solid var(--green-b);
@@ -340,6 +339,11 @@
   }
   .success-title { font-size: 1rem; font-weight: 800; color: var(--green); margin-bottom: 6px; }
   .success-body  { font-size: 12px; color: #0f6e3e; line-height: 1.7; font-family: var(--mono); }
+
+  /* MODIFICACIÓN: Bloque intro solicitado */
+  .intro-box { margin: 2.5rem 0; padding: 1.5rem; background: var(--bg3); border-radius: 12px; border-left: 4px solid var(--blue); }
+  .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .intro-p { font-size: 13px; color: var(--text2); line-height: 1.7; text-align: justify; }
 </style>
 </head>
 <body>
@@ -348,6 +352,20 @@
   <div class="lab-tag"><span>0005-CL-03</span> · cloud costs</div>
   <h1>Migrar n8n a <span class="accent">Cloud Run</span></h1>
   <p class="subtitle">6 fases de migración real. Cada decisión tiene consecuencias.<br>Del gasto pasivo al scale-to-zero en menos de una hora.</p>
+</div>
+
+<div class="intro-box">
+  <h2 style="font-family: var(--mono); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 1rem;">
+    Manual de Migración: De VM a Serverless
+  </h2>
+  <div class="intro-grid">
+    <p class="intro-p">
+      <strong>Guía de Implementación:</strong> Este lab no es una teoría, es un blueprint. Sirve para guiarte en el proceso técnico de migrar instancias de n8n hacia un modelo de <em>scale-to-zero</em>. Aprenderás a desacoplar la base de datos y a gestionar secretos para que tu infraestructura sea tan ligera como segura.
+    </p>
+    <p class="intro-p">
+      <strong>Arquitectura de Ahorro:</strong> Pretendemos que domines el arte de "apagar la nube vieja". Al final de las 6 fases, habrás configurado un sistema que solo consume recursos cuando tus flujos de trabajo se disparan, eliminando el 95% del coste operativo innecesario.
+    </p>
+  </div>
 </div>
 
 <div class="metrics-row">
@@ -403,8 +421,9 @@
 </div>
 
 <script>
+// (El resto del script original permanece intacto)
 const PHASES = [
-  { label:'1 · Exportar datos',      icon:'📦' },
+  { label:'1 · Exportar datos',       icon:'📦' },
   { label:'2 · Base de datos',       icon:'🗄️' },
   { label:'3 · Secretos y vars',     icon:'🔐' },
   { label:'4 · Desplegar Cloud Run', icon:'☁️' },
@@ -676,7 +695,7 @@ const STEPS = [
     exp_ok: '✓ El orden correcto: verificar primero, luego stop (no delete), luego delete después de unos días. Tener ambos activos temporalmente tiene un coste mínimo y te da red de seguridad real.',
     exp_ko:  '✗ Nunca elimines el sistema origen antes de verificar el destino. La VM con stop mantiene el disco intacto por si necesitas recuperar algo. Delete es irreversible. El coste de tener ambos activos unos días es insignificante comparado con el riesgo.',
     logs: [
-      {t:'Importando 12 workflows en Cloud Run n8n...', c:'b'},
+      {t:'Importando 12 workflows in Cloud Run n8n...', c:'b'},
       {t:'Todos los workflows importados correctamente', c:'g'},
       {t:'Probando cold start: 4.2 segundos ✓', c:'g'},
       {t:'Verificando credenciales: 8/8 operativas ✓', c:'g'},
@@ -689,7 +708,7 @@ const STEPS = [
   }
 ];
 
-let currentStep  = 0;
+let currentStep   = 0;
 let completedSteps = [];
 let stepAnswered   = {};
 
@@ -727,7 +746,7 @@ function renderStep() {
   const done = stepAnswered[currentStep] !== undefined;
   const panel = document.getElementById('step-panel');
 
-  const codeLines = s.code.map(l =>
+  const codeLines = s.code.map(l => 
     l.t ? `<span class="${l.c || ''}">${l.t}</span>` : ''
   ).join('\n');
 
@@ -852,7 +871,7 @@ function resetLab() {
   currentStep    = 0;
   completedSteps = [];
   stepAnswered   = {};
-  document.getElementById('terminal').innerHTML =
+  document.getElementById('terminal').innerHTML = 
     '<div class="tline t-g">> n8n Migration Lab · reiniciado</div>' +
     '<div class="tline t-gray">> VM: us-central1 · n8n latest · SQLite<span class="cursor">_</span></div>';
   renderAll();
