@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agent Pipeline Lab · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f3ef; --bg2: #ffffff; --bg3: #eeede9;
+    --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+    --text: #1a1c22; --text2: #5a5e6e; --text3: #9a9eae;
+    --accent: #1a9658; --accent-soft: #e8f5e9;
+    --blue: #2563c4; --purple: #6e3fc0;
+    --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 2rem 1.5rem 5rem; max-width: 900px; margin: 0 auto; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border2); }
+  .lab-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--text3); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .lab-tag span { color: var(--blue); }
+  h1 { font-size: 2.2rem; font-weight: 700; line-height: 1.15; }
+
+  /* ── INTRO BOX (ESTILO COHERENTE) ── */
+  .intro-box { margin: 2rem 0; padding: 1.5rem; background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--blue); display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .intro-p { font-size: 13px; color: var(--text2); line-height: 1.7; text-align: justify; }
+  @media (max-width: 600px) { .intro-box { grid-template-columns: 1fr; } }
+
+  /* ── CHAIN VISUALIZER ── */
+  .chain-container { display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
+
+  .step-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.2rem; position: relative; transition: 0.3s;
+  }
+  .step-card.active { border-color: var(--blue); box-shadow: 0 4px 12px rgba(37,99,196,0.1); }
+  
+  .step-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .step-num { font-family: var(--mono); font-size: 9px; background: var(--bg3); padding: 3px 8px; border-radius: 4px; font-weight: 700; color: var(--text2); text-transform: uppercase; }
+  
+  .connector { width: 2px; height: 15px; background: var(--border2); margin-left: 30px; position: relative; }
+  .connector::after { content: '▼'; position: absolute; bottom: -8px; left: -5px; font-size: 10px; color: var(--border2); }
+
+  .input-area { font-family: var(--mono); font-size: 11px; color: var(--text2); background: #fafafa; padding: 10px; border-radius: 6px; border: 1px dashed #ddd; margin-bottom: 10px; line-height: 1.4; }
+  
+  textarea {
+    width: 100%; height: 55px; padding: 10px; border: 1px solid #ddd; border-radius: 8px;
+    font-family: var(--sans); font-size: 13px; resize: none; outline: none; transition: 0.2s; background: #fdfdfd;
+  }
+  textarea:focus { border-color: var(--blue); background: #fff; }
+
+  /* ── FINAL OUTPUT ── */
+  .final-output {
+    margin-top: 2rem; background: #0f1115; color: #abb2bf; padding: 1.5rem; border-radius: 16px;
+    font-family: var(--mono); border: 1px solid #2d3139; font-size: 13px;
+  }
+  .loading-bar { height: 4px; background: #1a1d24; border-radius: 2px; margin-top: 15px; overflow: hidden; display: none; }
+  .loading-fill { height: 100%; width: 0%; background: var(--blue); transition: width 5s linear; }
+
+  .btn-main {
+    width: 100%; padding: 16px; background: var(--text); color: white; border: none;
+    border-radius: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; margin-top: 1.5rem; transition: 0.3s;
+  }
+  .btn-main:hover { filter: brightness(1.2); transform: translateY(-1px); }
+  .btn-reset { background: transparent; color: var(--text3); border: 1px solid var(--border2); padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; font-size: 11px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="lab-tag"><span>0005-PR-03</span> · architectural prompting</div>
+  <h1>Pipeline de <span style="color:var(--blue)">Agentes</span></h1>
+  <p class="subtitle">Construye una tubería de inteligencia donde cada prompt es un experto modular.</p>
+</div>
+
+<div class="intro-box">
+  <p class="intro-p">
+    <strong>¿Para qué sirve?</strong> Este lab simula un flujo de procesamiento agéntico. Sirve para entender que la IA brilla cuando se fragmenta un problema en tareas atómicas. Aprenderás a construir una tubería de datos donde cada eslabón actúa como un Agente Especializado que refina la información.
+  </p>
+  <p class="intro-p">
+    <strong>¿Qué pretendemos?</strong> Que domines la modularidad. Al finalizar, serás capaz de orquestar micro-agentes para asegurar la calidad en cascada, evitando que el modelo se confunda con instrucciones largas y mejorando drásticamente el resultado final.
+  </p>
+</div>
+
+<div class="chain-container">
+  <div class="step-card active">
+    <div class="step-header">
+      <span class="step-num">Agente 1: Analista de Datos</span>
+      <span style="font-size:11px; font-weight:600">🎯 Extraer hechos</span>
+    </div>
+    <div class="input-area" id="input-1">Entrada Bruta: "El cliente dice que la web va lenta, que no puede pagar con tarjeta y que el soporte no responde..."</div>
+    <textarea id="p1">System: Eres un extractor de datos. 
+User: Identifica los problemas técnicos de este mensaje en una lista breve.</textarea>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step-card">
+    <div class="step-header">
+      <span class="step-num">Agente 2: Arquitecto de Soluciones</span>
+      <span style="font-size:11px; font-weight:600">🛠️ Resolver problemas</span>
+    </div>
+    <div class="input-area" id="input-2">Esperando salida del Analista...</div>
+    <textarea id="p2">System: Eres un arquitecto de sistemas.
+User: Propón una solución técnica concisa para cada problema de la lista recibida.</textarea>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step-card">
+    <div class="step-header">
+      <span class="step-num">Agente 3: Redactor Ejecutivo</span>
+      <span style="font-size:11px; font-weight:600">👔 Dar formato</span>
+    </div>
+    <div class="input-area" id="input-3">Esperando soluciones del Arquitecto...</div>
+    <textarea id="p3">System: Eres un comunicador profesional.
+User: Redacta un email interno para ingeniería con estas soluciones.</textarea>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step-card" style="border-style: dashed;">
+    <div class="step-header">
+      <span class="step-num">Agente 4: Control de Calidad (QA)</span>
+      <span style="font-size:11px; font-weight:600; color:var(--accent)">✅ Validar resultado</span>
+    </div>
+    <div class="input-area" id="input-4">Esperando borrador del Redactor...</div>
+    <textarea id="p4">System: Eres un supervisor crítico.
+User: Revisa el email. Asegúrate de que el tono es constructivo y las tareas son claras.</textarea>
+  </div>
+</div>
+
+<button class="btn-main" onclick="startChain()">Iniciar Flujo Agéntico</button>
+<button class="btn-reset" onclick="reset()">Reiniciar Pipeline</button>
+
+<div class="final-output" id="final-zone">
+  <div style="color:var(--blue); margin-bottom:10px; font-weight:700; font-family: var(--mono); text-transform: uppercase; font-size: 11px;">Consola de Salida:</div>
+  <div id="final-text">Sistema en espera de producción...</div>
+  <div class="loading-bar" id="l-bar"><div class="loading-fill" id="l-fill"></div></div>
+</div>
+
+<script>
+function startChain() {
+  const bar = document.getElementById('l-bar');
+  const fill = document.getElementById('l-fill');
+  const out = document.getElementById('final-text');
+  
+  bar.style.display = 'block';
+  fill.style.width = '100%';
+  out.textContent = "> Agente 1 (Analista) procesando entrada bruta...";
+
+  // Simulación de flujo de datos agéntico
+  setTimeout(() => {
+    document.getElementById('input-2').innerHTML = "<b>Recibido de Analista:</b><br>1. Latencia web, 2. Pasarela de pago KO, 3. Soporte inactivo.";
+    document.getElementById('input-2').style.color = "var(--blue)";
+    out.textContent = "> Datos entregados al Agente 2 (Arquitecto)...";
+  }, 1200);
+
+  setTimeout(() => {
+    document.getElementById('input-3').innerHTML = "<b>Recibido de Arquitecto:</b><br>- Optimización SQL/Caché, - Debug de integración Stripe, - Alerta en OpsGenie.";
+    document.getElementById('input-3').style.color = "var(--blue)";
+    out.textContent = "> Generando borrador profesional con Agente 3 (Redactor)...";
+  }, 2400);
+
+  setTimeout(() => {
+    document.getElementById('input-4').innerHTML = "<b>Recibido de Redactor:</b><br>Email borrador redactado. Listo para revisión de QA.";
+    document.getElementById('input-4').style.color = "var(--accent)";
+    out.textContent = "> Agente 4 (QA) validando claridad y tono...";
+  }, 3600);
+
+  setTimeout(() => {
+    out.innerHTML = `
+      <div style="color:#fff">
+        <span style="color:var(--accent)">[APROBADO POR QA]</span><br><br>
+        <b>PARA:</b> Equipo de Ingeniería<br>
+        <b>ASUNTO:</b> Prioridad Alta: Resolución de incidencias críticas<br><br>
+        Tras el análisis del feedback de clientes, el plan de acción es:<br>
+        1. <b>Infra:</b> Escalar nodos y optimizar queries para corregir la latencia.<br>
+        2. <b>Pagos:</b> Verificar logs de la pasarela para restaurar pagos con tarjeta.<br>
+        3. <b>Operaciones:</b> Reestablecer canales de soporte técnico de inmediato.
+      </div>`;
+    fill.style.background = "var(--accent)";
+  }, 5000);
+}
+
+function reset() {
+  location.reload();
+}
+</script>
+
+</body>
+</html>

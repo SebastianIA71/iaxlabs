@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prompt Lab: Mix Panel · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f3ef; --bg2: #ffffff; --bg3: #eeede9;
+    --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+    --text: #1a1c22; --text2: #5a5e6e; --text3: #9a9eae;
+    --accent: #6e3fc0; --accent-soft: #f3effb;
+    --green: #1a9658; --amber: #c97d10; --red: #d93b2a;
+    --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 2rem 1.5rem 5rem; max-width: 900px; margin: 0 auto; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border2); }
+  .lab-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--text3); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .lab-tag span { color: var(--accent); }
+  h1 { font-size: 2.2rem; font-weight: 700; line-height: 1.15; margin-bottom: 0.4rem; }
+
+  /* ── INTRO ── */
+  .intro-box { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; background: var(--bg2); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+  .intro-p { font-size: 13px; color: var(--text2); line-height: 1.7; text-align: justify; }
+
+  /* ── MIX PANEL (POTENCIOMETROS) ── */
+  .mix-panel { 
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; 
+    padding: 1.5rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+  }
+  .pot-group { text-align: center; }
+  .pot-label { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 15px; display: block; }
+  
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-runnable-track { background: var(--bg3); height: 6px; border-radius: 3px; }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; 
+    background: var(--accent); margin-top: -6px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* ── AVATAR & FEEDBACK ── */
+  .visual-feedback {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 2rem;
+  }
+  .avatar {
+    width: 90px; height: 90px; border-radius: 50%; background: var(--bg3);
+    display: flex; align-items: center; justify-content: center; font-size: 45px;
+    transition: 0.3s; border: 3px solid #ddd;
+  }
+  .warning-msg { 
+    font-size: 11px; color: var(--red); font-family: var(--mono); margin-top: 8px; font-weight: 700;
+    display: none; animation: shake 0.5s infinite;
+  }
+
+  /* ── EDITOR ── */
+  .editor-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  textarea {
+    width: 100%; height: 120px; padding: 1rem; border: 1px solid #ddd; border-radius: 8px;
+    font-family: var(--mono); font-size: 14px; background: #fafafa; outline: none; resize: none;
+  }
+  
+  /* ── OUTPUT TERMINAL ── */
+  .terminal {
+    background: #0f1115; color: #abb2bf; padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem;
+    font-family: var(--mono); font-size: 13px; min-height: 100px; line-height: 1.6;
+  }
+
+  .actions { display: grid; grid-template-columns: 1fr 200px; gap: 10px; margin-top: 1rem; }
+  .btn-run { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+  .btn-reset { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+  
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-2px)} 75%{transform:translateX(2px)} }
+  .glitch { animation: shake 0.1s infinite; filter: hue-rotate(90deg); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="lab-tag"><span>0005-PR-02</span> · prompt dynamics</div>
+  <h1>La Consola de <span style="color:var(--accent)">Inferencia</span></h1>
+  <p class="subtitle">Ajusta los potenciómetros del modelo y observa cuándo el comportamiento se rompe.</p>
+</div>
+
+<div class="intro-box">
+  <p class="intro-p"><strong>¿Para qué sirve?</strong> Para entender que un modelo de lenguaje tiene "perillas" técnicas. No solo importa qué dices (Prompt), sino cómo dejas que la IA lo procese (Temperatura y Aleatoriedad).</p>
+  <p class="intro-p"><strong>Cuidado:</strong> Si llevas los niveles al extremo, el modelo puede volverse demasiado rígido o entrar en un bucle de locura semántica. El equilibrio es la clave.</p>
+</div>
+
+<div class="mix-panel">
+  <div class="pot-group">
+    <span class="pot-label">Creatividad (Temp)</span>
+    <input type="range" id="p-temp" min="0" max="200" value="70" oninput="updateMix()">
+    <div class="pot-label" id="v-temp" style="margin-top:10px">Normal</div>
+  </div>
+  <div class="pot-group">
+    <span class="pot-label">Rigidez (Top-P)</span>
+    <input type="range" id="p-rigid" min="0" max="100" value="80" oninput="updateMix()">
+    <div class="pot-label" id="v-rigid" style="margin-top:10px">Equilibrado</div>
+  </div>
+  <div class="pot-group">
+    <span class="pot-label">Longitud (Max T)</span>
+    <input type="range" id="p-long" min="10" max="100" value="50" oninput="updateMix()">
+    <div class="pot-label" id="v-long" style="margin-top:10px">Medio</div>
+  </div>
+</div>
+
+<div class="visual-feedback">
+  <div class="avatar" id="avatar">🧐</div>
+  <div style="flex:1">
+    <div id="mood-title" style="font-weight:700; font-size:1.1rem">Modo Analítico</div>
+    <div id="mood-desc" style="font-size:12px; color:var(--text2)">Configuración estándar. Respuestas coherentes y esperables.</div>
+    <div id="warning" class="warning-msg">⚠️ CRITICAL: NIVEL DE ALUCINACIÓN INESTABLE</div>
+  </div>
+</div>
+
+<div class="editor-card">
+  <span class="pot-label" style="text-align:left">Prompt de entrada</span>
+  <textarea id="promptInput" placeholder="Escribe algo aquí..."></textarea>
+  
+  <div class="actions">
+    <button class="btn-run" onclick="run()">Ejecutar con este ajuste</button>
+    <button class="btn-reset" onclick="reset()">Reiniciar Mesa</button>
+  </div>
+</div>
+
+<div class="terminal" id="output">> Sistema en espera...</div>
+
+<script>
+const avatar = document.getElementById('avatar');
+const warning = document.getElementById('warning');
+const out = document.getElementById('output');
+
+function updateMix() {
+  const t = document.getElementById('p-temp').value;
+  const r = document.getElementById('p-rigid').value;
+  
+  // Lógica de Creatividad
+  if(t > 150) {
+    avatar.textContent = '🤪';
+    avatar.classList.add('glitch');
+    warning.style.display = 'block';
+    document.getElementById('mood-title').textContent = 'Caos Creativo';
+    document.getElementById('v-temp').textContent = 'Peligro';
+  } else if(t < 30) {
+    avatar.textContent = '🤖';
+    avatar.classList.remove('glitch');
+    warning.style.display = 'none';
+    document.getElementById('mood-title').textContent = 'Autómata Rígido';
+    document.getElementById('v-temp').textContent = 'Mínima';
+  } else {
+    avatar.textContent = '🧐';
+    avatar.classList.remove('glitch');
+    warning.style.display = 'none';
+    document.getElementById('mood-title').textContent = 'Modo Analítico';
+    document.getElementById('v-temp').textContent = 'Normal';
+  }
+}
+
+function run() {
+  const t = document.getElementById('p-temp').value;
+  const l = document.getElementById('p-long').value;
+  out.textContent = '> Inferencia iniciada...';
+  
+  setTimeout(() => {
+    let res = "";
+    if(t > 150) {
+      res = "Error_0x99: La probabilidad de las nubes de neón es inversamente proporcional al azul del pensamiento digital abstracto... [ALUCINACIÓN DETECTADA]";
+    } else if(t < 30) {
+      res = "Afirmativo. Instrucción procesada. El resultado es 1. Fin de la cadena.";
+    } else {
+      res = "He procesado tu prompt usando una temperatura equilibrada. La respuesta es coherente, sigue el hilo lógico y utiliza una longitud de " + l + " tokens para evitar el relleno innecesario.";
+    }
+    
+    out.textContent = "";
+    let i = 0;
+    const interval = setInterval(() => {
+      out.textContent += res[i];
+      i++;
+      if(i >= res.length) clearInterval(interval);
+    }, 20);
+  }, 600);
+}
+
+function reset() {
+  document.getElementById('p-temp').value = 70;
+  document.getElementById('p-rigid').value = 80;
+  document.getElementById('p-long').value = 50;
+  document.getElementById('promptInput').value = "";
+  out.textContent = "> Mesa reiniciada. Sistemas en espera.";
+  updateMix();
+}
+</script>
+
+</body>
+</html>
