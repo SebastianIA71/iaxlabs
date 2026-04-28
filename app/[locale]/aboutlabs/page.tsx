@@ -120,7 +120,7 @@ export default function QueEsUnLabPage() {
           Cada lab tiene su enlace al artículo correspondiente.
         </p>
         <p className="italic">
-          (La suscripción a IAfont es gratis. Sin spam. Sin newsletter de los martes con 11 tips.)
+          (La suscripción a IAfont es gratis. Sin spam. Sin newsletter de los martes con 11 tips totalmente imprescindibles.. 😉.)
         </p>
       </div>
 

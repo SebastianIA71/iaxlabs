@@ -33,6 +33,8 @@ export default function AboutPage() {
       {/* BLOQUE ANTI-HYPE — destacado visualmente */}
       <div className="mb-16 border-l-2 border-slate-300 dark:border-slate-600 pl-6 space-y-4 text-slate-600 dark:text-slate-400">
         <p className="leading-relaxed">
+          Abres tu red social preferida cualquier día y lees:<br />
+          <br />
           "Esto es una locura."<br />
           "Esto lo cambia todo."<br />
           "Este LLM se carga a n8n."<br />
@@ -57,7 +59,7 @@ export default function AboutPage() {
           Trabajamos con sistemas.
         </p>
         <p className="italic text-sm">
-          (Más aburrido. Mucho más útil.)
+          (Quizás un poco más aburrido. Mucho más útil.)
         </p>
       </div>
  
@@ -69,9 +71,12 @@ export default function AboutPage() {
         <p>
           La IA no es solo una herramienta más.<br />
           Es un cambio de capa.
+          Es mucho más que una herramienta.
+          Y si alguien te dice que es un experto, ojo, porque probablemente solo sepa usarla, no entenderla.
+          Obviamente hay expertos, pero no salen dando los titulares de impacto que crean clickbait.
         </p>
         <p className="italic">
-          (Y eso no cabe en un tutorial de 10 minutos.)
+          (Imagínate condensar esta revolución en un tutorial de 15 minutos - con 3 anuncios embebidos-)
         </p>
         <p>
           Está redefiniendo cómo trabajamos, cómo tomamos decisiones,
@@ -82,14 +87,14 @@ export default function AboutPage() {
           Busca entender los fundamentos.
         </p>
         <p className="italic">
-          (Sí, eso implica pensar un poco más.)
+          (Sí, eso implica pensar un poco más y perderse de vez en cuando.)
         </p>
         <p>
-          Física, matemáticas, sistemas, datos.<br />
+          Todo está ahí: física, matemáticas, sistemas, datos.<br />
           No como teoría aislada, sino como base para aplicar IA mejor.
         </p>
         <p className="italic">
-          (Spoiler: la IA no ha sustituido a las matemáticas.)
+          (Spoiler: la IA no ha sustituido a las matemáticas ni a la física. De hecho, las ha hecho más necesarias que nunca.)
         </p>
         <p>
           Porque lo que viene no es una mejora incremental.<br />
@@ -143,7 +148,7 @@ export default function AboutPage() {
           <p>Sin rediseño de procesos, la adopción fracasa.</p>
         </div>
         <p className="italic">
-          (Pero al menos tendrás una demo bonita.)
+          (Pero al menos tendrás una demo bonita 🌷.)
         </p>
         <p>
           La clave no está en usar IA, sino en integrarla correctamente en el sistema.
@@ -158,7 +163,7 @@ export default function AboutPage() {
         <div className="border border-slate-200 dark:border-slate-700 rounded-xl px-6 py-6 space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
           <p>
             Profesional con más de 30 años de experiencia en el sector bancario,
-            especializado en organización, procesos y tecnología.
+            especializado - No experto - en organización, procesos y tecnología.
           </p>
           <p>
             En los últimos años, centrado en inteligencia artificial, automatización y cloud,
@@ -186,7 +191,7 @@ export default function AboutPage() {
           {[
             { name: "IAfont", desc: "contenido, artículos y reflexión" },
             { name: "IAXLabs", desc: "experimentación y laboratorio" },
-            { name: "IAXCore", desc: "visión futura de aplicación en negocio" },
+            { name: "IAXCore", desc: "visión futura de aplicación en negocio (Under perpetual construction)" },
           ].map((item) => (
             <li
               key={item.name}
