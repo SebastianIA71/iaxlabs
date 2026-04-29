@@ -1,5 +1,4 @@
 import { Atom, Brain, Cloud, Code, Database } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 const iconMap = {
@@ -24,20 +23,19 @@ export default function LabCard({ lab }: any) {
                  p-6 transition mx-auto max-w-md text-center"
     >
       {/* 🔼 CONTENIDO */}
-      <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center">
 
         {/* 🖼️ Imagen */}
         {lab.image && (
-          <div className="w-12 h-12 relative mb-4">
-            <Image
+          <div className="mb-4 rounded-xl overflow-hidden" style={{ width: '144px', height: '144px' }}>
+            <img
               src={lab.image}
               alt={lab.name}
-              fill
-              className="object-contain"
+              style={{ width: '144px', height: '144px', objectFit: 'cover' }}
             />
           </div>
         )}
-
+  
         {/* TITULO */}
         <h3 className="font-semibold text-lg mb-2">
           {lab.name}

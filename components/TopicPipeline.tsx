@@ -51,7 +51,7 @@ export default function TopicPipeline({
           <img
             src={image}
             alt={title}
-            className="w-12 h-12 rounded-md object-cover mb-2"
+            className="w-36  rounded-md object-cover mb-2"
           />
         )}
 
