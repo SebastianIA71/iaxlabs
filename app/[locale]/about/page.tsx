@@ -76,7 +76,7 @@ export default function AboutPage() {
           Expertos hay, por supuesto. Pero rara vez son los que viven de titulares de impacto o del clickbait.
         </p>
         <p className="italic">
-          (Imagínate condensar esta revolución en un tutorial de 15 minutos - con 3 anuncios embebidos-)
+          (Imagínate condensar todo esto en un tutorial de 15 minutos.. - con 3 anuncios embebidos-)
         </p>
         <p>
           Está redefiniendo cómo trabajamos, cómo tomamos decisiones,
