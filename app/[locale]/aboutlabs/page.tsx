@@ -15,7 +15,7 @@ export default function QueEsUnLabPage() {
       {/* BLOQUE 1 — QUÉ ES */}
       <div className="space-y-6 mb-16 text-slate-700 dark:text-slate-300 leading-relaxed">
         <p>
-          Cada laboratorio es un experimento interactivo que complementa un artículo publicado en IAfont.
+          Cada laboratorio es un experimento interactivo que complementa los artículos publicados en IAfont con contenido práctico.
           Lees, tocas, entiendes.
         </p>
         <p>

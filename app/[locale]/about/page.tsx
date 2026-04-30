@@ -15,7 +15,7 @@ export default function AboutPage() {
       {/* BLOQUE 1 */}
       <div className="space-y-6 mb-16 text-slate-700 dark:text-slate-300 leading-relaxed">
         <p>
-          IAXLabs nace como un espacio para experimentar con inteligencia artificial de forma práctica.
+          IAxLabs nace como un espacio para experimentar con inteligencia artificial de forma práctica.
           Aquí no hay promesas vacías ni soluciones mágicas. Solo pruebas, errores y aprendizaje real.
         </p>
         <p>
@@ -69,11 +69,11 @@ export default function AboutPage() {
           Qué estamos intentando entender realmente
         </h2>
         <p>
-          La IA no es solo una herramienta más.<br />
-          Es un cambio de capa.
-          Es mucho más que una herramienta.
-          Y si alguien te dice que es un experto, ojo, porque probablemente solo sepa usarla, no entenderla.
-          Obviamente hay expertos, pero no salen dando los titulares de impacto que crean clickbait.
+          La IA no es una herramienta más.<br />
+          Es un cambio de capa.<br />
+          Va mucho más allá de usarla: implica entender cómo transforma procesos, decisiones y estructuras.<br />
+          Y cuando alguien se presenta como “experto”, conviene mirar con cautela: muchas veces domina la interfaz, no el sistema.<br />
+          Expertos hay, por supuesto. Pero rara vez son los que viven de titulares de impacto o del clickbait.
         </p>
         <p className="italic">
           (Imagínate condensar esta revolución en un tutorial de 15 minutos - con 3 anuncios embebidos-)
