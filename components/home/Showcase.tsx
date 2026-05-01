@@ -20,7 +20,22 @@ const hookPhrases = [
   "No hace falta saber. Hace falta empezar.",
   "Curiosidad primero. Optimización después.",
   "Menos teoría. Más tocar.",
-  "Si no falla, no era interesante."
+  "Si no falla, no era interesante.",
+  "Mucho prompt. Poco producto.",
+  "Si no lo mides, es humo.",
+  "La demo funciona. La realidad no tanto.",
+  "Más datos. Menos opiniones.",
+  "Automatiza algo. Aunque sea pequeño.",
+  "No es IA. Es estadística con marketing.",
+  "Primero entiende. Luego automatiza.",
+  "El modelo acierta. Tú decides.",
+  "Sin caso de uso, es juguete.",
+  "Más iterar. Menos anunciar.",
+  "El problema importa más que el modelo.",
+  "Hazlo simple. Luego ya escalarás.",
+  "Si no falla en producción, sospecha.",
+  "Menos slides. Más logs.",
+  "No optimices humo."
 ];
 
 const randomPhrase =

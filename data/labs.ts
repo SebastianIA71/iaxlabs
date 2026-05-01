@@ -100,7 +100,7 @@ export const labs = [
     topicDescription: "De la VM siempre encendida al scale-to-zero",
   },
   {
-    name: "El ticker del gasto pasivo",
+    name: "El taxímetro del gasto pasivo",
     subtitle: "Enciende servicios. El contador no para. Nunca.",
     slug: "0005-CL-01-cloudcosts",
     icons: ["cloud", "data"],
