@@ -9,12 +9,12 @@
   "Header": {
     "links": [
       {
-        "name": "Laboratorios",
-        "href": "/labs"
-      },
-      {
         "name": "Qué es un Lab?",
         "href": "/aboutlabs"
+      },
+      {
+        "name": "Laboratorios",
+        "href": "/labs"
       },
       {
         "name": "Sobre el proyecto",

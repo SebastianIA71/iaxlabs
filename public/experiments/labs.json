@@ -107,6 +107,6 @@
     "icons": ["cloud", "data"],
     "type": "qa",
     "topic": "cloud-costs",
-    "order": 10
+    "order": 4
   }
 ]

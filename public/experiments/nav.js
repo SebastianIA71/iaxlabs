@@ -21,6 +21,9 @@
     .filter(l => l.topic === current.topic && l.order >= 1)
     .sort((a, b) => a.order - b.order);
 
+  const topicMeta = labs.find(l => l.topic === current.topic && l.topicTitle);
+  const topicTitle = topicMeta ? topicMeta.topicTitle : current.topic;    
+    
   const idx = topicLabs.findIndex(l => l.slug === currentSlug);
   if (idx === -1) return;
 
@@ -95,7 +98,7 @@
   // TOPIC
   const btnTopic = document.createElement('button');
   btnTopic.className = 'iax-nav-btn topic';
-  btnTopic.title = 'Volver al inicio';
+  btnTopic.title = `Volver a ${topicTitle}`;
   btnTopic.textContent = 'TOPIC';
   btnTopic.addEventListener('click', () => {
      window.parent.location.href = `/#${current.topic}`;

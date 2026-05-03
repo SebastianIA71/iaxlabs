@@ -13,7 +13,7 @@
     --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
     --text: #1a1c22; --text2: #5a5e6e; --text3: #9a9eae;
     --red: #d93b2a; --red-d: rgba(217,59,42,0.08); --red-b: rgba(217,59,42,0.18);
-    --amber: #c97d10; --amber-d: rgba(201,125,16,0.08); --amber-b: rgba(201,125,16,0.2);
+    --amber: #7a4a05  ; --amber-d: rgba(201,125,16,0.08); --amber-b: rgba(201,125,16,0.2);
     --green: #1a9658; --green-d: rgba(26,150,88,0.08); --green-b: rgba(26,150,88,0.2);
     --blue: #2563c4; --purple: #6e3fc0;
     --mono: 'Space Mono', monospace; --display: 'Syne', sans-serif;
@@ -150,7 +150,37 @@ const TICKERS = [
   "Un junior ha borrado el entorno de producción. Se masca la tragedia.",
   "El inversor pregunta si 'la nube' es una nube de verdad.",
   "La competencia ha bajado precios. Nosotros hemos subido el gasto.",
-  "Email de Google: '¡Felicidades por gastar tanto! Te regalamos una pegatina'."
+  "Email de Google: '¡Felicidades por gastar tanto! Te regalamos una pegatina'.",
+  "El CTO propone reescribir todo en Rust. La demo es en 3 días.",
+"Reunión de 2 horas para decidir el nombre de una variable.",
+"El diseñador ha cambiado los colores corporativos. Cuarta vez este mes.",
+"PR abierto desde hace 6 semanas. Nadie lo revisa. Nadie dice nada.",
+"El CEO ha visto una demo de ChatGPT. Quiere 'eso mismo pero nuestro'.",
+"Alguien ha pusheado directamente a main. No hay tests. Hay fe.",
+"Sprint planning de 4 horas. Velocidad estimada: 0 puntos reales.",
+"El cliente quiere 'algo simple'. Adjunta 47 requisitos en PDF.",
+"Nuevo microservicio creado. Nadie sabe para qué. Tiene su propio Slack.",
+"El cofundador técnico ha descubierto los NFTs. Reunión urgente.",
+"Kubernetes instalado para servir una landing page con 3 visitas al día.",
+"El becario ha optimizado la home. Ahora carga en 0.3s. Nadie lo felicita.",
+"Reunión para planificar la reunión de planificación del Q3.",
+"El inversor pregunta por el 'modelo de IA propio'. Usamos un if/else.",
+"Se ha caído producción. El on-call está en Bali. Son las 3 AM.",
+"Nuevo OKR: 'Ser data-driven'. Nadie mira los dashboards.",
+"El PM ha añadido 'con IA' al título de todas las features del roadmap.",
+"Standup de 45 minutos. Nadie ha avanzado. Todos tienen bloqueantes.",
+"La documentación está desactualizada desde 2022. Sigue en Confluence.",
+"Alguien ha propuesto migrar a una arquitectura hexagonal. Hay tensión.",
+"El servidor de staging lleva 3 semanas caído. Nadie usa staging.",
+"Nuevo framework elegido. El anterior tenía 3 semanas.",
+"El CTO ha vuelto de una conferencia. Vamos a hacer todo serverless.",
+"Code review: 'LGTM'. El código tiene 400 líneas. Revisión: 30 segundos.",
+"La startup del barrio ha levantado 2M. Hacen lo mismo que nosotros pero con 'agentes'.",
+"El CEO quiere un dashboard en tiempo real. Los datos llegan una vez al día.",
+"Estimación del dev: 2 días. Van 3 semanas. 'Casi está'.",
+"Alguien ha descubierto que pagamos por 12 licencias de una tool que nadie usa.",
+"La IA ha generado el 70% del código. El 30% restante arregla el 70%.",
+"Nuevo repositorio creado. Ya son 47. Nadie sabe qué hace la mitad."
 ];
 
 const EVENTS = [
@@ -339,10 +369,21 @@ function resetGame() {
   G = { month:1, burn:847, morale:75, credits:100, investor:60 };
   cur = 0;
   document.getElementById('terminal').innerHTML = '<div class="tline">> Reiniciando...</div>';
-  updateUI(); loadEvent(0);
+  updateUI(); 
+  loadEvent(0);
 }
 
-updateUI(); loadEvent(0);
+let tickerIdx = 0;
+function rotateTicker() {
+  document.getElementById('ticker').textContent = TICKERS[tickerIdx % TICKERS.length];
+  tickerIdx++;
+  setTimeout(rotateTicker, 3500);
+}
+
+rotateTicker();
+updateUI(); 
+loadEvent(0);
+
 </script>
 
 <script src="/experiments/nav.js"></script>
