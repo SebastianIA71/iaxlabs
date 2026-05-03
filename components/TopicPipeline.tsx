@@ -13,11 +13,13 @@ type Step = {
 };
 
 type TopicPipelineProps = {
+  topic?: string;
   title: string;
   description?: string;
   steps: Step[];
   image?: string;
-  featured?: boolean; // 👈 clave
+  featured?: boolean;
+  topic?: string; 
 };
 
 const iconMap = {
@@ -30,6 +32,7 @@ const truncate70 = (text: string, max = 70) =>
   text.length > max ? text.slice(0, max) + "…" : text;
 
 export default function TopicPipeline({
+  topic,            
   title,
   description,
   steps,
@@ -42,7 +45,7 @@ export default function TopicPipeline({
   );
 
   return (
-    <div className="w-full h-full rounded-2xl border bg-white/70 dark:bg-slate-900/60 p-6 flex flex-col">
+    <div id={topic ?? undefined} className="w-full h-full rounded-2xl border bg-white/70 dark:bg-slate-900/60 p-6 flex flex-col">
 
       {/* HEADER */}
       <div className="mb-6 flex flex-col items-center">

@@ -31,7 +31,8 @@ export function buildTopics(labs: any[]) {
     }
   });
 
-    return Object.values(map).map((topic: any) => ({
+    return Object.entries(map).map(([topicSlug, topic]: [string, any]) => ({
+      topic: topicSlug,
       title: topic.title,
       description: topic.description,
       image: topic.image,

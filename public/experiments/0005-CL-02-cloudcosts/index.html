@@ -20,6 +20,9 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  
+
   body { background: var(--bg); color: var(--text); font-family: var(--display); min-height: 100vh; padding: 2rem 1.5rem 5rem; max-width: 960px; margin: 0 auto; }
 
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-4px)} 60%{transform:translateX(4px)} }
@@ -84,6 +87,8 @@
   .btn { font-family: var(--mono); font-size: 10px; padding: 10px 20px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg2); cursor: pointer; text-transform: uppercase; font-weight: 700; }
 </style>
 </head>
+
+
 <body>
 
 <div class="header">
@@ -339,5 +344,7 @@ function resetGame() {
 
 updateUI(); loadEvent(0);
 </script>
+
+<script src="/experiments/nav.js"></script>
 </body>
 </html>

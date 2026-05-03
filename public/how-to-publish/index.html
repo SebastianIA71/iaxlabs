@@ -30,6 +30,8 @@
 
   .note { background: #161616; border-left: 3px solid #E6332A; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 13px; color: #999; font-family: system-ui, sans-serif; line-height: 1.6; }
   .note strong { color: #e0e0e0; }
+  .note-green { background: #161616; border-left: 3px solid #4ade80; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 13px; color: #999; font-family: system-ui, sans-serif; line-height: 1.6; }
+  .note-green strong { color: #4ade80; }
 
   .file-tree { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px 20px; margin: 12px 0; font-size: 13px; line-height: 2; }
   .tree-dir { color: #e5c07b; }
@@ -55,7 +57,18 @@
   .type-card .type-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
   .type-card .type-desc { font-size: 11px; color: #555; font-family: system-ui, sans-serif; }
 
+  .order-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .order-card { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; text-align: center; }
+  .order-card .order-val { font-size: 20px; font-weight: 700; color: #E6332A; display: block; margin-bottom: 4px; }
+  .order-card .order-desc { font-size: 11px; color: #555; font-family: system-ui, sans-serif; }
+
   .cmd { display: inline-block; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #e5c07b; }
+
+  .nav-preview { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px 20px; margin: 12px 0; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; font-family: system-ui, sans-serif; }
+  .nav-preview .tag { color: #E6332A; }
+  .nav-preview .spacer { flex: 1; }
+  .nav-preview .btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 24px; border: 1px solid #333; border-radius: 4px; color: #666; font-size: 11px; font-family: monospace; }
+  .nav-preview .btn-topic { width: auto; padding: 0 8px; font-size: 9px; letter-spacing: 0.06em; }
 
   .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid #1a1a1a; font-size: 12px; color: #444; font-family: system-ui, sans-serif; text-align: center; }
 </style>
@@ -94,7 +107,15 @@
       <div class="topic-types">
         <div class="type-card"><p class="type-name">article</p><p class="type-desc">sin slug, solo url a Substack</p></div>
         <div class="type-card"><p class="type-name">lab</p><p class="type-desc">con slug, carga index.html</p></div>
-        <div class="type-card"><p class="type-name">qa</p><p class="type-desc">con slug, igual que lab</p></div>
+        <div class="type-card"><p class="type-name">qa</p><p class="type-desc">con slug, igual que lab. order: 10</p></div>
+      </div>
+      <div class="note" style="margin-top:12px;">
+        <strong>Convención de order:</strong> El <span class="cmd">article</span> siempre tiene <span class="cmd">order: 0</span>. Los labs van del <span class="cmd">1</span> en adelante. El <strong>Q&A siempre tiene <span class="cmd">order: 10</span></strong> — esto indica al sistema de navegación que es el último y no tiene "siguiente".
+      </div>
+      <div class="order-types" style="margin-top:12px;">
+        <div class="order-card"><span class="order-val">0</span><span class="order-desc">article — no aparece en nav</span></div>
+        <div class="order-card"><span class="order-val">1–9</span><span class="order-desc">labs — anterior y siguiente</span></div>
+        <div class="order-card"><span class="order-val">10</span><span class="order-desc">Q&A — solo anterior</span></div>
       </div>
     </div>
   </div>
@@ -114,6 +135,8 @@
       <div class="file-tree">
         <div><span class="tree-dir">public/</span></div>
         <div class="indent1"><span class="tree-dir">experiments/</span></div>
+        <div class="indent1" style="padding-left:40px"><span class="tree-file">labs.json</span> ← fuente de verdad de todos los labs</div>
+        <div class="indent1" style="padding-left:40px"><span class="tree-file">nav.js</span> ← navegación automática entre labs</div>
         <div class="indent2"><span class="tree-new">0006-DB-01-vectors/</span></div>
         <div class="indent2" style="padding-left:60px"><span class="tree-new">index.html</span> ← el lab</div>
         <div class="indent2" style="padding-left:60px"><span class="tree-new">icon.JPG</span> ← imagen del topic (solo en el primer lab)</div>
@@ -153,67 +176,89 @@
       <div class="note" style="margin-top:16px;">
         <strong>Convención UI:</strong> Lab 1 → light mode, acumulador arriba. Labs 2+ → Georgia serif para títulos, opciones de respuesta en color neutro (no revelar correcto antes de seleccionar).
       </div>
+
+      <!-- NUEVO: nav.js -->
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin:20px 0 8px;"><strong style="color:#e0e0e0;">Añade la navegación entre labs</strong> — justo antes de <span class="cmd">&lt;/body&gt;</span>:</p>
+      <div class="code-block"><pre><span class="cm">&lt;!-- Navegación entre labs del topic --&gt;</span>
+<span class="kw">&lt;script</span> <span class="hl">src</span>=<span class="str">"/experiments/nav.js"</span><span class="kw">&gt;&lt;/script&gt;</span>
+<span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></pre></div>
+      <div class="note-green">
+        <strong>Esto es todo lo que necesitas.</strong> El <span class="cmd">nav.js</span> detecta automáticamente en qué lab estás, consulta el <span class="cmd">labs.json</span> y monta los botones de navegación en la cabecera del lab. El resultado es esto:
+      </div>
+      <div class="nav-preview">
+        <span class="tag">0006-DB-02</span> · vectors
+        <span class="spacer"></span>
+        <span class="btn">←</span>
+        <span class="btn btn-topic">TOPIC</span>
+        <span class="btn">→</span>
+      </div>
+      <p style="font-size:12px;color:#555;font-family:system-ui,sans-serif;margin-top:8px;">← desactivado en el primer lab · → desactivado en el Q&A (order: 10) · TOPIC lleva a la sección del topic en la home</p>
     </div>
   </div>
 
   <hr class="divider">
 
-  <!-- PASO 4: labs.ts -->
+  <!-- PASO 4: labs.json + labs.ts -->
   <div class="step">
     <div class="step-header">
       <div class="step-num">4</div>
       <div>
-        <p class="step-title">Registra el topic en <span class="cmd">/data/labs.ts</span></p>
-        <p class="step-sub">Sin esto, el topic no aparece en ningún sitio</p>
+        <p class="step-title">Registra el topic en <span class="cmd">/public/experiments/labs.json</span></p>
+        <p class="step-sub">Fuente de verdad única — labs.ts importa de aquí automáticamente</p>
       </div>
     </div>
     <div class="step-body">
-      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:12px;">Añade al final del array en <span class="cmd">labs.ts</span> el bloque completo del nuevo topic:</p>
-      <div class="code-block"><pre><span class="cm">// =========================
-// 🗄️ TOPIC 6: BASES DE DATOS VECTORIALES
-// =========================</span>
+      <div class="note-green">
+        <strong>Solo hay que editar labs.json.</strong> El fichero <span class="cmd">data/labs.ts</span> importa el JSON directamente — no hace falta tocarlo nunca más.
+      </div>
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin:12px 0 8px;">Añade al final del array en <span class="cmd">labs.json</span> el bloque completo del nuevo topic:</p>
+      <div class="code-block"><pre><span class="cm">// Artículo (order: 0 — no aparece en la navegación entre labs)</span>
 {
-  <span class="hl">name</span>: <span class="str">"Título del artículo en Substack"</span>,
-  <span class="hl">subtitle</span>: <span class="str">"Subtítulo del artículo"</span>,
-  <span class="hl">url</span>: <span class="str">"https://iafont.com/p/slug-del-articulo"</span>, <span class="cm">// URL real del post</span>
-  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
-  <span class="hl">image</span>: <span class="str">"/experiments/0006-DB-01-vectors/icon.JPG"</span>,
-  <span class="hl">type</span>: <span class="str">"article"</span>,
-  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
-  <span class="hl">order</span>: <span class="kw">0</span>,
-  <span class="hl">topicTitle</span>: <span class="str">"BVD → Búsqueda Semántica"</span>,
-  <span class="hl">topicDescription</span>: <span class="str">"De vectores a memoria inteligente"</span>,
+  <span class="hl">"name"</span>: <span class="str">"Título del artículo en Substack"</span>,
+  <span class="hl">"subtitle"</span>: <span class="str">"Subtítulo del artículo"</span>,
+  <span class="hl">"url"</span>: <span class="str">"https://iafont.com/p/slug-del-articulo"</span>,
+  <span class="hl">"icons"</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">"image"</span>: <span class="str">"/experiments/0006-DB-01-vectors/icon.JPG"</span>,
+  <span class="hl">"type"</span>: <span class="str">"article"</span>,
+  <span class="hl">"topic"</span>: <span class="str">"vectors"</span>,
+  <span class="hl">"order"</span>: <span class="kw">0</span>,
+  <span class="hl">"topicTitle"</span>: <span class="str">"BVD → Búsqueda Semántica"</span>,
+  <span class="hl">"topicDescription"</span>: <span class="str">"De vectores a memoria inteligente"</span>
 },
+<span class="cm">// Lab 1 (order: 1 — primer lab, solo tiene siguiente)</span>
 {
-  <span class="hl">name</span>: <span class="str">"Nombre del Lab 1"</span>,
-  <span class="hl">subtitle</span>: <span class="str">"Subtítulo corto"</span>,
-  <span class="hl">slug</span>: <span class="str">"0006-DB-01-vectors"</span>,
-  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
-  <span class="hl">image</span>: <span class="str">"/experiments/0006-DB-01-vectors/icon.JPG"</span>,
-  <span class="hl">type</span>: <span class="str">"lab"</span>,
-  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
-  <span class="hl">order</span>: <span class="kw">1</span>,
+  <span class="hl">"name"</span>: <span class="str">"Nombre del Lab 1"</span>,
+  <span class="hl">"subtitle"</span>: <span class="str">"Subtítulo corto"</span>,
+  <span class="hl">"slug"</span>: <span class="str">"0006-DB-01-vectors"</span>,
+  <span class="hl">"icons"</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">"image"</span>: <span class="str">"/experiments/0006-DB-01-vectors/icon.JPG"</span>,
+  <span class="hl">"type"</span>: <span class="str">"lab"</span>,
+  <span class="hl">"topic"</span>: <span class="str">"vectors"</span>,
+  <span class="hl">"order"</span>: <span class="kw">1</span>
 },
+<span class="cm">// Lab 2 (order: 2 — tiene anterior y siguiente)</span>
 {
-  <span class="hl">name</span>: <span class="str">"Nombre del Lab 2"</span>,
-  <span class="hl">subtitle</span>: <span class="str">"Subtítulo corto"</span>,
-  <span class="hl">slug</span>: <span class="str">"0006-DB-02-semantic"</span>,
-  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
-  <span class="hl">type</span>: <span class="str">"lab"</span>,
-  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
-  <span class="hl">order</span>: <span class="kw">2</span>,
+  <span class="hl">"name"</span>: <span class="str">"Nombre del Lab 2"</span>,
+  <span class="hl">"subtitle"</span>: <span class="str">"Subtítulo corto"</span>,
+  <span class="hl">"slug"</span>: <span class="str">"0006-DB-02-semantic"</span>,
+  <span class="hl">"icons"</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">"type"</span>: <span class="str">"lab"</span>,
+  <span class="hl">"topic"</span>: <span class="str">"vectors"</span>,
+  <span class="hl">"order"</span>: <span class="kw">2</span>
 },
+<span class="cm">// Q&A (order: 10 — siempre el último, solo tiene anterior)</span>
 {
-  <span class="hl">name</span>: <span class="str">"Q&A Bases de Datos Vectoriales"</span>,
-  <span class="hl">subtitle</span>: <span class="str">"Lo que nadie explica bien sobre BVD"</span>,
-  <span class="hl">slug</span>: <span class="str">"0006-DB-03-qa"</span>,
-  <span class="hl">icons</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
-  <span class="hl">type</span>: <span class="str">"qa"</span>,
-  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
-  <span class="hl">order</span>: <span class="kw">3</span>,
-},</pre></div>
+  <span class="hl">"name"</span>: <span class="str">"Q&amp;A Bases de Datos Vectoriales"</span>,
+  <span class="hl">"subtitle"</span>: <span class="str">"Lo que nadie explica bien sobre BVD"</span>,
+  <span class="hl">"slug"</span>: <span class="str">"0006-DB-03-qa"</span>,
+  <span class="hl">"icons"</span>: [<span class="str">"ai"</span>, <span class="str">"data"</span>],
+  <span class="hl">"type"</span>: <span class="str">"qa"</span>,
+  <span class="hl">"topic"</span>: <span class="str">"vectors"</span>,
+  <span class="hl">"order"</span>: <span class="kw">10</span>
+}</pre></div>
       <div class="note">
-        <strong>Importante:</strong> el campo <span class="cmd">url</span> del article se rellena con la URL real del post de Substack. Hasta que el artículo esté publicado, déjalo como <strong>https://iafont.com/</strong> (raíz). El 1 de mayo se actualizan todos.
+        <strong>Importante:</strong> el campo <span class="cmd">url</span> del article se rellena con la URL real del post de Substack. Hasta que esté publicado, déjalo como <strong>https://iafont.com/</strong> (raíz).
       </div>
     </div>
   </div>
@@ -237,7 +282,8 @@
       <ul class="checklist">
         <li>Vercel detecta el push y despliega automáticamente (~1-2 min)</li>
         <li>Verifica en <strong>iaxlabs.com</strong> que el nuevo topic aparece en la home</li>
-        <li>Verifica que cada lab carga correctamente en <strong>iaxlabs.com/labs/0006-DB-01-vectors</strong></li>
+        <li>Verifica que cada lab carga en <strong>iaxlabs.com/labs/0006-DB-01-vectors</strong></li>
+        <li>Verifica los botones ← TOPIC → en la cabecera de cada lab</li>
         <li>Verifica el icon.JPG en la card del topic</li>
       </ul>
     </div>
@@ -257,10 +303,11 @@
     <div class="step-body">
       <ul class="checklist">
         <li>Artículo publicado en IAfont (Substack)</li>
-        <li>URL real del artículo actualizada en labs.ts</li>
+        <li>URL real del artículo actualizada en labs.json</li>
         <li>Carpetas creadas en /public/experiments/</li>
         <li>icon.JPG en la carpeta del primer lab</li>
-        <li>Todos los index.html funcionan correctamente</li>
+        <li>Todos los index.html tienen <span class="cmd">&lt;script src="/experiments/nav.js"&gt;</span> antes del &lt;/body&gt;</li>
+        <li>Navegación ← TOPIC → verificada en todos los labs del topic</li>
         <li>Labs verificados en móvil</li>
         <li>Push a main y deploy verificado en Vercel</li>
       </ul>
@@ -279,12 +326,12 @@
       </div>
     </div>
     <div class="step-body">
-      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:12px;">En <span class="cmd">/data/labs.ts</span>, añade <span class="cmd">featured: true</span> al <span class="cmd">article</span> del topic que quieres destacar. Quita el del anterior si lo había.</p>
+      <p style="font-size:13px;color:#666;font-family:system-ui,sans-serif;margin-bottom:12px;">En <span class="cmd">labs.json</span>, añade <span class="cmd">"featured": true</span> al <span class="cmd">article</span> del topic que quieres destacar. Quita el del anterior si lo había.</p>
       <div class="code-block"><pre>{
-  <span class="hl">name</span>: <span class="str">"Título del artículo"</span>,
-  <span class="hl">type</span>: <span class="str">"article"</span>,
-  <span class="hl">topic</span>: <span class="str">"vectors"</span>,
-  <span class="hl">featured</span>: <span class="kw">true</span>,  <span class="cm">// ← solo esto</span>
+  <span class="hl">"name"</span>: <span class="str">"Título del artículo"</span>,
+  <span class="hl">"type"</span>: <span class="str">"article"</span>,
+  <span class="hl">"topic"</span>: <span class="str">"vectors"</span>,
+  <span class="hl">"featured"</span>: <span class="kw">true</span>,  <span class="cm">// ← solo esto</span>
   <span class="cm">// ... resto de campos igual</span>
 }</pre></div>
       <div class="note">
@@ -294,7 +341,7 @@
   </div>
 
   <div class="footer">
-    IAxLabs — guía interna · actualizada abril 2026
+    IAxLabs — guía interna · actualizada mayo 2026
   </div>
 
 </div>

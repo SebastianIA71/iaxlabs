@@ -84,6 +84,7 @@ export default function Showcase() {
       {featuredTopic && (
         <div className="mb-20 max-w-5xl mx-auto animate-fadeUp">
         <TopicPipeline
+          topic={featuredTopic.topic} 
           title={featuredTopic.title}
           description={featuredTopic.description}
           steps={featuredTopic.steps}
@@ -103,6 +104,7 @@ export default function Showcase() {
               style={{ animationDelay: `${i * 0.12}s` }}
             >
               <TopicPipeline
+                topic={topic.topic}
                 title={topic.title}
                 description={topic.description}
                 steps={topic.steps}
