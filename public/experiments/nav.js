@@ -98,7 +98,7 @@
   // TOPIC
   const btnTopic = document.createElement('button');
   btnTopic.className = 'iax-nav-btn topic';
-  btnTopic.title = `Volver a ${topicTitle}`;
+  btnTopic.title = `Ir a ${topicTitle}`;
   btnTopic.textContent = 'TOPIC';
   btnTopic.addEventListener('click', () => {
      window.parent.location.href = `/#${current.topic}`;

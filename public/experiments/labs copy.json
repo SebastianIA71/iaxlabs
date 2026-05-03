@@ -1,6 +1,6 @@
 [
   {
-    "name": "Pdte PUBLICAR - Cómo hablar con modelos",
+    "name": "Cómo hablar con modelos",
     "subtitle": "Prompting como disciplina",
     "url": "https://iafont.com/",
     "icons": ["ai"],
@@ -30,7 +30,7 @@
     "order": 2
   },
   {
-    "name": "Pdte PUBLICAR - IA en procesos reales",
+    "name": "IA en procesos reales",
     "subtitle": "Más allá del hype",
     "url": "https://iafont.com/",
     "icons": ["ai", "code"],
@@ -53,7 +53,7 @@
   {
     "name": "Automatización con IA",
     "subtitle": "Flujos inteligentes",
-    "slug": "0003-CS-02-automatiz",
+    "slug": "0004-AI-02-applied",
     "icons": ["ai", "code"],
     "type": "lab",
     "topic": "applied-ai",

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Automatización con IA · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f3ef; --bg2: #ffffff; --bg3: #eeede9;
+    --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+    --text: #1a1c22; --text2: #5a5e6e; --text3: #9a9eae;
+    --accent: #E6332A; --accent-soft: #fdf2f1;
+    --green: #1a9658; --green-d: rgba(26,150,88,0.08); --green-b: rgba(26,150,88,0.2);
+    --amber: #c97d10; --amber-d: rgba(201,125,16,0.08); --amber-b: rgba(201,125,16,0.2);
+    --red: #d93b2a; --red-d: rgba(217,59,42,0.08);
+    --blue: #2563c4;
+    --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 2rem 1.5rem 5rem; max-width: 900px; margin: 0 auto; }
+
+  /* ── EN CONSTRUCCIÓN ── */
+  .wip-banner {
+    background: repeating-linear-gradient(-45deg, #1a1c22, #1a1c22 10px, #2a2d35 10px, #2a2d35 20px);
+    color: #f5a020; font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; text-align: center; padding: 10px;
+    border-radius: 8px; margin-bottom: 2rem; text-transform: uppercase;
+  }
+  .wip-banner span { background: #1a1c22; padding: 4px 16px; border-radius: 4px; border: 1px solid #f5a020; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border2); }
+  .lab-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--text3); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .lab-tag span { color: var(--accent); }
+  h1 { font-size: 2.2rem; font-weight: 700; line-height: 1.15; margin-bottom: 0.4rem; }
+  .subtitle { font-size: 0.875rem; color: var(--text2); }
+
+  /* ── INTRO ── */
+  .intro-box { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; background: var(--bg2); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+  .intro-p { font-size: 13px; color: var(--text2); line-height: 1.7; text-align: justify; }
+  @media(max-width:600px) { .intro-box { grid-template-columns: 1fr; } }
+
+  /* ── PIPELINE BUILDER ── */
+  .pipeline-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .section-label { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 1rem; display: block; }
+
+  .nodes-palette { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .node-pill {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border2);
+    background: var(--bg3); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono);
+  }
+  .node-pill:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+
+  .pipeline-canvas {
+    min-height: 80px; background: var(--bg3); border-radius: 10px;
+    border: 1.5px dashed var(--border2); padding: 1rem;
+    display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+    margin-bottom: 1rem; position: relative;
+  }
+  .pipeline-canvas.empty::before {
+    content: 'Añade nodos para construir tu flujo →';
+    font-family: var(--mono); font-size: 11px; color: var(--text3);
+  }
+
+  .pipeline-node {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 8px 12px; font-size: 12px;
+    font-family: var(--mono); font-weight: 700; position: relative;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .pipeline-node:hover { border-color: var(--red); }
+  .pipeline-node:hover::after { content: '✕'; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background: var(--red); color: white; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; }
+  .pipeline-arrow { color: var(--text3); font-size: 16px; padding: 0 4px; font-family: var(--mono); }
+
+  /* ── RUN PANEL ── */
+  .run-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .input-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 1rem; }
+  .run-input {
+    padding: 10px 14px; border: 1px solid var(--border2); border-radius: 8px;
+    font-family: var(--sans); font-size: 13px; background: var(--bg3); outline: none; color: var(--text);
+  }
+  .run-input:focus { border-color: var(--accent); }
+  .btn-run {
+    background: var(--accent); color: white; border: none; padding: 10px 20px;
+    border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--mono);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; transition: opacity 0.15s;
+  }
+  .btn-run:hover { opacity: 0.85; }
+  .btn-run:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── LOG ── */
+  .log-wrap { background: #0f1115; border-radius: 12px; padding: 1.25rem; min-height: 180px; max-height: 280px; overflow-y: auto; }
+  .log-line { font-family: var(--mono); font-size: 12px; line-height: 1.8; display: flex; gap: 10px; }
+  .log-line .ts { color: #3a3f50; flex-shrink: 0; }
+  .log-line .node-name { flex-shrink: 0; }
+  .log-line.ok .node-name { color: #22d47a; }
+  .log-line.proc .node-name { color: #f5a020; }
+  .log-line.err .node-name { color: #ff4040; }
+  .log-line .log-msg { color: #abb2bf; }
+
+  /* ── STATS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+  .stat-val { font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-family: var(--mono); font-size: 9px; color: var(--text3); text-transform: uppercase; margin-top: 4px; }
+
+  .btn-reset { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
+  .btn-reset:hover { background: var(--bg); }
+</style>
+</head>
+<body>
+
+<div class="wip-banner">
+  <span>⚠ &nbsp; EN CONSTRUCCIÓN &nbsp; ⚠</span>
+</div>
+
+<div class="header">
+  <div class="lab-tag"><span>0004-AI-02</span> · applied ai</div>
+  <h1>Automatización <span style="color:var(--accent)">con IA</span></h1>
+  <p class="subtitle">Construye un flujo de automatización, ejecútalo y observa cómo cada nodo procesa los datos.</p>
+</div>
+
+<div class="intro-box">
+  <p class="intro-p"><strong>¿Qué es un flujo de automatización?</strong> Una cadena de nodos donde cada paso transforma o enruta información. La IA puede estar en uno o en todos los pasos — clasificando, resumiendo, decidiendo o generando.</p>
+  <p class="intro-p"><strong>¿Qué puedes probar aquí?</strong> Arrastra nodos al pipeline, introduce un input y observa cómo los datos fluyen paso a paso. Cada nodo tiene un coste de tiempo y tokens simulado.</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-val" id="stat-runs">0</div><div class="stat-label">Ejecuciones</div></div>
+  <div class="stat-box"><div class="stat-val" id="stat-nodes">0</div><div class="stat-label">Nodos activos</div></div>
+  <div class="stat-box"><div class="stat-val" id="stat-tokens">0</div><div class="stat-label">Tokens usados</div></div>
+  <div class="stat-box"><div class="stat-val" id="stat-time">0ms</div><div class="stat-label">Último tiempo</div></div>
+</div>
+
+<!-- PIPELINE BUILDER -->
+<div class="pipeline-wrap">
+  <span class="section-label">Constructor de flujo</span>
+
+  <span class="section-label" style="margin-bottom:0.5rem;">Nodos disponibles — pulsa para añadir</span>
+  <div class="nodes-palette">
+    <div class="node-pill" onclick="addNode('trigger')">⚡ Trigger</div>
+    <div class="node-pill" onclick="addNode('filter')">🔍 Filtro</div>
+    <div class="node-pill" onclick="addNode('classify')">🏷️ Clasificar IA</div>
+    <div class="node-pill" onclick="addNode('summarize')">📝 Resumir IA</div>
+    <div class="node-pill" onclick="addNode('transform')">⚙️ Transformar</div>
+    <div class="node-pill" onclick="addNode('route')">🔀 Enrutar</div>
+    <div class="node-pill" onclick="addNode('notify')">🔔 Notificar</div>
+    <div class="node-pill" onclick="addNode('store')">💾 Guardar</div>
+  </div>
+
+  <span class="section-label" style="margin-bottom:0.5rem;">Tu flujo — pulsa un nodo para eliminarlo</span>
+  <div class="pipeline-canvas empty" id="pipeline-canvas"></div>
+
+  <button class="btn-reset" onclick="clearPipeline()">✕ Limpiar flujo</button>
+</div>
+
+<!-- RUN -->
+<div class="run-panel">
+  <span class="section-label">Ejecutar flujo</span>
+  <div class="input-row">
+    <input type="text" class="run-input" id="run-input" placeholder="Input de prueba: ej. 'Factura cliente ACME vencida hace 3 días'" onkeydown="if(event.key==='Enter') runPipeline()" />
+    <button class="btn-run" id="btn-run" onclick="runPipeline()">▶ Ejecutar</button>
+  </div>
+  <div class="log-wrap" id="log-wrap">
+    <div class="log-line proc"><span class="ts">--:--:--</span><span class="node-name">[SISTEMA]</span><span class="log-msg">Pipeline en espera. Añade nodos y ejecuta.</span></div>
+  </div>
+</div>
+
+<script>
+const NODE_CONFIG = {
+  trigger:   { emoji: '⚡', label: 'Trigger',       tokens: 0,   ms: 80,  msgs: ['Input recibido.', 'Evento detectado. Iniciando pipeline.', 'Trigger activado con payload.'] },
+  filter:    { emoji: '🔍', label: 'Filtro',         tokens: 12,  ms: 120, msgs: ['Aplicando reglas de filtrado...', 'Datos validados. Continúa el flujo.', 'Sin anomalías detectadas.'] },
+  classify:  { emoji: '🏷️', label: 'Clasificar IA', tokens: 85,  ms: 400, msgs: ['Clasificado como: URGENTE · confianza 94%', 'Categoría detectada: Facturación · prioridad alta', 'Modelo: gpt-4o-mini · resultado en 1 llamada'] },
+  summarize: { emoji: '📝', label: 'Resumir IA',    tokens: 210, ms: 650, msgs: ['Resumen generado en 3 líneas.', 'Contenido reducido un 78% sin perder contexto.', 'Resumen listo para notificación.'] },
+  transform: { emoji: '⚙️', label: 'Transformar',   tokens: 5,   ms: 90,  msgs: ['Datos mapeados al esquema de salida.', 'Formato normalizado correctamente.', 'Transformación aplicada sin errores.'] },
+  route:     { emoji: '🔀', label: 'Enrutar',        tokens: 20,  ms: 150, msgs: ['Ruta seleccionada: canal_urgente', 'Condición cumplida → rama B activada.', 'Flujo derivado según clasificación.'] },
+  notify:    { emoji: '🔔', label: 'Notificar',      tokens: 0,   ms: 200, msgs: ['Email enviado a ops@empresa.com', 'Slack: mensaje publicado en #alertas', 'Notificación entregada · sin rebotes.'] },
+  store:     { emoji: '💾', label: 'Guardar',        tokens: 0,   ms: 110, msgs: ['Registro guardado en BD · id: #8821', 'Datos persistidos correctamente.', 'Log archivado con timestamp UTC.'] },
+};
+
+let pipeline = [];
+let totalRuns = 0;
+let totalTokens = 0;
+
+function addNode(type) {
+  pipeline.push(type);
+  renderPipeline();
+}
+
+function removeNode(idx) {
+  pipeline.splice(idx, 1);
+  renderPipeline();
+}
+
+function clearPipeline() {
+  pipeline = [];
+  renderPipeline();
+}
+
+function renderPipeline() {
+  const canvas = document.getElementById('pipeline-canvas');
+  document.getElementById('stat-nodes').textContent = pipeline.length;
+
+  if (pipeline.length === 0) {
+    canvas.innerHTML = '';
+    canvas.classList.add('empty');
+    return;
+  }
+
+  canvas.classList.remove('empty');
+  canvas.innerHTML = pipeline.map((type, i) => {
+    const n = NODE_CONFIG[type];
+    return `
+      ${i > 0 ? '<span class="pipeline-arrow">→</span>' : ''}
+      <div class="pipeline-node" onclick="removeNode(${i})" title="Pulsa para eliminar">
+        ${n.emoji} ${n.label}
+      </div>`;
+  }).join('');
+}
+
+async function runPipeline() {
+  if (pipeline.length === 0) {
+    addLog('err', 'SISTEMA', 'El pipeline está vacío. Añade al menos un nodo.');
+    return;
+  }
+
+  const input = document.getElementById('run-input').value.trim() || 'Input de prueba';
+  const btn = document.getElementById('btn-run');
+  btn.disabled = true;
+
+  const log = document.getElementById('log-wrap');
+  log.innerHTML = '';
+
+  totalRuns++;
+  document.getElementById('stat-runs').textContent = totalRuns;
+
+  let runTokens = 0;
+  let runMs = 0;
+  const startTs = Date.now();
+
+  addLog('proc', 'INICIO', `Ejecutando pipeline con ${pipeline.length} nodos · input: "${input.slice(0, 40)}${input.length > 40 ? '…' : ''}"`);
+
+  for (let i = 0; i < pipeline.length; i++) {
+    const type = pipeline[i];
+    const n = NODE_CONFIG[type];
+    await delay(n.ms + Math.random() * 100);
+
+    runTokens += n.tokens;
+    runMs += n.ms;
+
+    const msg = n.msgs[Math.floor(Math.random() * n.msgs.length)];
+    addLog('ok', `${n.emoji} ${n.label}`, msg + (n.tokens > 0 ? ` [${n.tokens} tokens]` : ''));
+  }
+
+  const elapsed = Date.now() - startTs;
+  totalTokens += runTokens;
+
+  document.getElementById('stat-tokens').textContent = totalTokens;
+  document.getElementById('stat-time').textContent = elapsed + 'ms';
+
+  addLog('ok', '✅ FIN', `Pipeline completado en ${elapsed}ms · ${runTokens} tokens · coste estimado €${(runTokens * 0.000002).toFixed(5)}`);
+  btn.disabled = false;
+}
+
+function addLog(type, node, msg) {
+  const log = document.getElementById('log-wrap');
+  const now = new Date();
+  const ts = now.toTimeString().slice(0, 8);
+  const div = document.createElement('div');
+  div.className = 'log-line ' + type;
+  div.innerHTML = `<span class="ts">${ts}</span><span class="node-name">[${node}]</span><span class="log-msg">${msg}</span>`;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function delay(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+</script>
+
+<script src="/experiments/nav.js"></script>
+</body>
+</html>

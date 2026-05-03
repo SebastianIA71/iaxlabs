@@ -1,627 +1,348 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>De Movimiento Browniano a Modelos de Difusión en IA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap');
-       
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-            color: #334155; /* slate-700 */
-        }
-       
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agentes Conversacionales · iaxlabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f3ef; --bg2: #ffffff; --bg3: #eeede9;
+    --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+    --text: #1a1c22; --text2: #5a5e6e; --text3: #9a9eae;
+    --accent: #E6332A; --accent-soft: #fdf2f1;
+    --green: #1a9658; --amber: #c97d10; --red: #d93b2a;
+    --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
 
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 40vh;
-            max-height: 450px;
-            min-height: 300px;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 2rem 1.5rem 5rem; max-width: 900px; margin: 0 auto; }
 
-        @media (min-width: 768px) {
-            .chart-container { height: 400px; }
-        }
+  /* ── EN CONSTRUCCIÓN ── */
+  .wip-banner {
+    background: repeating-linear-gradient(
+      -45deg,
+      #1a1c22,
+      #1a1c22 10px,
+      #2a2d35 10px,
+      #2a2d35 20px
+    );
+    color: #f5a020;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+  }
+  .wip-banner span {
+    background: #1a1c22;
+    padding: 4px 16px;
+    border-radius: 4px;
+    border: 1px solid #f5a020;
+  }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+  /* ── HEADER ── */
+  .header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border2); }
+  .lab-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--text3); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .lab-tag span { color: var(--accent); }
+  h1 { font-size: 2.2rem; font-weight: 700; line-height: 1.15; margin-bottom: 0.4rem; }
+  .subtitle { font-size: 0.875rem; color: var(--text2); }
 
-        .nav-link.active {
-            color: #4f46e5; /* indigo-600 */
-            border-bottom: 2px solid #4f46e5;
-        }
-    </style>
+  /* ── INTRO ── */
+  .intro-box { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; background: var(--bg2); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+  .intro-p { font-size: 13px; color: var(--text2); line-height: 1.7; text-align: justify; }
+  @media(max-width:600px) { .intro-box { grid-template-columns: 1fr; } }
 
-    <!-- Chosen Palette: Warm Neutrals (Slate) with Indigo and Blue Accents for a technological and scientific feel -->
-    <!-- Application Structure Plan: A linear, scrolling single-page narrative designed to bridge the gap between physics and AI. It starts with foundational theory (Physics), transitions to mathematical modeling (AI Bridge), offers an interactive simulation to solidify understanding (Interactive Lab), and concludes with a practical cloud architecture proposal (GCP Base). This structure guides the user from abstract concepts to tangible implementation. -->
-    <!-- Visualization & Content Choices:
-         1. Interactive Scatter Plot (Chart.js): Goal is to 'Change' and simulate stochastic differential equations. Interaction via play/reverse buttons. Justification: It perfectly visualizes both physical particle diffusion and the forward/reverse processes of DDPMs.
-         2. Noise Schedule Line Chart (Chart.js): Goal is to 'Inform'. Shows the variance parameter over time. Justification: Helps ground the mathematical concept of adding noise progressively.
-         3. CSS Grid/Flexbox Layouts for GCP Architecture: Goal is to 'Organize'. Replaces SVG diagrams to show the relationship between cloud components cleanly.
-         Confirming NO SVG/Mermaid. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  /* ── CHAT ── */
+  .chat-wrap {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 1.5rem;
+  }
+  .chat-label {
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    color: var(--text3); text-transform: uppercase; margin-bottom: 1rem; display: block;
+  }
+  .chat-messages {
+    min-height: 280px; max-height: 280px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 1rem; padding-right: 4px;
+  }
+  .msg {
+    max-width: 75%; padding: 10px 14px; border-radius: 12px;
+    font-size: 13px; line-height: 1.6;
+  }
+  .msg.user {
+    background: var(--accent); color: white;
+    align-self: flex-end; border-bottom-right-radius: 4px;
+  }
+  .msg.agent {
+    background: var(--bg3); color: var(--text);
+    align-self: flex-start; border-bottom-left-radius: 4px;
+    border: 1px solid var(--border2);
+  }
+  .msg.agent .agent-tag {
+    font-family: var(--mono); font-size: 9px; color: var(--accent);
+    font-weight: 700; display: block; margin-bottom: 4px; text-transform: uppercase;
+  }
+  .msg.thinking {
+    background: var(--bg3); color: var(--text3);
+    align-self: flex-start; border-bottom-left-radius: 4px;
+    border: 1px dashed var(--border2); font-family: var(--mono); font-size: 11px;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .chat-input-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 8px;
+  }
+  .chat-input {
+    padding: 10px 14px; border: 1px solid var(--border2); border-radius: 8px;
+    font-family: var(--sans); font-size: 13px; background: var(--bg3); outline: none;
+    color: var(--text);
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .btn-send {
+    background: var(--accent); color: white; border: none;
+    padding: 10px 20px; border-radius: 8px; font-weight: 700;
+    cursor: pointer; font-family: var(--mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    transition: opacity 0.15s;
+  }
+  .btn-send:hover { opacity: 0.85; }
+  .btn-send:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── PERSONALIDAD ── */
+  .personality-panel {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+  }
+  .persona-btn {
+    padding: 12px; border-radius: 10px; border: 1px solid var(--border2);
+    background: var(--bg3); cursor: pointer; text-align: center;
+    transition: all 0.15s; font-family: var(--sans);
+  }
+  .persona-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .persona-btn.active { border-color: var(--accent); background: var(--accent-soft); }
+  .persona-btn .emoji { font-size: 24px; display: block; margin-bottom: 6px; }
+  .persona-btn .name { font-size: 12px; font-weight: 700; color: var(--text); }
+  .persona-btn .desc { font-size: 10px; color: var(--text3); margin-top: 2px; font-family: var(--mono); }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem;
+  }
+  .stat-box {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem; text-align: center;
+  }
+  .stat-val { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-family: var(--mono); font-size: 9px; color: var(--text3); text-transform: uppercase; margin-top: 4px; }
+
+  /* ── RESET ── */
+  .btn-reset {
+    background: var(--bg3); color: var(--text2); border: 1px solid var(--border2);
+    padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .btn-reset:hover { background: var(--bg); }
+</style>
 </head>
-<body class="antialiased">
+<body>
 
-    <!-- Sticky Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-xl font-bold text-indigo-900">IAxLabs - Mediante la Física 01A</span>
-                </div>
-                <div class="flex space-x-6 items-center overflow-x-auto">
-                    <button onclick="scrollToSection('teoria')" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors whitespace-nowrap">1. Teoría</button>
-                    <button onclick="scrollToSection('puente')" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors whitespace-nowrap">2. El Puente Matemático</button>
-                    <button onclick="scrollToSection('simulacion')" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors whitespace-nowrap">3. Simulación</button>
-                    <button onclick="scrollToSection('gcp')" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors whitespace-nowrap">4. Laboratorio GCP</button>
-                </div>
-            </div>
-        </div>
-    </nav>
+<div class="wip-banner">
+  <span>⚠ &nbsp; EN CONSTRUCCIÓN &nbsp; ⚠</span>
+</div>
 
-    <!-- Header / Hero -->
-    <header class="bg-indigo-900 text-white py-20 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">De la Termodinámica a la Generación de Imágenes</h1>
-            <p class="text-lg md:text-xl text-indigo-200 font-light leading-relaxed">
-                Cómo el Movimiento Browniano inspiró los Modelos de Difusión, la tecnología detrás de la Inteligencia Artificial Generativa moderna, y cómo construir un laboratorio para experimentarlo.
-            </p>
-        </div>
-    </header>
+<div class="header">
+  <div class="lab-tag"><span>0003-CS-01</span> · applied ai</div>
+  <h1>Agentes <span style="color:var(--accent)">Conversacionales</span></h1>
+  <p class="subtitle">Observa cómo cambia el comportamiento de un agente según su personalidad y contexto.</p>
+</div>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+<div class="intro-box">
+  <p class="intro-p"><strong>¿Qué es un agente conversacional?</strong> No es solo un chatbot. Es un sistema con instrucciones de sistema, memoria de contexto y un objetivo definido. La misma pregunta obtiene respuestas radicalmente distintas según cómo esté configurado.</p>
+  <p class="intro-p"><strong>¿Qué puedes probar aquí?</strong> Cambia la personalidad del agente y observa cómo varía su tono, su nivel de detalle y su forma de manejar preguntas ambiguas. El contenido es simulado pero el comportamiento es real.</p>
+</div>
 
-        <!-- Section 1: Teoría -->
-        <section id="teoria" class="scroll-mt-24">
-            <div class="border-l-4 border-indigo-500 pl-4 mb-8">
-                <h2 class="text-3xl font-bold text-slate-800">1. Fundamentos: Dos Mundos, Una Idea</h2>
-                <p class="mt-2 text-slate-500">Comprendiendo los orígenes físicos y su evolución hacia la Inteligencia Artificial.</p>
-            </div>
+<!-- PERSONALIDAD -->
+<div class="personality-panel">
+  <button class="persona-btn active" onclick="setPersona('soporte')" id="p-soporte">
+    <span class="emoji">🎧</span>
+    <span class="name">Soporte Técnico</span>
+    <span class="desc">Preciso · Formal · Soluciones</span>
+  </button>
+  <button class="persona-btn" onclick="setPersona('ventas')" id="p-ventas">
+    <span class="emoji">📈</span>
+    <span class="name">Agente de Ventas</span>
+    <span class="desc">Persuasivo · Cálido · CTA</span>
+  </button>
+  <button class="persona-btn" onclick="setPersona('onboarding')" id="p-onboarding">
+    <span class="emoji">🧭</span>
+    <span class="name">Onboarding</span>
+    <span class="desc">Didáctico · Paciente · Pasos</span>
+  </button>
+</div>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Physics Context -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="text-indigo-600 font-bold mb-2">FÍSICA (1827)</div>
-                    <h3 class="text-xl font-semibold mb-4 text-slate-800">Movimiento Browniano</h3>
-                    <p class="text-slate-600 mb-4 leading-relaxed">
-                        Descubierto por el botánico Robert Brown al observar polen en agua. Las partículas realizan un <strong>recorrido aleatorio (random walk)</strong> debido a las colisiones impredecibles con las moléculas del fluido.
-                    </p>
-                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
-                        <li>Es un proceso estocástico (gobernado por la probabilidad).</li>
-                        <li>Las partículas tienden a dispersarse desde zonas de alta concentración hacia una distribución uniforme.</li>
-                        <li>Descrito matemáticamente por Albert Einstein en 1905.</li>
-                    </ul>
-                </div>
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-val" id="stat-msgs">0</div>
+    <div class="stat-label">Mensajes</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val" id="stat-persona">Soporte</div>
+    <div class="stat-label">Personalidad activa</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val" id="stat-mood">😐</div>
+    <div class="stat-label">Mood del agente</div>
+  </div>
+</div>
 
-                <!-- AI Context -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="text-indigo-600 font-bold mb-2">INTELIGENCIA ARTIFICIAL (2015+)</div>
-                    <h3 class="text-xl font-semibold mb-4 text-slate-800">Modelos de Difusión</h3>
-                    <p class="text-slate-600 mb-4 leading-relaxed">
-                        Un enfoque de IA generativa (como Midjourney o DALL-E) que aprende a crear datos destruyéndolos primero. Utiliza ruido aleatorio para corromper la información de manera iterativa.
-                    </p>
-                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
-                        <li><strong>Proceso Forward:</strong> Añade ruido gradualmente a una imagen hasta que es irreconocible.</li>
-                        <li><strong>Proceso Reverse:</strong> Una red neuronal aprende a "limpiar" ese ruido paso a paso.</li>
-                        <li>Genera nuevos datos a partir de ruido puro.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+<!-- CHAT -->
+<div class="chat-wrap">
+  <span class="chat-label">Conversación con el agente</span>
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg agent">
+      <span class="agent-tag">Agente · Soporte Técnico</span>
+      Hola, soy tu agente de soporte. Describe el problema que estás experimentando y lo resolveremos paso a paso.
+    </div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" class="chat-input" id="chat-input" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter') sendMsg()" />
+    <button class="btn-send" id="btn-send" onclick="sendMsg()">Enviar</button>
+  </div>
+</div>
 
-        <!-- Section 2: El Puente Matemático -->
-        <section id="puente" class="scroll-mt-24">
-            <div class="border-l-4 border-blue-500 pl-4 mb-8">
-                <h2 class="text-3xl font-bold text-slate-800">2. El Puente Matemático</h2>
-                <p class="mt-2 text-slate-500">¿Cómo conectamos el polen en el agua con la generación de píxeles?</p>
-            </div>
+<button class="btn-reset" onclick="resetChat()">↺ Reiniciar conversación</button>
 
-            <div class="bg-slate-800 text-slate-100 p-8 rounded-2xl shadow-lg relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-lg font-light mb-6">
-                        El secreto que une ambas disciplinas es la <strong>Ecuación Diferencial Estocástica (SDE)</strong>, y más específicamente, la Dinámica de Langevin.
-                    </p>
-                   
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div>
-                            <h4 class="text-xl font-semibold text-blue-300 mb-2">Dinámica de Langevin</h4>
-                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
-                                En física, describe la evolución del estado de un sistema sometido a fuerzas estocásticas (ruido). En IA, la usamos para definir cómo los píxeles de una imagen original <span class="font-mono text-indigo-300">x_0</span> se difuminan hacia una distribución de ruido gaussiano <span class="font-mono text-indigo-300">x_T</span> a lo largo de un tiempo <span class="font-mono text-indigo-300">T</span>.
-                            </p>
-                            <div class="bg-slate-900 p-4 rounded-lg font-mono text-sm text-blue-200 border border-slate-700">
-                                dx = f(x, t)dt + g(t)dw
-                            </div>
-                            <p class="text-xs text-slate-400 mt-2">
-                                Donde <span class="font-mono">dw</span> es el Movimiento Browniano (ruido de Wiener), inyectando el caos necesario.
-                            </p>
-                        </div>
-                       
-                        <div class="bg-slate-700/50 p-6 rounded-xl border border-slate-600">
-                            <h4 class="text-xl font-semibold text-blue-300 mb-4">El Cronograma de Ruido (Beta Schedule)</h4>
-                            <div class="chart-container" style="height: 200px;">
-                                <canvas id="betaScheduleChart"></canvas>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-4 text-center">
-                                En los modelos de difusión, controlamos cuánta "física" (ruido) aplicamos en cada paso temporal.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<script>
+let currentPersona = 'soporte';
+let msgCount = 0;
 
-        <!-- Section 3: Simulación Interactiva -->
-        <section id="simulacion" class="scroll-mt-24">
-            <div class="border-l-4 border-teal-500 pl-4 mb-8">
-                <h2 class="text-3xl font-bold text-slate-800">3. Laboratorio Interactivo: Dinámica de Partículas</h2>
-                <p class="mt-2 text-slate-500">Visualiza la relación. Cada punto representa datos (un píxel) o una partícula en el espacio.</p>
-            </div>
+const PERSONAS = {
+  soporte: {
+    name: 'Soporte Técnico',
+    emoji: '🎧',
+    greeting: 'Hola, soy tu agente de soporte. Describe el problema que estás experimentando y lo resolveremos paso a paso.',
+    mood: ['😐','🔍','🛠️'],
+    responses: [
+      'Entendido. Para resolver esto necesito que me confirmes: ¿en qué sistema operativo ocurre el problema?',
+      'Perfecto. El error que describes corresponde al código E-4092. Los pasos para solucionarlo son: (1) reinicia el servicio, (2) limpia la caché, (3) verifica los permisos.',
+      'He registrado tu incidencia. Tiempo estimado de resolución: 24h. ¿Hay algo más que pueda hacer por ti?',
+      'Para escalar esto al nivel 2 necesito el ID de tu cuenta. ¿Lo tienes a mano?',
+      'Confirmado. He aplicado la solución en tu entorno. ¿Puedes verificar que el problema está resuelto?',
+    ]
+  },
+  ventas: {
+    name: 'Agente de Ventas',
+    emoji: '📈',
+    greeting: '¡Hola! Me alegra que estés aquí. Cuéntame, ¿qué estás buscando hoy? Tengo algo que creo que te va a encajar perfectamente.',
+    mood: ['😊','🤩','💪'],
+    responses: [
+      '¡Genial elección! Justo lo que mencionas es donde más valor aporta nuestro plan Pro. ¿Te cuento las ventajas?',
+      'Entiendo tu preocupación por el precio. Pero mira, si lo calculas por día son menos de 2€. Menos que un café.',
+      'Muchos de nuestros clientes pensaban lo mismo antes de probarlo. Ahora no lo cambiarían por nada. ¿Te apunto para una demo?',
+      '¡Perfecto momento para hablar! Esta semana tenemos un 20% de descuento si decides hoy. ¿Empezamos?',
+      'Eso que describes es exactamente el pain point que resolvemos. Déjame mostrarte cómo en 5 minutos.',
+    ]
+  },
+  onboarding: {
+    name: 'Onboarding',
+    emoji: '🧭',
+    greeting: 'Bienvenido/a. Voy a acompañarte en tus primeros pasos. No hay prisa. ¿Por dónde quieres empezar?',
+    mood: ['🙂','📚','✅'],
+    responses: [
+      'Perfecto, empecemos por lo básico. Paso 1 de 5: configura tu perfil. Solo tarda 2 minutos y lo desbloquea todo.',
+      'Muy bien. Antes de continuar, ¿has podido completar el paso anterior? No pasa nada si no, podemos repetirlo.',
+      'Eso es normal al principio. Mucha gente tiene esa misma duda. La clave es... no intentar hacer todo a la vez.',
+      'Excelente progreso. Ya estás en el paso 3. Lo estás haciendo muy bien. ¿Seguimos?',
+      'Has completado el onboarding básico. Ya tienes todo lo que necesitas para empezar. Aquí tienes el resumen de lo que has configurado.',
+    ]
+  }
+};
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex flex-wrap gap-4 mb-6 justify-center">
-                    <button onclick="startForwardDiffusion()" id="btnForward" class="px-6 py-3 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-700 transition-colors focus:ring-4 focus:ring-slate-200">
-                        1. Aplicar Entropía (Forward)
-                    </button>
-                    <button onclick="startReverseDiffusion()" id="btnReverse" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors focus:ring-4 focus:ring-indigo-200 opacity-50 cursor-not-allowed" disabled>
-                        2. Revertir el Caos (Denoising)
-                    </button>
-                    <button onclick="resetParticles()" class="px-6 py-3 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors">
-                        Reiniciar Sistema
-                    </button>
-                </div>
+function setPersona(p) {
+  currentPersona = p;
+  document.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('p-' + p).classList.add('active');
+  document.getElementById('stat-persona').textContent = PERSONAS[p].name;
+  resetChat();
+}
 
-                <div class="text-center mb-4">
-                    <span id="simulationStatus" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">
-                        Estado: Organizado (Datos originales)
-                    </span>
-                    <div class="w-full bg-slate-200 rounded-full h-1.5 mt-4 max-w-md mx-auto overflow-hidden hidden" id="progressContainer">
-                        <div class="bg-indigo-600 h-1.5 rounded-full" id="progressBar" style="width: 0%"></div>
-                    </div>
-                </div>
+function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
 
-                <div class="chart-container bg-slate-50 rounded-xl border border-slate-200">
-                    <canvas id="diffusionChart"></canvas>
-                </div>
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true;
+  input.value = '';
 
-                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="bg-slate-50 p-4 rounded-lg">
-                        <div class="text-sm text-slate-500">Paso Temporal (T)</div>
-                        <div class="text-xl font-bold font-mono text-slate-800" id="stepCounter">0</div>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-lg">
-                        <div class="text-sm text-slate-500">Nivel de Ruido</div>
-                        <div class="text-xl font-bold font-mono text-slate-800" id="noiseLevel">0.00</div>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-lg col-span-2 text-left flex items-center">
-                        <p class="text-sm text-slate-600">
-                            <strong class="text-slate-800">Observación:</strong> El movimiento hacia adelante representa la Ecuación de Difusión Estándar. El movimiento hacia atrás representa la red neuronal estimando y restando el Gradiente del Logaritmo de la Probabilidad (Score).
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  // Mensaje usuario
+  addMsg(msg, 'user');
+  msgCount++;
+  document.getElementById('stat-msgs').textContent = msgCount;
 
-        <!-- Section 4: Arquitectura GCP -->
-        <section id="gcp" class="scroll-mt-24">
-            <div class="border-l-4 border-blue-600 pl-4 mb-8">
-                <h2 class="text-3xl font-bold text-slate-800">4. Diseño de Laboratorio en Google Cloud (GCP)</h2>
-                <p class="mt-2 text-slate-500">Arquitectura propuesta para entrenar un modelo DDPM (Denoising Diffusion Probabilistic Model) a escala.</p>
-            </div>
+  // Thinking
+  const thinkId = 'think-' + Date.now();
+  addMsg('Procesando...', 'thinking', thinkId);
 
-            <p class="text-slate-600 mb-8 leading-relaxed">
-                Entrenar modelos de difusión requiere simular millones de trayectorias estocásticas y calcular funciones de pérdida complejas. GCP proporciona la infraestructura necesaria para acelerar este proceso mediante Vertex AI y computación acelerada por hardware.
-            </p>
+  setTimeout(() => {
+    // Quitar thinking
+    const think = document.getElementById(thinkId);
+    if (think) think.remove();
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Data Layer -->
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm relative pt-12">
-                    <div class="absolute -top-4 left-6 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-blue-200">
-                        1. Ingesta y Datos
-                    </div>
-                    <div class="flex items-center space-x-3 mb-4 text-blue-600">
-                        <div class="w-8 h-8 rounded bg-blue-50 flex items-center justify-center font-bold font-mono text-xl text-blue-600">S</div>
-                        <h3 class="font-bold text-slate-800 text-lg">Cloud Storage</h3>
-                    </div>
-                    <p class="text-sm text-slate-600">
-                        Almacena los datasets de imágenes crudas. Debido a la naturaleza iterativa del modelo, el pipeline de datos debe ser altamente eficiente (usando tf.data o Dataflow para preprocesamiento).
-                    </p>
-                </div>
+    // Respuesta agente
+    const persona = PERSONAS[currentPersona];
+    const response = persona.responses[msgCount % persona.responses.length];
+    const mood = persona.mood[msgCount % persona.mood.length];
+    addMsg(response, 'agent');
+    document.getElementById('stat-mood').textContent = mood;
+    btn.disabled = false;
+    input.focus();
+  }, 800 + Math.random() * 600);
+}
 
-                <!-- Training Layer -->
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm relative pt-12 md:scale-105 border-indigo-200 shadow-md">
-                    <div class="absolute -top-4 left-6 bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-indigo-200">
-                        2. Entrenamiento (Core)
-                    </div>
-                    <div class="flex items-center space-x-3 mb-4 text-indigo-600">
-                        <div class="w-8 h-8 rounded bg-indigo-50 flex items-center justify-center font-bold font-mono text-xl text-indigo-600">V</div>
-                        <h3 class="font-bold text-slate-800 text-lg">Vertex AI Custom Training</h3>
-                    </div>
-                    <p class="text-sm text-slate-600 mb-3">
-                        Utiliza máquinas A2 o A3 (NVIDIA A100/H100). Aquí se simula el movimiento browniano añadiendo ruido <span class="font-mono text-xs">(Forward Process)</span> y se entrena una red U-Net para estimar el ruido original.
-                    </p>
-                    <div class="bg-slate-50 p-2 rounded text-xs text-slate-500 font-mono text-center">
-                        Accelerators: NVIDIA_TESLA_A100
-                    </div>
-                </div>
+function addMsg(text, type, id) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + type;
+  if (id) div.id = id;
 
-                <!-- Serving Layer -->
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm relative pt-12">
-                    <div class="absolute -top-4 left-6 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-emerald-200">
-                        3. Inferencia (Reverse)
-                    </div>
-                    <div class="flex items-center space-x-3 mb-4 text-emerald-600">
-                        <div class="w-8 h-8 rounded bg-emerald-50 flex items-center justify-center font-bold font-mono text-xl text-emerald-600">E</div>
-                        <h3 class="font-bold text-slate-800 text-lg">Vertex AI Endpoints</h3>
-                    </div>
-                    <p class="text-sm text-slate-600">
-                        Despliega la red U-Net entrenada. Al recibir una solicitud, el Endpoint toma ruido gaussiano puro y ejecuta el ciclo iterativo de <em>denoising</em> (resolviendo la SDE inversa) para generar los datos finales.
-                    </p>
-                </div>
-            </div>
+  if (type === 'agent') {
+    const tag = document.createElement('span');
+    tag.className = 'agent-tag';
+    tag.textContent = 'Agente · ' + PERSONAS[currentPersona].name;
+    div.appendChild(tag);
+    div.appendChild(document.createTextNode(text));
+  } else {
+    div.textContent = text;
+  }
 
-            <!-- Workflow visualization using HTML/CSS (No SVG) -->
-            <div class="mt-12 bg-slate-50 p-8 rounded-2xl border border-slate-200 text-center">
-                <h3 class="font-semibold text-slate-700 mb-6">Flujo de Trabajo del Laboratorio en Vertex AI Pipelines</h3>
-               
-                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
-                    <div class="bg-white border border-slate-300 px-4 py-2 rounded-lg shadow-sm w-48 font-medium text-slate-700 text-sm">
-                        Extraer Dataset (GCS)
-                    </div>
-                   
-                    <div class="hidden md:block text-slate-400 font-bold">→</div>
-                    <div class="md:hidden text-slate-400 font-bold">↓</div>
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
 
-                    <div class="bg-indigo-50 border border-indigo-200 px-4 py-2 rounded-lg shadow-sm w-48 font-medium text-indigo-800 text-sm">
-                        Aplicar SDE Forward (Ruido)
-                    </div>
+function resetChat() {
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = '';
+  msgCount = 0;
+  document.getElementById('stat-msgs').textContent = '0';
+  document.getElementById('stat-mood').textContent = '😐';
+  const persona = PERSONAS[currentPersona];
+  addMsg(persona.greeting, 'agent');
+}
+</script>
 
-                    <div class="hidden md:block text-slate-400 font-bold">→</div>
-                    <div class="md:hidden text-slate-400 font-bold">↓</div>
-
-                    <div class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-sm w-48 font-medium text-sm">
-                        Entrenar U-Net (A100)
-                    </div>
-
-                    <div class="hidden md:block text-slate-400 font-bold">→</div>
-                    <div class="md:hidden text-slate-400 font-bold">↓</div>
-
-                    <div class="bg-white border border-slate-300 px-4 py-2 rounded-lg shadow-sm w-48 font-medium text-slate-700 text-sm">
-                        Registro en Model Registry
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
-    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12">
-        <div class="max-w-4xl mx-auto px-4 text-sm">
-            <p>Laboratorio conceptual creado para demostrar la intercesión entre la Física Estadística y la IA Generativa Avanzada.</p>
-            <p class="mt-2 opacity-60">Diseñado con tecnologías de visualización en lienzo y Tailwind CSS.</p>
-        </div>
-    </footer>
-
-    <!-- Javascript Logic -->
-    <script>
-        // --- Navigation Functionality ---
-        function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Add scroll spy for active nav links
-        window.addEventListener('scroll', () => {
-            let current = '';
-            const sections = ['teoria', 'puente', 'simulacion', 'gcp'];
-           
-            sections.forEach(sec => {
-                const element = document.getElementById(sec);
-                if (element) {
-                    const rect = element.getBoundingClientRect();
-                    // If section is reasonably in view
-                    if (rect.top <= 150) {
-                        current = sec;
-                    }
-                }
-            });
-
-            document.querySelectorAll('.nav-link').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick').includes(current)) {
-                    btn.classList.add('active');
-                }
-            });
-        });
-
-        // --- Static Chart: Beta Schedule ---
-        const ctxBeta = document.getElementById('betaScheduleChart').getContext('2d');
-        const steps = Array.from({length: 50}, (_, i) => i);
-        // Simulating a linear noise schedule (common in early DDPMs)
-        const betaValues = steps.map(s => 0.0001 + (s/50) * 0.02);
-
-        new Chart(ctxBeta, {
-            type: 'line',
-            data: {
-                labels: steps,
-                datasets: [{
-                    label: 'Varianza del Ruido (β)',
-                    data: betaValues,
-                    borderColor: '#93c5fd', // blue-300
-                    backgroundColor: 'rgba(147, 197, 253, 0.2)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        title: { display: true, text: 'Paso Temporal (t)', color: '#94a3b8' },
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#94a3b8' }
-                    },
-                    y: {
-                        display: true,
-                        title: { display: true, text: 'β', color: '#94a3b8' },
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#94a3b8' }
-                    }
-                }
-            }
-        });
-
-        // --- Interactive Simulation Logic ---
-        const ctxDiff = document.getElementById('diffusionChart').getContext('2d');
-        let diffChart;
-        let particles = [];
-        let animationInterval;
-        let currentStep = 0;
-        const maxSteps = 100;
-        let state = 'organized'; // 'organized', 'forwarding', 'noisy', 'reversing'
-
-        // Create initial organized dataset (e.g., forming a letter "S" for Simulation)
-        function generateStructuredData() {
-            const pts = [];
-            // Simple generator for an S shape
-            for(let i=0; i<150; i++) {
-                let x, y;
-                const t = i / 150;
-                if (t < 0.33) {
-                    // Top curve
-                    const ang = Math.PI - (t/0.33) * Math.PI;
-                    x = 0 + 20 * Math.cos(ang);
-                    y = 20 + 20 * Math.sin(ang);
-                } else if (t < 0.66) {
-                    // Middle diagonal
-                    const t2 = (t - 0.33) / 0.33;
-                    x = 20 - t2 * 40;
-                    y = 20 - t2 * 40;
-                } else {
-                    // Bottom curve
-                    const ang = Math.PI - ((t - 0.66)/0.34) * Math.PI;
-                    x = 0 - 20 * Math.cos(ang);
-                    y = -20 - 20 * Math.sin(ang);
-                }
-               
-                // Add slight initial natural jitter
-                x += (Math.random() - 0.5) * 3;
-                y += (Math.random() - 0.5) * 3;
-               
-                pts.push({
-                    x: x,
-                    y: y,
-                    origX: x, // Save origin for reverse
-                    origY: y
-                });
-            }
-            return pts;
-        }
-
-        // Gaussian Random Number Generator (Box-Muller transform)
-        function randomGaussian() {
-            let u = 0, v = 0;
-            while(u === 0) u = Math.random();
-            while(v === 0) v = Math.random();
-            return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
-        }
-
-        function initSimulationChart() {
-            particles = generateStructuredData();
-           
-            diffChart = new Chart(ctxDiff, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: 'Partículas de Datos',
-                        data: particles.map(p => ({x: p.x, y: p.y})),
-                        backgroundColor: '#4f46e5', // indigo-600
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: false, // Turn off default animation for performance
-                    scales: {
-                        x: { min: -100, max: 100, grid: { color: '#f1f5f9' } },
-                        y: { min: -100, max: 100, grid: { color: '#f1f5f9' } }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                    }
-                }
-            });
-            updateUI();
-        }
-
-        function updateChartData() {
-            diffChart.data.datasets[0].data = particles.map(p => ({x: p.x, y: p.y}));
-            diffChart.update();
-           
-            // Update metrics
-            document.getElementById('stepCounter').innerText = currentStep;
-            // Fake noise calculation based on step
-            document.getElementById('noiseLevel').innerText = (currentStep / maxSteps).toFixed(2);
-        }
-
-        function updateUI() {
-            const btnFwd = document.getElementById('btnForward');
-            const btnRev = document.getElementById('btnReverse');
-            const statusBox = document.getElementById('simulationStatus');
-            const progCont = document.getElementById('progressContainer');
-            const progBar = document.getElementById('progressBar');
-
-            if (state === 'organized') {
-                btnFwd.disabled = false; btnFwd.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnRev.disabled = true; btnRev.classList.add('opacity-50', 'cursor-not-allowed');
-                statusBox.innerText = 'Estado: Datos Originales (Estructurados)';
-                statusBox.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800';
-                progCont.classList.add('hidden');
-            } else if (state === 'forwarding') {
-                btnFwd.disabled = true; btnFwd.classList.add('opacity-50', 'cursor-not-allowed');
-                btnRev.disabled = true; btnRev.classList.add('opacity-50', 'cursor-not-allowed');
-                statusBox.innerText = 'Estado: Aplicando Ruido Browniano...';
-                statusBox.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800';
-                progCont.classList.remove('hidden');
-                progBar.style.width = `${(currentStep/maxSteps)*100}%`;
-                progBar.className = 'bg-amber-500 h-1.5 rounded-full';
-            } else if (state === 'noisy') {
-                btnFwd.disabled = true; btnFwd.classList.add('opacity-50', 'cursor-not-allowed');
-                btnRev.disabled = false; btnRev.classList.remove('opacity-50', 'cursor-not-allowed');
-                statusBox.innerText = 'Estado: Distribución Gaussiana (Caos)';
-                statusBox.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rose-100 text-rose-800';
-                progCont.classList.add('hidden');
-            } else if (state === 'reversing') {
-                btnFwd.disabled = true; btnFwd.classList.add('opacity-50', 'cursor-not-allowed');
-                btnRev.disabled = true; btnRev.classList.add('opacity-50', 'cursor-not-allowed');
-                statusBox.innerText = 'Estado: Red Neuronal Eliminando Ruido...';
-                statusBox.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800';
-                progCont.classList.remove('hidden');
-                progBar.style.width = `${(currentStep/maxSteps)*100}%`;
-                progBar.className = 'bg-indigo-600 h-1.5 rounded-full';
-            }
-        }
-
-        function startForwardDiffusion() {
-            if (state !== 'organized') return;
-            state = 'forwarding';
-            updateUI();
-           
-            clearInterval(animationInterval);
-            animationInterval = setInterval(() => {
-                if (currentStep >= maxSteps) {
-                    clearInterval(animationInterval);
-                    state = 'noisy';
-                    updateUI();
-                    return;
-                }
-               
-                currentStep++;
-               
-                // Diffuse particles based on Langevin equation logic
-                // x_t = sqrt(1-beta) * x_{t-1} + sqrt(beta) * noise
-                const beta = 0.05; // fixed step size for visual simplicity
-               
-                particles.forEach(p => {
-                    const noiseX = randomGaussian() * 6; // scaling noise for visual effect
-                    const noiseY = randomGaussian() * 6;
-                   
-                    // Slightly pull to center (0,0) as in a standard Gaussian prior
-                    p.x = p.x * (1 - 0.02) + noiseX;
-                    p.y = p.y * (1 - 0.02) + noiseY;
-                });
-               
-                updateChartData();
-                updateUI(); // to update progress bar
-            }, 30); // 30ms per frame
-        }
-
-        function startReverseDiffusion() {
-            if (state !== 'noisy') return;
-            state = 'reversing';
-            updateUI();
-           
-            clearInterval(animationInterval);
-            animationInterval = setInterval(() => {
-                if (currentStep <= 0) {
-                    clearInterval(animationInterval);
-                    state = 'organized';
-                    updateUI();
-                    return;
-                }
-               
-                currentStep--;
-               
-                // Simulating the denoising process (Network predicting and removing noise)
-                // We move towards the known original points with some added noise that decreases over time
-                const progress = currentStep / maxSteps; // 1 to 0
-               
-                particles.forEach(p => {
-                    const dirX = p.origX - p.x;
-                    const dirY = p.origY - p.y;
-                   
-                    // Move a fraction towards origin
-                    p.x += dirX * 0.05;
-                    p.y += dirY * 0.05;
-                   
-                    // Add diminishing noise (Langevin dynamics in reverse still has noise)
-                    p.x += randomGaussian() * 2 * progress;
-                    p.y += randomGaussian() * 2 * progress;
-                });
-               
-                updateChartData();
-                updateUI(); // to update progress bar
-            }, 30);
-        }
-
-        function resetParticles() {
-            clearInterval(animationInterval);
-            particles = generateStructuredData();
-            currentStep = 0;
-            state = 'organized';
-            updateChartData();
-            updateUI();
-        }
-
-        // Initialize on load
-        window.onload = () => {
-            initSimulationChart();
-        };
-
-    </script>
+<script src="/experiments/nav.js"></script>
 </body>
 </html>
