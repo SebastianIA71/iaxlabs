@@ -19,7 +19,6 @@ type TopicPipelineProps = {
   steps: Step[];
   image?: string;
   featured?: boolean;
-  topic?: string; 
 };
 
 const iconMap = {
