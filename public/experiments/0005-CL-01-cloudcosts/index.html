@@ -47,7 +47,7 @@
   @keyframes fadein { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
   @keyframes glow   { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 3px rgba(217,59,42,0.12)} }
 
-  /* ── HEADER ── */
+    /* ── HEADER ── */
   .header {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
@@ -61,15 +61,18 @@
     text-transform: uppercase;
     margin-bottom: 0.75rem;
   }
-  .lab-tag span { color: var(--red); }
+  .lab-tag span { color: var(--blue); }
   h1 {
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    font-weight: 500;
-    line-height: 1.2;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.15;
     color: var(--text);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0;
   }
-  .subtitle { font-size: 0.9rem; color: var(--text2); line-height: 1.6; }
+  h1 .accent { color: var(--green); }
+  .subtitle { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
 
   /* ── SESSION PANEL (arriba) ── */
   .session-panel {
@@ -321,9 +324,12 @@
 </head>
 <body>
 
+
+  
+
 <div class="header">
   <div class="lab-tag"><span>0005-CL-01</span> · cloud costs</div>
-  <h1>El taxímetro del gasto pasivo</h1>
+    <h1>El taxímetro del <span class="accent">Gasto Pasivo</span></h1>
   <p class="subtitle">Enciende y apaga servicios. El contadore no para. Nunca.<br>Descubre cuánto cuesta tener la nube encendida sin hacer nada.</p>
 </div>
 
