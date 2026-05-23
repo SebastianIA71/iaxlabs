@@ -4,7 +4,7 @@ import { labs } from "@/data/labs";
 import { Atom, Brain, Cloud, Code, Database } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 const iconMap = {
   ai: Brain,
@@ -28,6 +28,7 @@ const topicLabel: Record<string, string> = {
 
 export default function LabsCatalog() {
   const [query, setQuery] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const orderedLabs = labs
     .filter((l) => l.slug)
@@ -66,12 +67,12 @@ export default function LabsCatalog() {
         type="text"
         placeholder="Buscar labs..."
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => { const v = e.target.value; startTransition(() => setQuery(v)); }}
         className="w-full mb-8 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm outline-none focus:border-[#E6332A]/50 transition-colors"
       />
 
       {/* LIST */}
-      <div className="flex flex-col gap-4">
+      <div className={`flex flex-col gap-4 transition-opacity duration-150 ${isPending ? "opacity-50" : "opacity-100"}`}>
         {filteredLabs.length === 0 && (
           <p className="text-center text-sm text-slate-400 py-8">
             No se encontraron labs
