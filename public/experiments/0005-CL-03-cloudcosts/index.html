@@ -711,6 +711,16 @@ const STEPS = [
 let currentStep   = 0;
 let completedSteps = [];
 let stepAnswered   = {};
+let shuffledOpts   = {};
+
+function shuffleArray(arr) {
+  const a = arr.map((o, i) => ({ ...o, _i: i }));
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 function tlog(msg, cls) {
   const t = document.getElementById('terminal');
@@ -785,7 +795,12 @@ function renderOpts() {
   if (!panel) return;
   panel.innerHTML = '';
 
-  s.opts.forEach((o, oi) => {
+  if (!shuffledOpts[currentStep]) {
+    shuffledOpts[currentStep] = shuffleArray(s.opts);
+  }
+  const opts = shuffledOpts[currentStep];
+
+  opts.forEach((o, oi) => {
     const btn = document.createElement('button');
     btn.className = 'opt-btn ' + o.cls;
     btn.disabled  = done;
@@ -802,7 +817,7 @@ function renderOpts() {
   });
 
   if (done) {
-    const wasOk = s.opts[answered] ? s.opts[answered].ok : false;
+    const wasOk = opts[answered] ? opts[answered].ok : false;
     const exp = document.createElement('div');
     exp.className = 'explanation ' + (wasOk ? 'exp-ok' : 'exp-ko');
     exp.textContent = wasOk ? s.exp_ok : s.exp_ko;
@@ -871,6 +886,7 @@ function resetLab() {
   currentStep    = 0;
   completedSteps = [];
   stepAnswered   = {};
+  shuffledOpts   = {};
   document.getElementById('terminal').innerHTML = 
     '<div class="tline t-g">> n8n Migration Lab · reiniciado</div>' +
     '<div class="tline t-gray">> VM: us-central1 · n8n latest · SQLite<span class="cursor">_</span></div>';
