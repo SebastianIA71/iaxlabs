@@ -38,10 +38,9 @@ const hookPhrases = [
   "No optimices humo."
 ];
 
-const randomPhrase =
-  hookPhrases[Math.floor(Math.random() * hookPhrases.length)];
-
 export default function Showcase() {
+  const randomPhrase =
+    hookPhrases[Math.floor(Math.random() * hookPhrases.length)];
 
   const topics = buildTopics(labs);
 
