@@ -65,18 +65,6 @@
           ]
         }
       ]
-    },
-
-    "Newsletter": {
-      "title": "Explora nuevas ideas en IA",
-      "description": "Recibe artículos y experimentos sobre novedades en inteligencia artificial, física computacional, matemáticas y sistemas complejos.",
-      "defaultErrorMessage": "Introduce un correo válido",
-      "successMessage": "Suscripción completada",
-      "errorMessage": "La suscripción ha fallado",
-      "errorMessage2": "La suscripción ha fallado. Inténtalo más tarde",
-      "subscribe": "Suscribirse",
-      "subscribing": "Suscribiendo...",
-      "subscribed": "Gracias por unirte a IAFONT"
     }
   },
 
