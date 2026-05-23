@@ -1,5 +1,6 @@
 import { labs } from "@/data/labs";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
+
+  const lab = labs.find((l) => l.slug === slug);
+  if (!lab) notFound();
 
   return (
     <iframe
